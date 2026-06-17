@@ -1,0 +1,38 @@
+# --- Secrets & keys (NEVER commit) ---
+.env
+.env.*
+!.env.example
+keys/*.pem
+keys/*.private.json
+*.secret
+*.pem
+
+# --- Node ---
+node_modules/
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
+.turbo/
+
+# --- Rust / Odra ---
+contracts/target/
+contracts/wasm/
+target/
+**/*.rs.bk
+Cargo.lock.bak
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# --- Runtime artifacts (deploy outputs, agent logs) ---
+scripts/.deployed/
+logs/
+*.local.json
+loop-output/

@@ -1,0 +1,26 @@
+{
+  "name": "@verity/oracle-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "tsx src/serve.ts",
+    "publish-signal": "tsx src/publish-signal.ts",
+    "resolve-signal": "tsx src/resolve-signal.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.2",
+    "@verity/shared": "*",
+    "casper-js-sdk": "^5.0.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

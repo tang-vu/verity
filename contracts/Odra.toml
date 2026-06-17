@@ -1,0 +1,2 @@
+[[contracts]]
+fqn = "verity_signal_oracle::signal_oracle::SignalOracle"

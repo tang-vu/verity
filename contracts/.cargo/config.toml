@@ -1,0 +1,5 @@
+# Casper host functions (casper_write, casper_read_value, ...) are declared as
+# plain `extern "C"` imports by casper-contract. wasm-ld must be told to emit
+# undefined symbols as wasm imports rather than erroring.
+[target.wasm32-unknown-unknown]
+rustflags = ["-C", "link-arg=--allow-undefined"]

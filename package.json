@@ -1,0 +1,33 @@
+{
+  "name": "verity",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reputation-staked x402 signal oracle + autonomous DeFi agent loop on Casper",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "oracle-agent",
+    "defi-agent",
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "keygen": "node scripts/generate-keypair.mjs",
+    "init-env": "node scripts/init-env.mjs",
+    "deploy:contract": "pwsh scripts/deploy-contract.ps1",
+    "deploy:sdk": "node --import tsx scripts/deploy-via-sdk.ts",
+    "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p oracle-agent/tsconfig.json && tsc --noEmit -p defi-agent/tsconfig.json && tsc --noEmit -p scripts/tsconfig.json",
+    "oracle:serve": "npm run serve --workspace oracle-agent",
+    "oracle:publish": "npm run publish-signal --workspace oracle-agent",
+    "agent:loop": "npm run loop --workspace defi-agent",
+    "seed": "node --import tsx scripts/seed-resolved-signals.ts",
+    "smoke:x402": "node --import tsx scripts/smoke-x402-local.ts",
+    "demo": "node --import tsx scripts/run-demo.ts",
+    "web:dev": "npm run dev --workspace web"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

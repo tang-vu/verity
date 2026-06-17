@@ -1,0 +1,7 @@
+# Odra 2.8.x macros require nightly (uses #![feature(box_patterns)]).
+# GNU host avoids needing MSVC Build Tools; wasm32 target is for contract build.
+# Full triple pinned to the GNU host: a bare "nightly" resolves to the default
+# host (msvc here), which would require link.exe / VS Build Tools.
+[toolchain]
+channel = "nightly-x86_64-pc-windows-gnu"
+targets = ["wasm32-unknown-unknown"]
