@@ -1,2 +1,5 @@
 [[contracts]]
 fqn = "verity_signal_oracle::signal_oracle::SignalOracle"
+
+[[contracts]]
+fqn = "verity_signal_oracle::x402_token::X402Token"

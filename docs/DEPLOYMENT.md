@@ -69,12 +69,17 @@ Run `npm run agent:loop` (oracle server up). Record:
 
 | Field | Value |
 |---|---|
-| Asset package hash (`X402_ASSET_PACKAGE_HASH`) | `⏳ <buildathon x402 demo token, or your own CEP-18>` |
+| Asset package hash (`X402_ASSET_PACKAGE_HASH`) | `⏳ <filled by deploy:x402-token>` |
+| Deploy tx | `⏳` |
 | Name / symbol / decimals | `x402USD` / `x402` / `2` |
+| Contract | `contracts/src/x402_token.rs` (X402Token = CEP-18 + CEP-3009 + CEP-2612) |
+| Consumer funding tx | `⏳` |
 | Facilitator | `https://x402-facilitator.cspr.cloud` |
 | CAIP-2 network | `casper:casper-test` |
 
-> If the buildathon provides a canonical x402 demo CEP-18 token, paste its package
-> hash here and in `.env`. Until then the paywall runs in **verified-deferred**
-> mode (cryptographic signature verified locally; on-chain settlement engages
-> automatically once `CSPR_CLOUD_ACCESS_TOKEN` + `X402_ASSET_PACKAGE_HASH` are set).
+Deploy our own token + fund the consumer in one step: `npm run deploy:x402-token`
+(writes `X402_ASSET_PACKAGE_HASH` to `.env`). Until set, the paywall runs in
+**verified-deferred** mode (signature verified locally), flipping to full
+facilitator settlement automatically once the token hash + `CSPR_CLOUD_ACCESS_TOKEN`
+are present. If the buildathon publishes a canonical x402 demo token, point
+`X402_ASSET_PACKAGE_HASH` at it instead.

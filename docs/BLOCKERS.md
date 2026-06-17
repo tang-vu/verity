@@ -39,17 +39,23 @@ copy the compiled wasm from `target/wasm32-unknown-unknown/release/` into
 optional and not required for a valid deploy.
 **Floor preserved:** valid wasm is produced and verified (magic bytes `00 61 73 6d`).
 
-## B4 — x402 payment CEP-18 token package hash not yet set
+## B4 — x402 payment CEP-18 token package hash not yet set (RESOLVED in code)
 
 **Blocked:** on-chain x402 *settlement* (the facilitator submitting a CEP-18
 `transfer_with_authorization`).
-**Root cause:** needs a testnet CEP-18 token package hash in `X402_ASSET_PACKAGE_HASH`
-(the buildathon's canonical x402 demo token, or one we deploy).
-**Mitigation (implemented):** paywall runs in **verified-deferred** mode — the
-EIP-712 payment signature is cryptographically verified locally (proven by
-`npm run smoke:x402`), and on-chain settlement engages automatically once the
-token hash + `CSPR_CLOUD_ACCESS_TOKEN` are present. No code change needed to flip.
-**Unblock:** set `X402_ASSET_PACKAGE_HASH` (+ token metadata) in `.env`.
+**Root cause:** needs a testnet CEP-18 token (with CEP-3009 `transfer_with_authorization`)
+in `X402_ASSET_PACKAGE_HASH`.
+**Resolved:** verity ships its own token — `contracts/src/x402_token.rs`
+(`X402Token` = CEP-18 + CEP-3009 + CEP-2612 via odra-modules, host-tested). Deploy
+with `npm run deploy:x402-token`; it installs the token, writes
+`X402_ASSET_PACKAGE_HASH` to `.env`, and funds the consumer so it can pay on-chain.
+Until then the paywall runs in **verified-deferred** mode (signature verified
+locally — `npm run smoke:x402`), flipping to full facilitator settlement once the
+token hash + `CSPR_CLOUD_ACCESS_TOKEN` are present. No code change to flip.
+**Remaining:** verify the on-chain CEP-3009 EIP-712 domain (name/version/chain)
+matches the client's exactly during the first funded settlement; verified-deferred
+keeps the floor intact if it needs a tweak. If the buildathon publishes a canonical
+x402 demo token, point `X402_ASSET_PACKAGE_HASH` at it instead.
 
 ## Open questions
 - Does the buildathon publish a canonical testnet x402 demo CEP-18 token package

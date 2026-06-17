@@ -37,6 +37,21 @@ Checked official buildathon page + toolkit links (all live):
 - Community voting runs via **CSPR.fans** (Telegram mini-app, top-3 → finals).
 - Real deadline 2026-06-30 (eval Jul 1-5). Added socials placeholder to launch plan.
 
+## 2026-06-18 — x402 payment token shipped
+
+- Added `X402Token` (`contracts/src/x402_token.rs`) = CEP-18 + CEP-3009
+  (`transfer_with_authorization`) + CEP-2612, via `odra-modules` (feature eip712).
+  Mirrors Odra's official gasless CEP-18; metadata aligned with `.env`
+  (x402USD / x402 / 2 decimals). Host tests added.
+- `scripts/build-wasm.ps1`: builds every contract to wasm via `ODRA_MODULE=<name>
+  cargo build` (Windows-safe; bypasses cargo-odra's Unix-`cp` post-step, invokes
+  cargo through `cmd /c` so PS 5.1 doesn't treat cargo stderr as fatal). Both
+  SignalOracle.wasm (310 KB) + X402Token.wasm (395 KB) build clean.
+- `scripts/deploy-x402-token.ts`: deploys the token, writes `X402_ASSET_PACKAGE_HASH`,
+  funds the consumer so it can pay the paywall on-chain (resolves BLOCKER B4 in code).
+- Added unit tests for the reputation-weighted decision (5/5 pass) —
+  `npm run test:agent`. npm scripts now use `powershell` (no `pwsh`/PS7 on host).
+
 ## Assumptions
 - A1: Buildathon participants can obtain a CSPR.cloud access token (free tier) that
   authorizes the hosted facilitator + hosted RPC + MCP. Documented in DEPLOYMENT.md.

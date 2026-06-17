@@ -91,6 +91,7 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 | **x402 paywall server** | `shared/src/x402-paywall-middleware.ts`, `oracle-agent/src/serve.ts` |
 | **x402 paying client** | `shared/src/x402-payment-client.ts` |
 | **x402 Facilitator client** (verify/settle) | `shared/src/facilitator-client.ts` |
+| **x402 payment token** (CEP-18 + CEP-3009 `transfer_with_authorization` + CEP-2612) | `contracts/src/x402_token.rs` (Odra `odra-modules`) |
 | **EIP-712 typed-data signing** | `shared/src/eip712-casper.ts` (official `@casper-ecosystem/casper-eip-712`) |
 | **MCP client** (discovery + CSPR.trade) | `defi-agent/src/mcp-client.ts`, `defi-agent/src/cspr-trade-executor.ts` |
 | **Reputation-weighted decision** (novel mechanic) | `defi-agent/src/reputation-weighted-action.ts` |
@@ -118,18 +119,25 @@ npm run init-env          # writes .env with the generated public keys
 # 2. Paste the 3 human secrets into .env (see "Secrets" below) and FUND both
 #    accounts at https://testnet.cspr.live/tools/faucet
 
-# 3. Build + test the contract, then deploy to testnet
-cd contracts && cargo test && cargo odra build && cd ..
-npm run deploy:sdk        # installs the wasm, writes SIGNAL_ORACLE_PACKAGE_HASH
+# 3. Build + test the contracts, then build the deployable wasm
+cd contracts && cargo test && cd ..
+npm run build:wasm        # SignalOracle.wasm + X402Token.wasm (Windows-safe)
 
-# 4. Seed reputation history (real on-chain publish+resolve), publish a live signal
+# 4. Deploy to testnet
+npm run deploy:sdk         # SignalOracle → writes SIGNAL_ORACLE_PACKAGE_HASH
+npm run deploy:x402-token  # X402Token (CEP-18+3009+2612) → X402_ASSET_PACKAGE_HASH
+                           # + funds the consumer so it can pay the paywall on-chain
+
+# 5. Seed reputation history (real on-chain publish+resolve), publish a live signal
 npm run seed
 npm run oracle:publish
 
-# 5. Run the oracle server + the full autonomous loop
+# 6. Run the oracle server + the full autonomous loop
 npm run oracle:serve      # terminal A
 npm run agent:loop        # terminal B
 ```
+
+> On Linux/macOS you can use `cargo odra build` instead of `npm run build:wasm`.
 
 No-funds sanity check (validates the full x402 sign⇄verify round-trip locally):
 
