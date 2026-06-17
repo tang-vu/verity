@@ -160,7 +160,7 @@ Set these in `.env` (see `.env.example`):
 
 1. **`DEEPSEEK_API_KEY`** — https://platform.deepseek.com/api_keys (any OpenAI-compatible LLM works)
 2. **A funded testnet account** — `npm run keygen` generates the keypairs and prints the public keys; fund both at https://testnet.cspr.live/tools/faucet.
-3. **`CSPR_CLOUD_ACCESS_TOKEN`** — https://console.cspr.cloud (authorizes the hosted x402 facilitator + RPC + MCP).
+3. **`CSPR_CLOUD_ACCESS_TOKEN`** — sign up at https://console.cspr.build/sign-up and create an access token (authorizes the hosted x402 facilitator + RPC + MCP). Optional: skip it and point `CASPER_NODE_RPC_URL` at a public testnet peer; x402 then runs in verified-deferred mode.
 
 The contract, agents, and local x402 round-trip all run/test without these; they're required only for real testnet transactions.
 
