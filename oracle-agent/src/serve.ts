@@ -17,6 +17,7 @@ import {
   createPaywall,
   directionLabel,
   loadConfig,
+  loadLoopLog,
   loadSignals,
   log,
   latestSignal,
@@ -50,6 +51,11 @@ app.get("/reputation", (_req, res) => {
       ? `${config.explorerBase}/contract/${config.signalOracleContractHash}`
       : null,
   });
+});
+
+app.get("/loop-log", (_req, res) => {
+  const entries = loadLoopLog().slice().reverse();
+  res.json({ count: entries.length, entries });
 });
 
 // --- Paywalled endpoint ------------------------------------------------------

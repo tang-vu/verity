@@ -11,6 +11,7 @@
  * Run: `npm run agent:loop`.
  */
 import {
+  appendLoopLog,
   bpsToPercent,
   directionLabel,
   loadConfig,
@@ -90,6 +91,27 @@ export async function runLoop(): Promise<void> {
   } else {
     log("warn", `No swap executed (${swap.via}): ${swap.detail}`);
   }
+
+  // Persist the run so the dashboard can render the live loop with tx links.
+  appendLoopLog({
+    at: Date.now(),
+    signalId: signal.id,
+    directionLabel: directionLabel(signal.direction),
+    confidence: signal.confidence,
+    reputationBps: reputation.accuracyBps,
+    decisionSide: decision.side,
+    decisionNotional: decision.notional,
+    decisionRationale: decision.rationale,
+    paid,
+    settlementTx: typeof settlement === "object" && settlement
+      ? (settlement as { transaction?: string }).transaction
+      : undefined,
+    settlementExplorerUrl: undefined,
+    swapVia: swap.via,
+    swapTx: swap.txHash,
+    swapExplorerUrl: swap.explorerUrl,
+    swapDetail: swap.detail,
+  });
 
   section("loop complete");
   log("ok", "Autonomous loop closed: signal → x402 payment → reputation-weighted action.");

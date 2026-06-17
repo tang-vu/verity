@@ -4,6 +4,7 @@ export * from "./env-config.js";
 export * from "./logging.js";
 export * from "./signal-types.js";
 export * from "./signal-store.js";
+export * from "./loop-log-store.js";
 export * from "./casper-client.js";
 export * from "./oracle-contract-client.js";
 export * from "./eip712-casper.js";
