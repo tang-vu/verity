@@ -31,6 +31,29 @@ Casper's AI toolkit is built so autonomous agents can transact with cryptographi
 | **Typed-data signing (EIP-712)** | Payments are EIP-712 `transfer_with_authorization` over a CEP-18 token — gasless, verifiable authorization. |
 | **Reputation = on-chain collateral** | The consumer's trust (and capital) is a pure function of the oracle's verifiable history. |
 
+## Buildathon alignment (Casper Agentic Buildathon 2026)
+
+verity is built directly against the organizers' **Example Build Direction #2 — "RWA Oracle Agents with Verifiable On-Chain Identity"**:
+
+> *"Create an agent that scrapes off-chain data, runs a risk assessment model, and posts verified data on-chain via Casper's native x402 implementation. The agent maintains a verifiable on-chain identity and reputation score based on historical accuracy, creating a trust-minimized RWA oracle."*
+
+verity implements exactly this — off-chain data → LLM assessment → on-chain post → x402-paid access → an on-chain reputation score updated by historical accuracy — and adds the consumer side that **acts** on that reputation.
+
+How it maps to the Final-Round judging criteria:
+
+| Judging criterion | Where verity delivers |
+|---|---|
+| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve). 14/14 tests. |
+| **Use of AI / agentic systems** | Two autonomous agents: an LLM oracle and a DeFi consumer that pays, reasons over reputation, and trades with no human in the loop. |
+| **Innovation & originality** | Reputation-as-collateral: the consumer's capital-at-risk scales with the oracle's *verifiable* on-chain accuracy. |
+| **Real-world applicability (DeFi/RWA)** | A trust-minimized data-feed market; the same rails extend to RWA valuations (see roadmap). |
+| **Technical execution** | Rust+Odra contract, TS agents, official x402 + MCP + EIP-712 toolkit pieces, tested end-to-end. |
+| **User experience & design** | Live Next.js dashboard: reputation chart, signal history, agent-loop log — every number links to a real cspr.live tx. |
+| **Long-term launch plans** | x402 "verifiable data products" family with a staged roadmap (below). |
+| **Long-term impact** | Open SDK so any agent can publish/consume reputation-staked feeds — a self-pricing data economy on Casper. |
+
+**Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ⏳ demo video (`docs/DEMO_SCRIPT.md`). Community voting runs via **CSPR.fans**.
+
 ## Architecture
 
 ```
@@ -149,6 +172,11 @@ verity is the first member of an **x402 "verifiable data products" family** — 
   3. **Q4:** RWA feeds (tokenized treasury/commodity valuations) with the same reputation collateral; mainnet x402 settlement.
   4. **2027:** open SDK so any agent can publish a reputation-staked feed and any agent can consume it — a self-pricing data economy.
 - **Moat:** reputation is non-transferable and slow to build, so honest long-lived oracles accrue durable, on-chain pricing power.
+- **Socials & presence (in place for launch):**
+  - X / Twitter: `@verity_oracle` *(handle to be confirmed)*
+  - GitHub: https://github.com/tang-vu/verity
+  - Demo video: see `docs/DEMO_SCRIPT.md`
+  - Community: Casper Discord / Telegram (CSPR.fans for buildathon voting)
 
 ## License
 

@@ -26,6 +26,17 @@ an EMA-style update so recent accuracy dominates. Stored per-oracle in the contr
 **Signal domain.** Crypto price direction (default subject: CSPR/USD via CoinGecko —
 free, no key). Horizon configurable. Real data point, real LLM call, real on-chain write.
 
+## 2026-06-18 — Buildathon docs/links verified
+
+Checked official buildathon page + toolkit links (all live):
+- verity matches **Example Build Direction #2** (RWA Oracle Agents w/ verifiable
+  on-chain identity + reputation by historical accuracy) almost verbatim → made
+  explicit in README "Buildathon alignment" section + mapped all 8 judging criteria.
+- $100k of the $150k pool is **x402 ecosystem credits** → x402 centrality confirmed.
+- Submission needs: testnet prototype w/ on-chain tx ✅, OSS repo+README ✅, demo video ⏳.
+- Community voting runs via **CSPR.fans** (Telegram mini-app, top-3 → finals).
+- Real deadline 2026-06-30 (eval Jul 1-5). Added socials placeholder to launch plan.
+
 ## Assumptions
 - A1: Buildathon participants can obtain a CSPR.cloud access token (free tier) that
   authorizes the hosted facilitator + hosted RPC + MCP. Documented in DEPLOYMENT.md.
