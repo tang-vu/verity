@@ -44,12 +44,11 @@ app.get("/signals", (_req, res) => {
 
 app.get("/reputation", (_req, res) => {
   const signals = loadSignals();
+  const pkg = config.signalOraclePackageHash ?? config.signalOracleContractHash;
   res.json({
     reputation: computeReputation(signals),
-    contract: config.signalOracleContractHash ?? null,
-    explorer: config.signalOracleContractHash
-      ? `${config.explorerBase}/contract/${config.signalOracleContractHash}`
-      : null,
+    contract: pkg ?? null,
+    explorer: pkg ? `${config.explorerBase}/contract-package/${pkg}` : null,
   });
 });
 
