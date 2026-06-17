@@ -40,10 +40,13 @@ async function main(): Promise<void> {
   const rpc = makeRpcClient(config);
 
   // Odra install args: cfg flags + (no constructor args; init() takes none).
+  // Odra's deployer passes all four cfg args (see odra-core host.rs); a missing
+  // odra_cfg_is_upgrade triggers on-chain "MissingArg" (error 64658).
   const args = Args.fromMap({
     odra_cfg_package_hash_key_name: CLValue.newCLString(PACKAGE_KEY_NAME),
     odra_cfg_allow_key_override: CLValue.newCLValueBool(false),
     odra_cfg_is_upgradable: CLValue.newCLValueBool(false),
+    odra_cfg_is_upgrade: CLValue.newCLValueBool(false),
   });
 
   const transaction = new SessionBuilder()
@@ -78,7 +81,8 @@ async function main(): Promise<void> {
   let packageHash: string | undefined;
   try {
     const entity = await rpc.getLatestEntity(EntityIdentifier.fromPublicKey(signer.publicKey));
-    const namedKeys = entity.entity.addressableEntity?.namedKeys ?? [];
+    const namedKeys =
+      entity.entity.addressableEntity?.namedKeys ?? entity.entity.legacyAccount?.namedKeys ?? [];
     const nk = namedKeys.find((k) => k.name === PACKAGE_KEY_NAME);
     if (nk) {
       packageHash = nk.key

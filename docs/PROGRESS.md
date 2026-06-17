@@ -61,6 +61,27 @@ Checked official buildathon page + toolkit links (all live):
 - **Verified live:** real CoinGecko CSPR snapshot → DeepSeek → valid strict-JSON
   signal (zod-validated). End-to-end LLM path works with the user's key, no chain needed.
 
+## 2026-06-18 — LIVE on testnet (SignalOracle + reputation + LLM signal)
+
+Real on-chain deployment achieved (all hashes in DEPLOYMENT.md):
+- SignalOracle deployed (`e6a502b9…`), 218 KB MVP wasm. Builder-Merit-qualifying.
+- Reputation seeded with 8 real txs (4 publish + 4 resolve) → 75% (3/4 correct).
+- Live LLM signal #0 published on-chain: real CoinGecko CSPR data → DeepSeek
+  (FLAT @ 55%, calibrated) → tx `d1fa67bc…`. Execution verified success.
+
+Debugging chain (each fixed + verified):
+1. **bulk-memory**: nightly wasm rejected by Casper node. Fixed via wasm-opt
+   `--llvm-memory-copy-fill-lowering` (lower to MVP); validated offline by grep WAT.
+2. **MissingArg (64658)**: Odra deploy needs all 4 cfg args incl `odra_cfg_is_upgrade=false`.
+3. **named keys empty**: producer is a legacy account → keys under `legacyAccount.namedKeys`.
+4. **CWD .env / key paths**: `npm run --workspace` runs from the workspace dir; env-config
+   now loads `.env` + resolves key paths via repo root (repo-root.ts).
+5. **callContract** now checks `executionResult.errorMessage` (reverts no longer pass silently).
+
+Cost note: 3 early deploys failed on the bulk-memory bug (~850 CSPR burned before the
+offline-validate gate was added). X402Token deploy pending (~600 CSPR gas; out-of-gas at 250).
+x402 runs verified-deferred meanwhile (smoke-tested).
+
 ## Assumptions
 - A1: Buildathon participants can obtain a CSPR.cloud access token (free tier) that
   authorizes the hosted facilitator + hosted RPC + MCP. Documented in DEPLOYMENT.md.

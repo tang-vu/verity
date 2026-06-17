@@ -68,6 +68,12 @@ export async function callContract(opts: {
 
   if (opts.wait) {
     await opts.rpc.waitForTransaction(transaction, 120_000);
+    // Confirm the call didn't revert on-chain (a reverted call still "completes").
+    const info = await opts.rpc.getTransactionByTransactionHash(txHash);
+    const execErr = info.executionInfo?.executionResult?.errorMessage;
+    if (execErr) {
+      throw new Error(`Contract call "${opts.entryPoint}" reverted: ${execErr} (tx ${txHash})`);
+    }
   }
 
   return { txHash, explorerUrl: txLink(opts.config.explorerBase, txHash) };

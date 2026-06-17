@@ -7,8 +7,11 @@
  * importing this module never throws when a secret is absent.
  */
 import { config as dotenvConfig } from "dotenv";
+import { fromRepoRoot } from "./repo-root.js";
 
-dotenvConfig();
+// Load .env from the repo root, not process.cwd(): `npm run --workspace <pkg>`
+// runs with CWD set to the workspace dir, where there is no .env.
+dotenvConfig({ path: fromRepoRoot(".env") });
 
 export interface VerityConfig {
   // LLM (DeepSeek — OpenAI-compatible chat completions)
@@ -65,8 +68,10 @@ export function loadConfig(): VerityConfig {
     chainName: e.CASPER_CHAIN_NAME ?? "casper-test",
     nodeRpcUrl: e.CASPER_NODE_RPC_URL ?? "https://node.testnet.cspr.cloud/rpc",
     explorerBase: e.CASPER_EXPLORER_BASE ?? "https://testnet.cspr.live",
-    producerSecretKeyPath: e.PRODUCER_SECRET_KEY_PATH ?? "./keys/producer_secret_key.pem",
-    consumerSecretKeyPath: e.CONSUMER_SECRET_KEY_PATH ?? "./keys/consumer_secret_key.pem",
+    // Resolve key paths against the repo root so they work regardless of CWD
+    // (npm workspace scripts run from the workspace dir).
+    producerSecretKeyPath: fromRepoRoot(e.PRODUCER_SECRET_KEY_PATH ?? "./keys/producer_secret_key.pem"),
+    consumerSecretKeyPath: fromRepoRoot(e.CONSUMER_SECRET_KEY_PATH ?? "./keys/consumer_secret_key.pem"),
     producerPublicKeyHex: e.PRODUCER_PUBLIC_KEY_HEX,
     consumerPublicKeyHex: e.CONSUMER_PUBLIC_KEY_HEX,
     payeeAddress: e.PRODUCER_ACCOUNT_HASH,

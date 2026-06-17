@@ -31,7 +31,7 @@ import {
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WASM_PATH = resolve(root, "contracts/wasm/X402Token.wasm");
 const PACKAGE_KEY_NAME = "verity_x402_token_package_hash";
-const DEPLOY_PAYMENT_MOTES = 250_000_000_000;
+const DEPLOY_PAYMENT_MOTES = 600_000_000_000; // X402Token (CEP-18+3009+2612) is larger; 250 was out-of-gas
 // Fund the consumer with this many base units (2 decimals → 100,000.00 x402USD).
 const CONSUMER_FUNDING = 10_000_000;
 
@@ -59,6 +59,7 @@ async function main(): Promise<void> {
     odra_cfg_package_hash_key_name: CLValue.newCLString(PACKAGE_KEY_NAME),
     odra_cfg_allow_key_override: CLValue.newCLValueBool(false),
     odra_cfg_is_upgradable: CLValue.newCLValueBool(false),
+    odra_cfg_is_upgrade: CLValue.newCLValueBool(false),
     chain_name: CLValue.newCLString(config.x402Network),
   });
 
@@ -90,7 +91,8 @@ async function main(): Promise<void> {
   let packageHash: string | undefined;
   try {
     const entity = await rpc.getLatestEntity(EntityIdentifier.fromPublicKey(signer.publicKey));
-    const namedKeys = entity.entity.addressableEntity?.namedKeys ?? [];
+    const namedKeys =
+      entity.entity.addressableEntity?.namedKeys ?? entity.entity.legacyAccount?.namedKeys ?? [];
     const nk = namedKeys.find((k) => k.name === PACKAGE_KEY_NAME);
     if (nk) {
       packageHash = nk.key

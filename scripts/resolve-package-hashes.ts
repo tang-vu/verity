@@ -49,7 +49,10 @@ async function main(): Promise<void> {
   const rpc = makeRpcClient(config);
 
   const entity = await rpc.getLatestEntity(EntityIdentifier.fromPublicKey(signer.publicKey));
-  const namedKeys = entity.entity.addressableEntity?.namedKeys ?? [];
+  // Casper 2.0: a not-yet-migrated account exposes named keys under legacyAccount,
+  // a migrated one under addressableEntity.
+  const namedKeys =
+    entity.entity.addressableEntity?.namedKeys ?? entity.entity.legacyAccount?.namedKeys ?? [];
   log("info", `Producer has ${namedKeys.length} named keys:`);
   for (const nk of namedKeys) log("info", `  ${nk.name} = ${nk.key.toString()}`);
 
