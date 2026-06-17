@@ -25,8 +25,13 @@ export async function connectMcp(opts: {
   accessToken?: string;
   timeoutMs?: number;
 }): Promise<McpSession> {
+  // CSPR.cloud MCP servers authenticate via the X-CSPR-Cloud-Api-Key header
+  // (not Authorization). Send both for compatibility across servers.
   const headers: Record<string, string> = {};
-  if (opts.accessToken) headers.Authorization = opts.accessToken;
+  if (opts.accessToken) {
+    headers["X-CSPR-Cloud-Api-Key"] = opts.accessToken;
+    headers.Authorization = opts.accessToken;
+  }
 
   const transport = new StreamableHTTPClientTransport(new URL(opts.url), {
     requestInit: { headers },
