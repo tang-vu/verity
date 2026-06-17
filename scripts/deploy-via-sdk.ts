@@ -27,16 +27,7 @@ import {
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WASM_PATH = resolve(root, "contracts/wasm/SignalOracle.wasm");
 const PACKAGE_KEY_NAME = "verity_signal_oracle_package_hash";
-const DEPLOY_PAYMENT_MOTES = 300_000_000_000; // ~300 CSPR ceiling for install
-
-/** Scan an arbitrary stored-value JSON blob for the installed package hash. */
-function findPackageHash(raw: unknown): string | undefined {
-  const text = JSON.stringify(raw ?? {});
-  const m =
-    text.match(/(?:contract-package-wasm|package-)([0-9a-fA-F]{64})/) ||
-    text.match(/"([0-9a-fA-F]{64})"/);
-  return m?.[1];
-}
+const DEPLOY_PAYMENT_MOTES = 250_000_000_000; // ~250 CSPR ceiling (MVP wasm installs cheaper)
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -73,13 +64,29 @@ async function main(): Promise<void> {
 
   log("info", "Waiting for execution (up to 2 min)...");
   await rpc.waitForTransaction(transaction, 180_000);
-  log("ok", "Install executed.");
+
+  // waitForTransaction only confirms inclusion — check the execution actually
+  // succeeded (a reverted/preprocessing-failed install still "completes").
+  const info = await rpc.getTransactionByTransactionHash(txHash);
+  const execErr = info.executionInfo?.executionResult?.errorMessage;
+  if (execErr) {
+    throw new Error(`Install FAILED on-chain: ${execErr} (tx ${txHash})`);
+  }
+  log("ok", "Install executed successfully.");
 
   // Resolve the package hash from the deployer entity's named keys.
   let packageHash: string | undefined;
   try {
     const entity = await rpc.getLatestEntity(EntityIdentifier.fromPublicKey(signer.publicKey));
-    packageHash = findPackageHash(entity.rawJSON);
+    const namedKeys = entity.entity.addressableEntity?.namedKeys ?? [];
+    const nk = namedKeys.find((k) => k.name === PACKAGE_KEY_NAME);
+    if (nk) {
+      packageHash = nk.key
+        .toString()
+        .replace(/^hash-/, "")
+        .replace(/^package-/, "")
+        .replace(/^contract-package-/, "");
+    }
   } catch (err) {
     log("warn", `Could not auto-read named keys (${err instanceof Error ? err.message : err}).`);
   }

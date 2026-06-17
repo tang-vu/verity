@@ -33,6 +33,7 @@
     "web:build": "npm run build --workspace web"
   },
   "devDependencies": {
+    "binaryen": "^130.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }

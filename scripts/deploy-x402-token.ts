@@ -31,17 +31,9 @@ import {
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WASM_PATH = resolve(root, "contracts/wasm/X402Token.wasm");
 const PACKAGE_KEY_NAME = "verity_x402_token_package_hash";
-const DEPLOY_PAYMENT_MOTES = 300_000_000_000;
+const DEPLOY_PAYMENT_MOTES = 250_000_000_000;
 // Fund the consumer with this many base units (2 decimals → 100,000.00 x402USD).
 const CONSUMER_FUNDING = 10_000_000;
-
-function findPackageHash(raw: unknown): string | undefined {
-  const text = JSON.stringify(raw ?? {});
-  const m =
-    text.match(/(?:contract-package-wasm|package-)([0-9a-fA-F]{64})/) ||
-    text.match(/"([0-9a-fA-F]{64})"/);
-  return m?.[1];
-}
 
 function persistEnv(key: string, value: string): void {
   const envPath = resolve(root, ".env");
@@ -86,13 +78,27 @@ async function main(): Promise<void> {
   log("ok", `Deploy tx: ${txHash}`);
   log("chain", deployLink(config.explorerBase, txHash));
   await rpc.waitForTransaction(tx, 180_000);
-  log("ok", "x402 token installed.");
 
-  // Resolve package hash.
+  const info = await rpc.getTransactionByTransactionHash(txHash);
+  const execErr = info.executionInfo?.executionResult?.errorMessage;
+  if (execErr) {
+    throw new Error(`x402 token install FAILED on-chain: ${execErr} (tx ${txHash})`);
+  }
+  log("ok", "x402 token installed successfully.");
+
+  // Resolve package hash from the deployer entity's named keys.
   let packageHash: string | undefined;
   try {
     const entity = await rpc.getLatestEntity(EntityIdentifier.fromPublicKey(signer.publicKey));
-    packageHash = findPackageHash(entity.rawJSON);
+    const namedKeys = entity.entity.addressableEntity?.namedKeys ?? [];
+    const nk = namedKeys.find((k) => k.name === PACKAGE_KEY_NAME);
+    if (nk) {
+      packageHash = nk.key
+        .toString()
+        .replace(/^hash-/, "")
+        .replace(/^package-/, "")
+        .replace(/^contract-package-/, "");
+    }
   } catch (err) {
     log("warn", `Could not auto-read named keys (${err instanceof Error ? err.message : err}).`);
   }

@@ -35,6 +35,19 @@ foreach ($m in $modules) {
   if (-not (Test-Path $rawWasm)) { throw "expected wasm not found: $rawWasm" }
   $dest = Join-Path $wasmDir $m.Out
   Copy-Item $rawWasm $dest -Force
+
+  # Casper's node only runs MVP WebAssembly. Nightly Rust emits memory.copy/fill
+  # (bulk-memory) and sign-ext ops that LLVM produces regardless of target-feature,
+  # so we must actively LOWER them to MVP equivalents with wasm-opt (binaryen):
+  # enable the features to read the binary, lower them to loops/MVP, then -Oz.
+  cmd /c "npx --no-install wasm-opt --enable-bulk-memory --enable-sign-ext --enable-nontrapping-float-to-int --llvm-memory-copy-fill-lowering --signext-lowering --llvm-nontrapping-fptoint-lowering -Oz `"$dest`" -o `"$dest.opt`" 2>&1"
+  if (($LASTEXITCODE -eq 0) -and (Test-Path "$dest.opt")) {
+    Move-Item "$dest.opt" $dest -Force
+    Write-Host "    lowered to MVP + optimized $($m.Out)" -ForegroundColor DarkGray
+  } else {
+    if (Test-Path "$dest.opt") { Remove-Item "$dest.opt" -Force }
+    Write-Host "    WARNING: wasm-opt unavailable; wasm may contain post-MVP ops the node rejects" -ForegroundColor Yellow
+  }
   $kb = [math]::Round((Get-Item $dest).Length / 1KB, 1)
   Write-Host "    saved $($m.Out) ($kb KB)" -ForegroundColor Green
 }

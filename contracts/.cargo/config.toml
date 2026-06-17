@@ -1,5 +1,13 @@
 # Casper host functions (casper_write, casper_read_value, ...) are declared as
-# plain `extern "C"` imports by casper-contract. wasm-ld must be told to emit
-# undefined symbols as wasm imports rather than erroring.
+# plain `extern "C"` imports by casper-contract → wasm-ld must emit undefined
+# symbols as wasm imports rather than erroring.
+#
+# Casper's wasm runtime (casper-wasm) only accepts MVP WebAssembly. Nightly Rust
+# emits post-MVP features by default (memory.copy/fill = bulk-memory, sign-ext),
+# which the node rejects with "Bulk memory operations are not supported". Disable
+# them so LLVM falls back to MVP-compatible codegen.
 [target.wasm32-unknown-unknown]
-rustflags = ["-C", "link-arg=--allow-undefined"]
+rustflags = [
+  "-C", "link-arg=--allow-undefined",
+  "-C", "target-feature=-bulk-memory,-sign-ext,-multivalue,-reference-types,-nontrapping-fptoint",
+]
