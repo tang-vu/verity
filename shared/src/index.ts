@@ -1,5 +1,6 @@
 /** Barrel export for @verity/shared. */
 export * from "./casper-sdk.js";
+export * from "./repo-root.js";
 export * from "./env-config.js";
 export * from "./logging.js";
 export * from "./signal-types.js";

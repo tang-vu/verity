@@ -12,7 +12,7 @@
  *
  * Run: `npm run demo` (add `-- --offline` to force the no-funds path).
  */
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";
 import {
   computeReputation,
@@ -69,6 +69,12 @@ async function main(): Promise<void> {
   log("info", "Starting oracle x402 server...");
   const server = spawn("npm", ["run", "oracle:serve"], { stdio: "inherit", shell: true });
 
+  // `shell:true` + npm spawns grandchildren; on exit, kill the whole tree so the
+  // server port is reliably released (a bare server.kill() would orphan it).
+  const cleanup = () => killTree(server);
+  process.on("exit", cleanup);
+  process.on("SIGINT", () => { cleanup(); process.exit(130); });
+
   try {
     const healthy = await waitForHealth(config.oracleServerUrl);
     if (!healthy) throw new Error(`oracle server did not become healthy at ${config.oracleServerUrl}`);
@@ -83,7 +89,21 @@ async function main(): Promise<void> {
     log("ok", "Full loop ran: signal → x402 payment → reputation-weighted action.");
     log("info", "Tx hashes + explorer links are printed above and in docs/DEPLOYMENT.md.");
   } finally {
-    server.kill();
+    killTree(server);
+  }
+}
+
+/** Kill a shell-spawned child and its descendants (Windows needs taskkill /T). */
+function killTree(child: ChildProcess): void {
+  if (child.killed || child.pid === undefined) return;
+  try {
+    if (process.platform === "win32") {
+      spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], { stdio: "ignore" });
+    } else {
+      process.kill(-child.pid, "SIGTERM");
+    }
+  } catch {
+    child.kill();
   }
 }
 

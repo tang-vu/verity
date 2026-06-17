@@ -4,7 +4,8 @@
  * Stored alongside the signal store under loop-output/.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname } from "node:path";
+import { fromRepoRoot } from "./repo-root.js";
 
 export interface LoopLogEntry {
   at: number; // ms epoch
@@ -25,7 +26,7 @@ export interface LoopLogEntry {
 }
 
 function logPath(): string {
-  return resolve(process.env.VERITY_LOOPLOG_PATH ?? "./loop-output/loop-log.json");
+  return fromRepoRoot(process.env.VERITY_LOOPLOG_PATH ?? "./loop-output/loop-log.json");
 }
 
 export function loadLoopLog(): LoopLogEntry[] {

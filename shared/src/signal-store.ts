@@ -5,7 +5,8 @@
  * x402 server and dashboard render (every number links to a cspr.live tx).
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname } from "node:path";
+import { fromRepoRoot } from "./repo-root.js";
 import { Direction, Reputation, SignalStatus } from "./signal-types.js";
 
 export interface StoredSignal {
@@ -35,7 +36,7 @@ export interface StoredSignal {
 const DEFAULT_STORE = "./loop-output/signals.json";
 
 function storePath(): string {
-  return resolve(process.env.VERITY_STORE_PATH ?? DEFAULT_STORE);
+  return fromRepoRoot(process.env.VERITY_STORE_PATH ?? DEFAULT_STORE);
 }
 
 export function loadSignals(): StoredSignal[] {
