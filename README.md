@@ -95,14 +95,14 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 | **EIP-712 typed-data signing** | `shared/src/eip712-casper.ts` (official `@casper-ecosystem/casper-eip-712`) |
 | **MCP client** (discovery + CSPR.trade) | `defi-agent/src/mcp-client.ts`, `defi-agent/src/cspr-trade-executor.ts` |
 | **Reputation-weighted decision** (novel mechanic) | `defi-agent/src/reputation-weighted-action.ts` |
-| **LLM signal generation** (Anthropic) | `oracle-agent/src/llm-signal.ts`, `prompts/signal-generation.md` |
+| **LLM signal generation** (DeepSeek, OpenAI-compatible) | `oracle-agent/src/llm-signal.ts`, `prompts/signal-generation.md` |
 | **On-chain writes** (casper-js-sdk v5) | `shared/src/casper-client.ts`, `shared/src/oracle-contract-client.ts` |
 
 ## Tech stack & why
 
 - **Contracts:** Rust + **Odra 2.8.1** (`cargo-odra`, wasm32, `odra_test`). Idiomatic Casper contract layer.
-- **Agents / x402 / MCP / dashboard:** **TypeScript / Node**. The official x402 *facilitator is a hosted CSPR.cloud HTTP service* consumed over the wire regardless of language; the Casper MCP, CSPR.trade MCP, EIP-712, and Anthropic SDKs are all TS-native. (The official Go x402 reference informed the wire protocol; see `docs/PROGRESS.md`.)
-- **LLM:** Anthropic API (`claude-sonnet-4-6` by default), strict-JSON validated signals.
+- **Agents / x402 / MCP / dashboard:** **TypeScript / Node**. The official x402 *facilitator is a hosted CSPR.cloud HTTP service* consumed over the wire regardless of language; the Casper MCP, CSPR.trade MCP, and EIP-712 SDKs are all TS-native. (The official Go x402 reference informed the wire protocol; see `docs/PROGRESS.md`.)
+- **LLM:** DeepSeek API (`deepseek-chat` by default; OpenAI-compatible `/chat/completions`, JSON mode), strict-JSON validated signals. Any OpenAI-compatible endpoint works via `LLM_BASE_URL`/`LLM_MODEL`.
 - **Dashboard:** Next.js, live testnet data + reputation chart + agent-loop log with clickable tx links.
 
 ## Quickstart
@@ -158,7 +158,7 @@ See **`docs/DEMO_SCRIPT.md`** for the 2–3 min video walkthrough.
 
 Set these in `.env` (see `.env.example`):
 
-1. **`ANTHROPIC_API_KEY`** — https://console.anthropic.com/settings/keys
+1. **`DEEPSEEK_API_KEY`** — https://platform.deepseek.com/api_keys (any OpenAI-compatible LLM works)
 2. **A funded testnet account** — `npm run keygen` generates the keypairs and prints the public keys; fund both at https://testnet.cspr.live/tools/faucet.
 3. **`CSPR_CLOUD_ACCESS_TOKEN`** — https://console.cspr.cloud (authorizes the hosted x402 facilitator + RPC + MCP).
 

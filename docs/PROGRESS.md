@@ -9,7 +9,7 @@ dashboard = TypeScript/Node. Rationale:
 - Official `make-software/casper-x402` reference is **Go**, but the x402
   **facilitator is a hosted CSPR.cloud service** (`https://x402-facilitator.cspr.cloud`,
   endpoints `/supported /verify /settle`) consumed over HTTP — language-agnostic.
-- Casper MCP + CSPR.trade MCP + Anthropic SDK are TS-native.
+- Casper MCP + CSPR.trade MCP are TS-native; LLM via OpenAI-compatible HTTP (DeepSeek).
 - Node is the only runtime preinstalled on the build host; Rust installed on demand.
 - Official repo ships a TS/React signing reference (`examples/csprclick-x402`).
 
@@ -52,6 +52,15 @@ Checked official buildathon page + toolkit links (all live):
 - Added unit tests for the reputation-weighted decision (5/5 pass) —
   `npm run test:agent`. npm scripts now use `powershell` (no `pwsh`/PS7 on host).
 
+## 2026-06-18 — LLM switched to DeepSeek
+
+- Oracle LLM now uses **DeepSeek** (OpenAI-compatible `/chat/completions`, model
+  `deepseek-chat`, JSON mode) via plain fetch — no SDK dep (dropped
+  `@anthropic-ai/sdk`). Config: `DEEPSEEK_API_KEY` / `DEEPSEEK_MODEL` /
+  `DEEPSEEK_BASE_URL` (or generic `LLM_*`). env-config exposes `llmApiKey/llmModel/llmBaseUrl`.
+- **Verified live:** real CoinGecko CSPR snapshot → DeepSeek → valid strict-JSON
+  signal (zod-validated). End-to-end LLM path works with the user's key, no chain needed.
+
 ## Assumptions
 - A1: Buildathon participants can obtain a CSPR.cloud access token (free tier) that
   authorizes the hosted facilitator + hosted RPC + MCP. Documented in DEPLOYMENT.md.
@@ -61,7 +70,7 @@ Checked official buildathon page + toolkit links (all live):
   so testnet settlement is effectively sponsored for the resource server/payee.
 
 ## Open human inputs (see §SECRETS / DEPLOYMENT.md)
-- ANTHROPIC_API_KEY
+- DEEPSEEK_API_KEY (provided)
 - Funded testnet account (faucet) for the generated producer + consumer keys
 - CSPR_CLOUD_ACCESS_TOKEN
 

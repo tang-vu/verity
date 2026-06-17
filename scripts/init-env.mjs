@@ -54,7 +54,7 @@ for (const [key, value] of Object.entries(sets)) {
 writeFileSync(envPath, content);
 console.log(".env written with generated public keys.");
 console.log("Still required (paste these in .env):");
-console.log("  ANTHROPIC_API_KEY=<https://console.anthropic.com/settings/keys>");
+console.log("  DEEPSEEK_API_KEY=<https://platform.deepseek.com/api_keys>");
 console.log("  CSPR_CLOUD_ACCESS_TOKEN=<https://console.cspr.cloud>");
 console.log("Then FUND both accounts at https://testnet.cspr.live/tools/faucet:");
 console.log(`  PRODUCER ${producer.publicKeyHex}`);

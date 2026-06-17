@@ -8,7 +8,7 @@ the root cause, and the unblock step.
 **Blocked:** publishing/resolving signals on-chain, x402 on-chain settlement,
 CSPR.trade swap — i.e. anything that writes to `casper-test`.
 **Root cause:** requires secrets only the human can provide (see `.env`):
-`ANTHROPIC_API_KEY`, a **funded** account (faucet), `CSPR_CLOUD_ACCESS_TOKEN`.
+`DEEPSEEK_API_KEY`, a **funded** account (faucet), `CSPR_CLOUD_ACCESS_TOKEN`.
 **Unblock:** `npm run keygen && npm run init-env`, paste the 3 secrets, fund both
 public keys at https://testnet.cspr.live/tools/faucet, then `npm run deploy:sdk`.
 **Floor preserved:** contract is unit-tested (14/14), wasm builds, and the full

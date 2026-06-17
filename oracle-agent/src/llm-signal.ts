@@ -1,9 +1,11 @@
 /**
- * LLM signal generation. Feeds a real market snapshot to Claude and parses a
- * strict-JSON directional signal (direction, calibrated confidence, reasoning).
- * Prompt templates live in /prompts/signal-generation.md (kept in sync here).
+ * LLM signal generation via the DeepSeek API (OpenAI-compatible chat completions).
+ * Feeds a real market snapshot to the model and parses a strict-JSON directional
+ * signal (direction, calibrated confidence, reasoning). Prompt templates live in
+ * /prompts/signal-generation.md (kept in sync here).
+ *
+ * Uses plain fetch against `${baseUrl}/chat/completions` — no SDK dependency.
  */
-import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { Direction, directionFromLabel } from "@verity/shared";
 import type { MarketSnapshot } from "./market-data.js";
@@ -69,26 +71,47 @@ function extractJson(text: string): unknown {
   return JSON.parse(text.slice(start, end + 1));
 }
 
+interface ChatCompletion {
+  choices?: { message?: { content?: string } }[];
+}
+
 export async function generateSignal(opts: {
   apiKey: string;
   model: string;
+  baseUrl: string;
   snapshot: MarketSnapshot;
   horizonHours: number;
 }): Promise<GeneratedSignal> {
-  const client = new Anthropic({ apiKey: opts.apiKey });
-  const response = await client.messages.create({
-    model: opts.model,
-    max_tokens: 600,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildUserPrompt(opts.snapshot, opts.horizonHours) }],
+  const res = await fetch(`${opts.baseUrl.replace(/\/$/, "")}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${opts.apiKey}`,
+    },
+    body: JSON.stringify({
+      model: opts.model,
+      max_tokens: 600,
+      temperature: 0.7,
+      // DeepSeek/OpenAI JSON mode — the prompt already mandates STRICT JSON.
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: buildUserPrompt(opts.snapshot, opts.horizonHours) },
+      ],
+    }),
   });
 
-  const textBlock = response.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
-    throw new Error("Model returned no text content");
+  if (!res.ok) {
+    throw new Error(`DeepSeek API ${res.status}: ${await res.text()}`);
   }
 
-  const parsed = SignalSchema.parse(extractJson(textBlock.text));
+  const json = (await res.json()) as ChatCompletion;
+  const content = json.choices?.[0]?.message?.content;
+  if (!content) {
+    throw new Error("DeepSeek returned no message content");
+  }
+
+  const parsed = SignalSchema.parse(extractJson(content));
   return {
     direction: directionFromLabel(parsed.direction),
     confidence: parsed.confidence,

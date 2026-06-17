@@ -11,9 +11,10 @@ import { config as dotenvConfig } from "dotenv";
 dotenvConfig();
 
 export interface VerityConfig {
-  // LLM
-  anthropicApiKey?: string;
-  anthropicModel: string;
+  // LLM (DeepSeek — OpenAI-compatible chat completions)
+  llmApiKey?: string;
+  llmModel: string;
+  llmBaseUrl: string;
   // Casper network
   chainName: string;
   nodeRpcUrl: string;
@@ -58,8 +59,9 @@ function num(value: string | undefined, fallback: number): number {
 export function loadConfig(): VerityConfig {
   const e = process.env;
   return {
-    anthropicApiKey: e.ANTHROPIC_API_KEY,
-    anthropicModel: e.ANTHROPIC_MODEL ?? "claude-sonnet-4-6",
+    llmApiKey: e.DEEPSEEK_API_KEY ?? e.LLM_API_KEY,
+    llmModel: e.DEEPSEEK_MODEL ?? e.LLM_MODEL ?? "deepseek-chat",
+    llmBaseUrl: e.DEEPSEEK_BASE_URL ?? e.LLM_BASE_URL ?? "https://api.deepseek.com",
     chainName: e.CASPER_CHAIN_NAME ?? "casper-test",
     nodeRpcUrl: e.CASPER_NODE_RPC_URL ?? "https://node.testnet.cspr.cloud/rpc",
     explorerBase: e.CASPER_EXPLORER_BASE ?? "https://testnet.cspr.live",

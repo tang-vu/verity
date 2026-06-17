@@ -36,11 +36,12 @@ export async function publishOnce(): Promise<StoredSignal> {
   log("ok", `Spot ${snapshot.price} ${snapshot.vsCurrency}, 24h ${snapshot.change24hPct.toFixed(2)}%`);
 
   // 2. LLM signal.
-  const apiKey = require_(config, "anthropicApiKey", "Set ANTHROPIC_API_KEY in .env");
-  log("bot", `Generating signal with ${config.anthropicModel}...`);
+  const apiKey = require_(config, "llmApiKey", "Set DEEPSEEK_API_KEY in .env");
+  log("bot", `Generating signal with ${config.llmModel} (${config.llmBaseUrl})...`);
   const signal = await generateSignal({
     apiKey,
-    model: config.anthropicModel,
+    model: config.llmModel,
+    baseUrl: config.llmBaseUrl,
     snapshot,
     horizonHours: DEFAULT_HORIZON_HOURS,
   });

@@ -8,7 +8,7 @@ agent-to-agent loop closing: **signal → x402 payment → reputation-weighted a
 ```bash
 npm install
 npm run keygen && npm run init-env       # generate + register keypairs
-# paste ANTHROPIC_API_KEY + CSPR_CLOUD_ACCESS_TOKEN into .env
+# paste DEEPSEEK_API_KEY + CSPR_CLOUD_ACCESS_TOKEN into .env
 # fund both public keys at https://testnet.cspr.live/tools/faucet
 cd contracts && cargo test && cargo odra build && cd ..
 npm run deploy:sdk                        # deploy contract, writes package hash to .env

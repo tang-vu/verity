@@ -10,7 +10,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.104.2",
     "@verity/shared": "*",
     "casper-js-sdk": "^5.0.7",
     "dotenv": "^16.4.7",
