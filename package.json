@@ -26,6 +26,7 @@
     "seed": "node --import tsx scripts/seed-resolved-signals.ts",
     "smoke:x402": "node --import tsx scripts/smoke-x402-local.ts",
     "test:agent": "node --import tsx --test defi-agent/src/reputation-weighted-action.test.ts",
+    "go-live": "node --import tsx scripts/go-live.ts",
     "demo": "node --import tsx scripts/run-demo.ts",
     "reset": "bash scripts/reset.sh",
     "web:dev": "npm run dev --workspace web",
