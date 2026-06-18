@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8" /><style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:480px;height:480px;overflow:hidden;}
+  .card{width:480px;height:480px;background:radial-gradient(120% 120% at 30% 20%,#16243b 0%,#0a0e14 60%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:ui-sans-serif,"Segoe UI",system-ui,sans-serif;position:relative;}
+  /* reputation ring */
+  .ring{width:150px;height:150px;border-radius:50%;
+    background:conic-gradient(#2ec26b 0% 75%, #243044 75% 100%);
+    display:flex;align-items:center;justify-content:center;margin-bottom:34px;
+    box-shadow:0 0 50px rgba(46,194,107,0.30);}
+  .ring .inner{width:118px;height:118px;border-radius:50%;background:#0a0e14;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;}
+  .ring .pct{font-size:34px;font-weight:800;color:#e6edf3;letter-spacing:-1px;}
+  .ring .lbl{font-size:12px;color:#8a99ad;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+  .name{font-size:72px;font-weight:800;letter-spacing:-3px;color:#e6edf3;line-height:1;}
+  .name .dot{color:#4da3ff;}
+  .sub{margin-top:14px;font-size:16px;color:#8a99ad;letter-spacing:1px;}
+  .chip{margin-top:8px;font-size:13px;color:#4da3ff;border:1px solid #243044;border-radius:999px;padding:4px 14px;}
+</style></head>
+<body>
+  <div class="card">
+    <div class="ring"><div class="inner"><div class="pct">75%</div><div class="lbl">on-chain</div></div></div>
+    <div class="name">verity<span class="dot">.</span></div>
+    <div class="sub">reputation-staked x402 oracle</div>
+    <div class="chip">on Casper</div>
+  </div>
+</body></html>
