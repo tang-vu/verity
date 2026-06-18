@@ -4,6 +4,8 @@
 
 > The machine economy needs machine-verifiable trust. verity makes an oracle's word worth *exactly* its on-chain accuracy — and builds a consumer agent that pays for that word over x402 and sizes its trade by that reputation. No human in the loop.
 
+**🔗 Live dashboard:** https://web-eight-amber-iq6mjhp7bf.vercel.app · **Repo:** https://github.com/tang-vu/verity · **Release + demo video:** [v1.0.0](https://github.com/tang-vu/verity/releases/tag/v1.0.0)
+
 ---
 
 ## The problem
@@ -175,6 +177,7 @@ verity is **live on Casper testnet** — the full loop ran end-to-end with real 
 | **Live LLM signal** (CoinGecko → DeepSeek → on-chain) | [`d1fa67bc…`](https://testnet.cspr.live/transaction/d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6) |
 | **x402 settled on-chain** (facilitator `transfer_with_authorization`) | [`0ee181dc…`](https://testnet.cspr.live/transaction/0ee181dc4b5356dd5ef0fbcdc15a783023144605e361202b869de5246896f99b) |
 | **On-chain reputation** | 75% — 3/4 resolved correct (8 publish/resolve txs) |
+| **Live dashboard** | https://web-eight-amber-iq6mjhp7bf.vercel.app |
 
 **Demo video:** a 63-second walkthrough — intro → real `agent:loop` terminal run → live dashboard, with voiceover + captions. See `loop-output/verity-demo.mp4` (or the submission link).
 

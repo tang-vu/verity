@@ -83,6 +83,7 @@ verity is the first member of an **x402 "verifiable data products" family** — 
 
 ## Links
 
+- **Live dashboard:** https://web-eight-amber-iq6mjhp7bf.vercel.app
 - **GitHub (open-source, MIT):** https://github.com/tang-vu/verity
 - **Release + demo video:** https://github.com/tang-vu/verity/releases/tag/v1.0.0
 - **Full deployment record:** [`docs/DEPLOYMENT.md`](https://github.com/tang-vu/verity/blob/main/docs/DEPLOYMENT.md)
