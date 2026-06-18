@@ -19,14 +19,15 @@ const KEY = process.env.MIMO_API_KEY;
 const BASE = process.env.MIMO_BASE_URL ?? "https://token-plan-sgp.xiaomimimo.com/v1";
 if (!KEY) { console.error("Set MIMO_API_KEY"); process.exit(1); }
 
-// Narration, paced to the ~62s reel(27s)+dashboard(35s) cut.
+// Narration paced to intro(16s) + terminal(17s) + dashboard(35s).
 const LINES = [
   "verity is a reputation-staked x402 signal oracle on Casper.",
-  "An oracle agent turns real market data into an on-chain signal with a confidence score.",
-  "A DeFi agent pays for that signal over x402, settled on-chain by the Casper facilitator.",
-  "It weights its trade by the oracle's on-chain reputation, then swaps through the CSPR.trade agent. No human in the loop.",
-  "This is the live dashboard. Reputation, seventy-five percent, computed from signals resolved on testnet.",
-  "Every signal links to its real transaction on cspr.live, and the loop log shows the agent paying, weighting, and trading.",
+  "An oracle agent turns real market data into an on-chain signal; a DeFi agent pays for it and acts, with no human in the loop.",
+  "Everything lands on-chain: the Odra contract, the LLM signal, and the x402 settlement, all verifiable on cspr dot live.",
+  "Watch the autonomous loop. The agent discovers the oracle over MCP, then pays the x402 fee.",
+  "The Casper facilitator settles the payment on-chain, and the agent reads the oracle's reputation, seventy-five percent.",
+  "It sizes its trade by that reputation, buying five hundred eighteen, then swaps through the CSPR dot trade agent.",
+  "The live dashboard shows the reputation, every signal linked to its real transaction, and the autonomous loop log.",
   "verity. The trust layer for the machine economy, on Casper.",
 ];
 
@@ -48,9 +49,25 @@ async function tts(text, idx) {
   return seg;
 }
 
+function wavDuration(path) {
+  const out = execFileSync("ffprobe", [
+    "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path,
+  ]);
+  return parseFloat(String(out).trim());
+}
+
 console.log("Generating voiceover segments...");
 const segs = [];
-for (let i = 0; i < LINES.length; i++) segs.push(await tts(LINES[i], i));
+const timing = [];
+let cursor = 0;
+for (let i = 0; i < LINES.length; i++) {
+  const seg = await tts(LINES[i], i);
+  segs.push(seg);
+  const dur = wavDuration(seg);
+  timing.push({ text: LINES[i], start: cursor, end: cursor + dur });
+  cursor += dur;
+}
+writeFileSync(resolve(outDir, "voiceover-timing.json"), JSON.stringify(timing, null, 2));
 
 // Concat WAV segments + a short tail of silence between lines for pacing.
 const listFile = resolve(segDir, "list.txt");

@@ -1,0 +1,44 @@
+<!doctype html>
+<!-- Real `npm run agent:loop` output (settled run) rendered as a terminal scene
+     with line-by-line reveal. ~20s timeline driven by CSS animation-delay. -->
+<html lang="en">
+<head><meta charset="utf-8" /><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1280px; height:800px; background:#0a0e14; color:#e6edf3;
+    font-family: ui-sans-serif, system-ui, sans-serif; display:flex; flex-direction:column;
+    justify-content:center; padding:0 80px; }
+  h2 { font-size:26px; color:#8a99ad; text-transform:uppercase; letter-spacing:2px; margin-bottom:20px; }
+  .term { background:#0d1320; border:1px solid #243044; border-radius:14px; padding:30px 36px;
+    font-family: ui-monospace,"SF Mono",Menlo,monospace; font-size:20px; line-height:2.0; }
+  .ln { opacity:0; white-space:nowrap; }
+  .mut{color:#8a99ad;} .ok{color:#2ec26b;} .chain{color:#4da3ff;} .up{color:#2ec26b;} .bot{color:#c7a93b;}
+  .ln:nth-child(1){animation:r .25s 0.4s both;}
+  .ln:nth-child(2){animation:r .25s 1.6s both;}
+  .ln:nth-child(3){animation:r .25s 3.0s both;}
+  .ln:nth-child(4){animation:r .25s 4.6s both;}
+  .ln:nth-child(5){animation:r .25s 6.0s both;}
+  .ln:nth-child(6){animation:r .25s 7.6s both;}
+  .ln:nth-child(7){animation:r .25s 9.0s both;}
+  .ln:nth-child(8){animation:r .25s 10.6s both;}
+  .ln:nth-child(9){animation:r .25s 12.0s both;}
+  .ln:nth-child(10){animation:r .25s 13.6s both;}
+  .ln:nth-child(11){animation:r .25s 15.0s both;}
+  @keyframes r { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:none;} }
+</style></head>
+<body>
+  <h2>The autonomous loop — npm run agent:loop (real testnet run)</h2>
+  <div class="term">
+    <div class="ln"><span class="mut">$ npm run agent:loop</span></div>
+    <div class="ln"><span class="chain">1 ▸</span> discovering oracle via MCP… <span class="ok">✓ Casper MCP — 82 on-chain tools</span></div>
+    <div class="ln"><span class="chain">2 ▸</span> paying x402 fee, reading latest signal…</div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="ok">✓ Signal #4: UP @ 69% (PAID)</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="chain">⛓ x402 settled on-chain</span> <span class="mut">tx 0ee181dc…6f99b</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">oracle reputation: 75.0% (3/4 resolved)</span></div>
+    <div class="ln"><span class="chain">3 ▸</span> weighting action by on-chain reputation…</div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="up">BUY 518 = accuracy 75.0% × confidence 69%</span></div>
+    <div class="ln"><span class="chain">4 ▸</span> executing via CSPR.trade MCP…</div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="ok">✓ swap built — BUY 518 casper-network</span></div>
+    <div class="ln"><span class="ok">✓ loop closed: signal → x402 payment → reputation-weighted action</span></div>
+  </div>
+</body>
+</html>
