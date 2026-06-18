@@ -52,7 +52,7 @@ How it maps to the Final-Round judging criteria:
 | **Long-term launch plans** | x402 "verifiable data products" family with a staged roadmap (below). |
 | **Long-term impact** | Open SDK so any agent can publish/consume reputation-staked feeds — a self-pricing data economy on Casper. |
 
-**Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ⏳ demo video (`docs/DEMO_SCRIPT.md`). Community voting runs via **CSPR.fans**.
+**Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ✅ demo video (63s walkthrough, `loop-output/verity-demo.mp4`). Community voting runs via **CSPR.fans**.
 
 ## Architecture
 
@@ -166,7 +166,17 @@ The contract, agents, and local x402 round-trip all run/test without these; they
 
 ## Live testnet links
 
-Deployed contract + transaction hashes are recorded in **`docs/DEPLOYMENT.md`** with cspr.live links (filled at deploy time).
+verity is **live on Casper testnet** — the full loop ran end-to-end with real transactions. Every hash is verifiable on [testnet.cspr.live](https://testnet.cspr.live); the complete record is in **[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)**.
+
+| What | On-chain proof |
+|---|---|
+| **SignalOracle contract** (Odra) | [`e6a502b9…f79167`](https://testnet.cspr.live/contract-package/e6a502b9c5002c921a6d4612588abcff1157689db2eabbba1ed8b62f51f79167) |
+| **X402Token** (CEP-18 + CEP-3009 + CEP-2612) | [`4373bc32…c128cc`](https://testnet.cspr.live/contract-package/4373bc321abc569b8d336d85bc37e9830a65f86f564cfe97edd32f4125c128cc) |
+| **Live LLM signal** (CoinGecko → DeepSeek → on-chain) | [`d1fa67bc…`](https://testnet.cspr.live/transaction/d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6) |
+| **x402 settled on-chain** (facilitator `transfer_with_authorization`) | [`0ee181dc…`](https://testnet.cspr.live/transaction/0ee181dc4b5356dd5ef0fbcdc15a783023144605e361202b869de5246896f99b) |
+| **On-chain reputation** | 75% — 3/4 resolved correct (8 publish/resolve txs) |
+
+**Demo video:** a 63-second walkthrough — intro → real `agent:loop` terminal run → live dashboard, with voiceover + captions. See `loop-output/verity-demo.mp4` (or the submission link).
 
 ## Long-term launch plan
 
