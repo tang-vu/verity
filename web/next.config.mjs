@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Proxy oracle API calls to the running oracle server (avoids CORS in dev).
-  async rewrites() {
-    const oracle = process.env.ORACLE_SERVER_URL ?? "http://localhost:4021";
-    return [{ source: "/api/oracle/:path*", destination: `${oracle}/:path*` }];
-  },
+  // The dashboard is self-contained: /api/oracle/* routes serve a committed
+  // testnet snapshot, so it runs standalone on Vercel with no backend.
 };
 
 export default nextConfig;

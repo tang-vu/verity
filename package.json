@@ -29,6 +29,7 @@
     "go-live": "node --import tsx scripts/go-live.ts",
     "demo": "node --import tsx scripts/run-demo.ts",
     "reset": "bash scripts/reset.sh",
+    "web:snapshot": "node --import tsx scripts/generate-web-snapshot.ts",
     "web:dev": "npm run dev --workspace web",
     "web:build": "npm run build --workspace web"
   },
