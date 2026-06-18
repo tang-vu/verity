@@ -120,7 +120,10 @@ export function createPaywall(opts: {
     if (opts.config.csprCloudAccessToken && opts.config.x402AssetPackageHash) {
       try {
         const verify = await facilitatorVerify(opts.config, payload, requirements);
-        if (verify.isValid) {
+        if (!verify.isValid) {
+          // eslint-disable-next-line no-console
+          console.log(`[x402] facilitator verify rejected: ${verify.invalidReason} — ${verify.invalidMessage}`);
+        } else {
           const settle = await facilitatorSettle(opts.config, payload, requirements);
           if (settle.success) {
             result = {
@@ -130,10 +133,15 @@ export function createPaywall(opts: {
               payer: settle.payer ?? local.payer,
               mode: "settled",
             };
+          } else {
+            // eslint-disable-next-line no-console
+            console.log(`[x402] facilitator settle failed: ${settle.errorReason} — ${settle.errorMessage}`);
           }
         }
-      } catch {
+      } catch (err) {
         // Facilitator unreachable -> keep the floor: verified-deferred.
+        // eslint-disable-next-line no-console
+        console.log(`[x402] facilitator error: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
 

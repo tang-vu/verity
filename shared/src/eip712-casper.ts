@@ -53,9 +53,11 @@ export interface TypedDataInputs {
   authorization: Authorization;
 }
 
-/** Fresh 32-byte nonce as "0x"-prefixed hex. */
+/** Fresh 32-byte replay nonce as raw 64-char hex (no 0x prefix — the form the
+ *  facilitator's payload validator expects). The `0x` prefix is added only when
+ *  computing the EIP-712 digest (see buildTransferDigest). */
 export function randomNonceHex(): string {
-  return "0x" + Buffer.from(randomBytes(32)).toString("hex");
+  return Buffer.from(randomBytes(32)).toString("hex");
 }
 
 function hex0x(value: string): string {

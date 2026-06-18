@@ -25,14 +25,6 @@ const TARGETS: Record<string, string> = {
   verity_x402_token_package_hash: "X402_ASSET_PACKAGE_HASH",
 };
 
-function stripPrefix(keyStr: string): string {
-  return keyStr
-    .replace(/^hash-/, "")
-    .replace(/^package-/, "")
-    .replace(/^contract-package-wasm/, "")
-    .replace(/^contract-package-/, "");
-}
-
 function persistEnv(key: string, value: string): void {
   const envPath = resolve(root, ".env");
   let content = readFileSync(envPath, "utf8");
@@ -49,21 +41,21 @@ async function main(): Promise<void> {
   const rpc = makeRpcClient(config);
 
   const entity = await rpc.getLatestEntity(EntityIdentifier.fromPublicKey(signer.publicKey));
-  // Casper 2.0: a not-yet-migrated account exposes named keys under legacyAccount,
-  // a migrated one under addressableEntity.
-  const namedKeys =
-    entity.entity.addressableEntity?.namedKeys ?? entity.entity.legacyAccount?.namedKeys ?? [];
-  log("info", `Producer has ${namedKeys.length} named keys:`);
-  for (const nk of namedKeys) log("info", `  ${nk.name} = ${nk.key.toString()}`);
+  // The SDK doesn't reliably map a legacy account's named_keys onto the typed
+  // entity object, so parse the rawJSON directly — it always contains the
+  // {"name":"...","key":"hash-<hex>"} entries.
+  const raw = JSON.stringify(entity.rawJSON ?? entity);
 
   let resolved = 0;
   for (const [nkName, envVar] of Object.entries(TARGETS)) {
-    const nk = namedKeys.find((k) => k.name === nkName);
-    if (!nk) {
+    const m = raw.match(
+      new RegExp(`"name":"${nkName}","key":"(?:hash-|package-|contract-package-)?([0-9a-fA-F]{64})"`)
+    );
+    const hash = m?.[1];
+    if (!hash) {
       log("warn", `named key "${nkName}" not found (deploy that contract first?)`);
       continue;
     }
-    const hash = stripPrefix(nk.key.toString());
     persistEnv(envVar, hash);
     log("ok", `${envVar}=${hash}`);
     resolved++;

@@ -127,7 +127,7 @@ async function main(): Promise<void> {
       packageHash,
       entryPoint: "transfer",
       args: Args.fromMap({
-        recipient: CLValue.newCLKey(recipient),
+        to: CLValue.newCLKey(recipient),
         amount: CLValue.newCLUInt256(CONSUMER_FUNDING),
       }),
       paymentMotes: 4_000_000_000,

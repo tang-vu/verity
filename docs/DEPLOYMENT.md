@@ -1,7 +1,7 @@
 # DEPLOYMENT — Casper testnet (`casper-test`)
 
 Authoritative record of on-chain artifacts. Explorer base: https://testnet.cspr.live
-**Status: SignalOracle live, reputation seeded (75%), live LLM signal published. ✅ Builder-Merit-qualifying.**
+**Status: FULL STACK LIVE — SignalOracle + X402Token deployed, reputation 75%, LLM signal published, x402 settled on-chain, autonomous loop closed. ✅**
 
 ## Accounts (funded ✅)
 
@@ -43,13 +43,28 @@ Authoritative record of on-chain artifacts. Explorer base: https://testnet.cspr.
 
 - Publish tx: https://testnet.cspr.live/transaction/d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6
 
-## x402 payment token (X402Token) ⏳ pending gas
+## x402 payment token (X402Token) ✅ DEPLOYED + settling on-chain
 
 | Field | Value |
 |---|---|
-| Status | Install needs ~500 CSPR gas (340 KB CEP-18+3009+2612); last attempt out-of-gas at 250. |
-| Last attempt tx | `a27f95692bb7d9e6a96927bb7497bd451a0cc2438306a7676c11a2db3460b9fe` (out of gas) |
-| Workaround | Paywall runs in **verified-deferred** mode (EIP-712 signature verified locally; proven by `npm run smoke:x402`). Deploy with `npm run deploy:x402-token` once the producer has ~600 CSPR to flip to on-chain settlement. |
+| Package hash | `4373bc321abc569b8d336d85bc37e9830a65f86f564cfe97edd32f4125c128cc` |
+| Install/deploy tx | `657fb6ded4f8b359be3bd439590861e8671a35daf723396d2d114929c919badc` |
+| Consumer funding tx (x402USD) | `1f22f222524417a923f6f3fdadeb5f9fde4766efeea2b051d78ada92a9af758c` |
+| Contract | `contracts/src/x402_token.rs` (CEP-18 + CEP-3009 + CEP-2612) |
+
+- Contract package: https://testnet.cspr.live/contract-package/4373bc321abc569b8d336d85bc37e9830a65f86f564cfe97edd32f4125c128cc
+
+## x402 PAID READ — settled on-chain ✅ (facilitator submits transfer_with_authorization)
+
+The DeFi agent paid the paywall; the Casper facilitator verified the EIP-712
+authorization and **settled the CEP-18 transfer on-chain** (it pays the gas):
+
+| Field | Value |
+|---|---|
+| Settlement tx | `0ee181dc4b5356dd5ef0fbcdc15a783023144605e361202b869de5246896f99b` |
+| Payer | consumer (`0082ec56…`) |
+
+- Settlement tx: https://testnet.cspr.live/transaction/0ee181dc4b5356dd5ef0fbcdc15a783023144605e361202b869de5246896f99b
 
 ## x402 facilitator + network
 
