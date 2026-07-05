@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 
 const EXPLORER = process.env.NEXT_PUBLIC_EXPLORER_BASE ?? "https://testnet.cspr.live";
-const CSPR_FANS = process.env.NEXT_PUBLIC_CSPR_FANS_URL ?? "https://cspr.fans";
 const GITHUB = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/tang-vu/verity";
 const DEMO = process.env.NEXT_PUBLIC_DEMO_URL ?? "https://youtu.be/wp5KoLqxDU4";
-const TWITTER = process.env.NEXT_PUBLIC_TWITTER_URL ?? "https://x.com/verity_oracle";
+const CONTRACT = `${EXPLORER}/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0`;
 
 type StatusLabel = "PENDING" | "CORRECT" | "WRONG";
 
@@ -137,10 +136,9 @@ export default function Dashboard() {
       </p>
 
       <div className="cta">
-        <a className="btn primary" href={CSPR_FANS} target="_blank" rel="noreferrer">★ Vote on CSPR.fans</a>
+        <a className="btn primary" href={DEMO} target="_blank" rel="noreferrer">▶ Watch the demo</a>
         <a className="btn" href={GITHUB} target="_blank" rel="noreferrer">GitHub</a>
-        <a className="btn" href={DEMO} target="_blank" rel="noreferrer">▶ Demo video</a>
-        <a className="btn" href={TWITTER} target="_blank" rel="noreferrer">Follow @verity_oracle</a>
+        <a className="btn" href={CONTRACT} target="_blank" rel="noreferrer">View contract on cspr.live</a>
       </div>
       <p className="sub" style={{ margin: "0 0 22px" }}>
         Casper Agentic Buildathon 2026 · Build Direction #2 — RWA Oracle Agents with verifiable on-chain reputation.
