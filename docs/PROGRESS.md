@@ -2,6 +2,28 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-05 — LIVE bring-up of v2 (staking) on testnet
+
+Deployed SignalOracle **v2** (`13b217e5…`, staking) and drove the whole staking loop
+on-chain. All real txs in DEPLOYMENT.md. Oracle bonded 2000 x402USD; a wrong resolve
+**slashed 400 x402USD on-chain to the consumer treasury**; reputation 75%; live
+CSPR/USD (`d9fb786f`) + PAXG-gold RWA (`a11dcebb`) LLM signals published.
+
+Two blockers hit + fixed during bring-up:
+1. **Redeploy over a non-upgradable v1** → `CannotOverrideKeys` (user error 64641).
+   Fix: `deploy-via-sdk` now sets `odra_cfg_allow_key_override=true`.
+2. **`-32016 Invalid transaction`** on most calls — real reason (via raw RPC):
+   *"timestamp that has not yet occurred"*. Build host clock ran ~5s ahead of the node,
+   which has near-zero future tolerance; the first call slipped through, later ones
+   didn't. Fix: `callContract` stamps txs `now-60s` (within TTL). This ALSO unblocked
+   the cross-contract CLKey calls (`approve`/`stake`) — earlier CLKey "rejections" were
+   this skew, not a Key-encoding problem. Lesson: the contract-package spender Key
+   (`hash-<pkg>`) is fine; Odra normalizes it to `Address::Contract`.
+
+Deploy auto-read of the package hash failed (legacy account exposes 0 named keys via
+the entity API); recovered it from the deploy tx effects (the `contractPackage` write).
+Added `scripts/check-status.ts` (`npm run status`) for balance/hash pre-flight.
+
 ## 2026-07-05 — Staking/slashing + RWA feed + landing/marketing (deadline-extension push)
 
 Buildathon deadline extended to 2026-07-07 → maximize win odds on both advancement

@@ -179,11 +179,14 @@ verity is **live on Casper testnet** — the full loop ran end-to-end with real 
 
 | What | On-chain proof |
 |---|---|
-| **SignalOracle contract** (Odra) | [`e6a502b9…f79167`](https://testnet.cspr.live/contract-package/e6a502b9c5002c921a6d4612588abcff1157689db2eabbba1ed8b62f51f79167) |
+| **SignalOracle v2** (Odra, staking) | [`13b217e5…14ffd0`](https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0) |
 | **X402Token** (CEP-18 + CEP-3009 + CEP-2612) | [`4373bc32…c128cc`](https://testnet.cspr.live/contract-package/4373bc321abc569b8d336d85bc37e9830a65f86f564cfe97edd32f4125c128cc) |
-| **Live LLM signal** (CoinGecko → DeepSeek → on-chain) | [`d1fa67bc…`](https://testnet.cspr.live/transaction/d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6) |
+| **Oracle bonded collateral** (2000 x402USD `stake`) | [`46a5d9b1…`](https://testnet.cspr.live/transaction/46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78) |
+| **On-chain SLASH** (400 x402USD, a wrong call → consumer treasury) | [`4ae1e222…`](https://testnet.cspr.live/transaction/4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11) |
+| **Live LLM signal — CSPR/USD** (CoinGecko → DeepSeek → on-chain) | [`d9fb786f…`](https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f) |
+| **Live LLM signal — PAXG (tokenized gold, RWA)** | [`a11dcebb…`](https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd) |
 | **x402 settled on-chain** (facilitator `transfer_with_authorization`) | [`0ee181dc…`](https://testnet.cspr.live/transaction/0ee181dc4b5356dd5ef0fbcdc15a783023144605e361202b869de5246896f99b) |
-| **On-chain reputation** | 75% — 3/4 resolved correct (8 publish/resolve txs) |
+| **On-chain reputation** | 75% — 3/4 resolved correct on v2 |
 | **Live dashboard** | https://web-eight-amber-iq6mjhp7bf.vercel.app |
 
 **Demo video:** a 63-second walkthrough — intro → real `agent:loop` terminal run → live dashboard, with voiceover + captions. See `loop-output/verity-demo.mp4` (or the submission link).

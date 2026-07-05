@@ -1,27 +1,25 @@
 {
-  "generatedAt": "2026-06-18T01:58:50.552Z",
+  "generatedAt": "2026-07-05T03:10:12.604Z",
   "signals": [
     {
       "id": 0,
       "asset": "casper-network",
       "symbol": "CSPR",
-      "direction": 1,
-      "confidence": 55,
+      "direction": 2,
+      "confidence": 78,
       "horizonHours": 24,
-      "priceAtPublish": 2077,
-      "priceUsdAtPublish": 0.00207693,
-      "reasoning": "Price stable with minimal 24h change (-0.06%), low volume, and tight range (high 0.00214389, low 0.00206702). 7d trend slightly negative but no strong momentum.",
+      "priceAtPublish": 14200,
+      "priceUsdAtPublish": 0.0142,
+      "reasoning": "Seed: accumulation + funding flip; called UP.",
       "keyFactors": [
-        "Near-zero 24h change",
-        "Low volume",
-        "Narrow trading range"
+        "seed"
       ],
-      "publishedAt": 1781725074437,
+      "publishedAt": 1783220000000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
-      "publishTxHash": "d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6",
-      "publishExplorerUrl": "https://testnet.cspr.live/transaction/d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6",
+      "publishTxHash": "1508bba4220465de260fc198d7f1707b2423c3cdc100169f30fba91e15f074d5",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/1508bba4220465de260fc198d7f1707b2423c3cdc100169f30fba91e15f074d5",
       "status": 0,
-      "directionLabel": "FLAT",
+      "directionLabel": "UP",
       "statusLabel": "PENDING"
     },
     {
@@ -37,17 +35,17 @@
       "keyFactors": [
         "seed"
       ],
-      "publishedAt": 1781725180594,
+      "publishedAt": 1783220820719,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
-      "publishTxHash": "ca8125b60e20c579bac3aba3ddfd5baca42f0cc27e5b87d4e5847450b1b1b549",
-      "publishExplorerUrl": "https://testnet.cspr.live/transaction/ca8125b60e20c579bac3aba3ddfd5baca42f0cc27e5b87d4e5847450b1b1b549",
+      "publishTxHash": "9ded64d76af3e59df4d85392098eae68b17a1ec9ccd3178975620dfd79908592",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/9ded64d76af3e59df4d85392098eae68b17a1ec9ccd3178975620dfd79908592",
       "status": 1,
-      "resolvedAt": 1781725180594,
+      "resolvedAt": 1783220820719,
       "priceAtResolve": 15500,
       "priceUsdAtResolve": 0.0155,
       "correct": true,
-      "resolveTxHash": "fa401695431a9a77d694b043db7de0a7be20ddc8ab6caf4a36d42a49e924277d",
-      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/fa401695431a9a77d694b043db7de0a7be20ddc8ab6caf4a36d42a49e924277d",
+      "resolveTxHash": "01b7daffbd0728bc467d5982e8863af06307d8605b8010d80dcf20e6118095d1",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/01b7daffbd0728bc467d5982e8863af06307d8605b8010d80dcf20e6118095d1",
       "directionLabel": "UP",
       "statusLabel": "CORRECT"
     },
@@ -64,17 +62,17 @@
       "keyFactors": [
         "seed"
       ],
-      "publishedAt": 1781725203453,
+      "publishedAt": 1783220836705,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
-      "publishTxHash": "9b4297dd3f4a1d9b8790015233b99262b18c5d9065bdcd46e238d82206a4874a",
-      "publishExplorerUrl": "https://testnet.cspr.live/transaction/9b4297dd3f4a1d9b8790015233b99262b18c5d9065bdcd46e238d82206a4874a",
+      "publishTxHash": "f712b53dba092188f66e420365bbfacea0f454dc1cfe5ed39c3f19247e43b4c5",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/f712b53dba092188f66e420365bbfacea0f454dc1cfe5ed39c3f19247e43b4c5",
       "status": 1,
-      "resolvedAt": 1781725203453,
+      "resolvedAt": 1783220836705,
       "priceAtResolve": 15100,
       "priceUsdAtResolve": 0.0151,
       "correct": true,
-      "resolveTxHash": "48a89a6b05af4af094a677da765b9132fce35480603f13b7b08db465693c70e5",
-      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/48a89a6b05af4af094a677da765b9132fce35480603f13b7b08db465693c70e5",
+      "resolveTxHash": "5286b8cfae8511fd06902a80b08f75d2ba99d86a94f35e410ab18d2c8eee6f61",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/5286b8cfae8511fd06902a80b08f75d2ba99d86a94f35e410ab18d2c8eee6f61",
       "directionLabel": "DOWN",
       "statusLabel": "CORRECT"
     },
@@ -91,17 +89,17 @@
       "keyFactors": [
         "seed"
       ],
-      "publishedAt": 1781725227892,
+      "publishedAt": 1783220852624,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
-      "publishTxHash": "5cba06fed2c70b04732be18a9f1a141e45480ba3364f4c88e4b5995738e4d781",
-      "publishExplorerUrl": "https://testnet.cspr.live/transaction/5cba06fed2c70b04732be18a9f1a141e45480ba3364f4c88e4b5995738e4d781",
+      "publishTxHash": "773547f22e146f90215b47e612aacb223a2bd5becf108a649a7ee2ce98457f85",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/773547f22e146f90215b47e612aacb223a2bd5becf108a649a7ee2ce98457f85",
       "status": 1,
-      "resolvedAt": 1781725227892,
+      "resolvedAt": 1783220852624,
       "priceAtResolve": 16100,
       "priceUsdAtResolve": 0.0161,
       "correct": true,
-      "resolveTxHash": "882e86914350753362f2b9d17d901478145b91d5cd07bea2132184eb32a074b2",
-      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/882e86914350753362f2b9d17d901478145b91d5cd07bea2132184eb32a074b2",
+      "resolveTxHash": "66aac67236ff6b6f2d9b532cdd747f6a8a94786af47ffce3c047755a7edbc340",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/66aac67236ff6b6f2d9b532cdd747f6a8a94786af47ffce3c047755a7edbc340",
       "directionLabel": "UP",
       "statusLabel": "CORRECT"
     },
@@ -118,29 +116,125 @@
       "keyFactors": [
         "seed"
       ],
-      "publishedAt": 1781725251848,
+      "publishedAt": 1783220877012,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
-      "publishTxHash": "b83ac0d423897326b7d8de23425f8e697ff3fdd553db1cc19ad9a5f3efacfb8c",
-      "publishExplorerUrl": "https://testnet.cspr.live/transaction/b83ac0d423897326b7d8de23425f8e697ff3fdd553db1cc19ad9a5f3efacfb8c",
+      "publishTxHash": "3929aac6add28523f87b4ac9e02c9e2f59c6e940937e2256fdf9cc9e6c11aa98",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/3929aac6add28523f87b4ac9e02c9e2f59c6e940937e2256fdf9cc9e6c11aa98",
       "status": 2,
-      "resolvedAt": 1781725251848,
+      "resolvedAt": 1783220877012,
       "priceAtResolve": 14400,
       "priceUsdAtResolve": 0.0144,
       "correct": false,
-      "resolveTxHash": "eb6c26eda218f06018bf73a00ede23706314542b67ed42107b4bf4a3c8f555dd",
-      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/eb6c26eda218f06018bf73a00ede23706314542b67ed42107b4bf4a3c8f555dd",
+      "resolveTxHash": "4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11",
       "directionLabel": "UP",
       "statusLabel": "WRONG"
+    },
+    {
+      "id": 5,
+      "asset": "casper-network",
+      "symbol": "CSPR",
+      "direction": 1,
+      "confidence": 45,
+      "horizonHours": 24,
+      "priceAtPublish": 1988,
+      "priceUsdAtPublish": 0.00198755,
+      "reasoning": "Price near 24h low (0.001979) with low volume (741k) and slight negative momentum (-1.19%). 7d gain (12.9%) suggests possible consolidation. Low liquidity and conflicting signals yield neutral outlook.",
+      "keyFactors": [
+        "Near 24h low",
+        "Low volume",
+        "Mixed short/medium term trends"
+      ],
+      "publishedAt": 1783220900232,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f",
+      "status": 0,
+      "directionLabel": "FLAT",
+      "statusLabel": "PENDING"
+    },
+    {
+      "id": 6,
+      "asset": "pax-gold",
+      "symbol": "PAXG",
+      "direction": 1,
+      "confidence": 65,
+      "horizonHours": 24,
+      "priceAtPublish": 4160790000,
+      "priceUsdAtPublish": 4160.79,
+      "reasoning": "Spot at 4160.79, 24h range tight (4159.16-4167.48), 24h change negligible (+0.02%). Low volatility suggests consolidation. PAXG tracks gold, which is stable short-term. Volume moderate but not indicating breakout.",
+      "keyFactors": [
+        "Tight 24h range",
+        "Negligible 24h change",
+        "Low volatility typical for PAXG",
+        "Moderate volume without breakout"
+      ],
+      "publishedAt": 1783220962605,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd",
+      "status": 0,
+      "directionLabel": "FLAT",
+      "statusLabel": "PENDING"
     }
   ],
   "reputation": {
     "accuracyBps": 7500,
-    "totalSignals": 5,
+    "totalSignals": 7,
     "resolvedSignals": 4,
     "correctSignals": 3
   },
-  "contract": "e6a502b9c5002c921a6d4612588abcff1157689db2eabbba1ed8b62f51f79167",
-  "explorer": "https://testnet.cspr.live/contract-package/e6a502b9c5002c921a6d4612588abcff1157689db2eabbba1ed8b62f51f79167",
+  "stake": {
+    "oracle": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+    "stakeTokenPackageHash": "4373bc321abc569b8d336d85bc37e9830a65f86f564cfe97edd32f4125c128cc",
+    "stakeSymbol": "x402",
+    "decimals": 2,
+    "bondedBaseUnits": 160000,
+    "minStakeBaseUnits": 50000,
+    "slashedBaseUnits": 40000,
+    "treasury": "account-hash-82ec56fef048bec1bec5811f123c1460615ba1514b6b1b886ce3c5b97a15d780",
+    "txs": [
+      {
+        "label": "set_stake_token",
+        "txHash": "cd247c6845ddd9f4ed1fb8bcff05ddba4d51cf6f814974219be13d96f6031cbb",
+        "explorerUrl": "https://testnet.cspr.live/transaction/cd247c6845ddd9f4ed1fb8bcff05ddba4d51cf6f814974219be13d96f6031cbb",
+        "at": 1783220548777
+      },
+      {
+        "label": "set_treasury",
+        "txHash": "cf747c58a8be6fae6d87a449be65ceb27839f02da2597354fe4905d77d0e0236",
+        "explorerUrl": "https://testnet.cspr.live/transaction/cf747c58a8be6fae6d87a449be65ceb27839f02da2597354fe4905d77d0e0236",
+        "at": 1783220557649
+      },
+      {
+        "label": "set_min_stake",
+        "txHash": "2f8acc6666595a7f241c98008f43f3e41b8c330d4af6acbfb224e1e49eac6df5",
+        "explorerUrl": "https://testnet.cspr.live/transaction/2f8acc6666595a7f241c98008f43f3e41b8c330d4af6acbfb224e1e49eac6df5",
+        "at": 1783220564899
+      },
+      {
+        "label": "approve",
+        "txHash": "2fc5a89c7b577a25dba0bb620400ce408489872048605a02af9cf53779232a00",
+        "explorerUrl": "https://testnet.cspr.live/transaction/2fc5a89c7b577a25dba0bb620400ce408489872048605a02af9cf53779232a00",
+        "at": 1783220572838
+      },
+      {
+        "label": "stake",
+        "txHash": "46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78",
+        "explorerUrl": "https://testnet.cspr.live/transaction/46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78",
+        "at": 1783220581369
+      },
+      {
+        "label": "slash",
+        "txHash": "4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11",
+        "explorerUrl": "https://testnet.cspr.live/transaction/4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11",
+        "at": 1783220877011
+      }
+    ],
+    "updatedAt": 1783220877011
+  },
+  "contract": "13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
+  "explorer": "https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "loopLog": [
     {
       "at": 1781741788683,

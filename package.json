@@ -20,6 +20,7 @@
     "deploy:sdk": "node --import tsx scripts/deploy-via-sdk.ts",
     "deploy:x402-token": "node --import tsx scripts/deploy-x402-token.ts",
     "enable:staking": "node --import tsx scripts/enable-staking.ts",
+    "status": "node --import tsx scripts/check-status.ts",
     "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p oracle-agent/tsconfig.json && tsc --noEmit -p defi-agent/tsconfig.json && tsc --noEmit -p scripts/tsconfig.json",
     "oracle:serve": "npm run serve --workspace oracle-agent",
     "oracle:publish": "npm run publish-signal --workspace oracle-agent",

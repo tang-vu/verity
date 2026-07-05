@@ -13,9 +13,16 @@ import {
   KeyAlgorithm,
   PrivateKey,
   RpcClient,
+  Timestamp,
 } from "./casper-sdk.js";
 import type { VerityConfig } from "./env-config.js";
 import { txLink } from "./logging.js";
+
+// The build host clock can run a few seconds ahead of the Casper node, which
+// rejects any transaction whose timestamp "has not yet occurred". Stamp
+// transactions slightly in the past (well within the default TTL) so a small
+// forward clock skew never gets a call rejected at acceptance.
+const CLOCK_SKEW_BUFFER_MS = 60_000;
 
 /** Create an RPC client; attach the CSPR.cloud auth header when using its node. */
 export function makeRpcClient(config: VerityConfig): RpcClient {
@@ -58,6 +65,7 @@ export async function callContract(opts: {
     .entryPoint(opts.entryPoint)
     .runtimeArgs(opts.args)
     .chainName(opts.config.chainName)
+    .timestamp(new Timestamp(new Date(Date.now() - CLOCK_SKEW_BUFFER_MS)))
     .payment(opts.paymentMotes)
     .build();
 

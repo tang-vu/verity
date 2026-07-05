@@ -1,7 +1,10 @@
 # DEPLOYMENT — Casper testnet (`casper-test`)
 
 Authoritative record of on-chain artifacts. Explorer base: https://testnet.cspr.live
-**Status: FULL STACK LIVE — SignalOracle + X402Token deployed, reputation 75%, LLM signal published, x402 settled on-chain, autonomous loop closed. ✅**
+**Status: FULL STACK LIVE (v2 — staking) — SignalOracle v2 with staking/slashing deployed, oracle bonded 2000 x402USD collateral, reputation 75%, a WRONG call SLASHED 400 x402USD on-chain to the consumer treasury, live CSPR/USD + PAXG (RWA) LLM signals published, x402 settled on-chain. ✅**
+
+> v1 (pre-staking) SignalOracle was `e6a502b9…f79167`; superseded by v2 below (same
+> `verity_signal_oracle_package_hash` named key, re-installed with staking).
 
 ## Accounts (funded ✅)
 
@@ -13,35 +16,35 @@ Authoritative record of on-chain artifacts. Explorer base: https://testnet.cspr.
 - Producer: https://testnet.cspr.live/account/016a6a79b53698c0a5205988e4a2d42dc0aea30735f5d41b55e65a2764e72c0cdc
 - Consumer: https://testnet.cspr.live/account/01f06b02c33c1408b7f61758ba39a8f513bf556a390db5b0a71ceabf457520c343
 
-## Contract: SignalOracle ✅ DEPLOYED
+## Contract: SignalOracle v2 (staking) ✅ DEPLOYED
 
 | Field | Value |
 |---|---|
-| Package hash | `e6a502b9c5002c921a6d4612588abcff1157689db2eabbba1ed8b62f51f79167` |
-| Install/deploy tx | `197a3e7fb7d7bbcb57b2ef2d3f5955efc2df0edd1b9044bbc49a6410f2f4e8ab` |
-| WASM | `contracts/wasm/SignalOracle.wasm` (218 KB, MVP-lowered) |
+| Package hash | `13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0` |
+| Install/deploy tx | `58aad317976027848dd7d48ce066650a9792464f27c9b80705e204eb2f08e895` |
+| WASM | `contracts/wasm/SignalOracle.wasm` (253 KB, MVP-lowered) |
 
-- Contract package: https://testnet.cspr.live/contract-package/e6a502b9c5002c921a6d4612588abcff1157689db2eabbba1ed8b62f51f79167
-- Deploy tx: https://testnet.cspr.live/transaction/197a3e7fb7d7bbcb57b2ef2d3f5955efc2df0edd1b9044bbc49a6410f2f4e8ab
+- Contract package: https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0
+- Deploy tx: https://testnet.cspr.live/transaction/58aad317976027848dd7d48ce066650a9792464f27c9b80705e204eb2f08e895
 
-## Seeded reputation history ✅ (real publish+resolve, 3 correct / 1 wrong → 75%)
+## Seeded reputation history ✅ (real publish+resolve on v2, 3 correct / 1 wrong → 75%)
 
 | Signal # | Outcome | Publish tx | Resolve tx |
 |---|---|---|---|
-| 1 | CORRECT | `ca8125b60e20c579bac3aba3ddfd5baca42f0cc27e5b87d4e5847450b1b1b549` | `fa401695431a9a77d694b043db7de0a7be20ddc8ab6caf4a36d42a49e924277d` |
-| 2 | CORRECT | `9b4297dd3f4a1d9b8790015233b99262b18c5d9065bdcd46e238d82206a4874a` | `48a89a6b05af4af094a677da765b9132fce35480603f13b7b08db465693c70e5` |
-| 3 | CORRECT | `5cba06fed2c70b04732be18a9f1a141e45480ba3364f4c88e4b5995738e4d781` | `882e86914350753362f2b9d17d901478145b91d5cd07bea2132184eb32a074b2` |
-| 4 | WRONG | `b83ac0d423897326b7d8de23425f8e697ff3fdd553db1cc19ad9a5f3efacfb8c` | `eb6c26eda218f06018bf73a00ede23706314542b67ed42107b4bf4a3c8f555dd` |
+| 1 | CORRECT | `9ded64d76af3e59df4d85392098eae68b17a1ec9ccd3178975620dfd79908592` | `01b7daffbd0728bc467d5982e8863af06307d8605b8010d80dcf20e6118095d1` |
+| 2 | CORRECT | `f712b53dba092188f66e420365bbfacea0f454dc1cfe5ed39c3f19247e43b4c5` | `5286b8cfae8511fd06902a80b08f75d2ba99d86a94f35e410ab18d2c8eee6f61` |
+| 3 | CORRECT | `773547f22e146f90215b47e612aacb223a2bd5becf108a649a7ee2ce98457f85` | `66aac67236ff6b6f2d9b532cdd747f6a8a94786af47ffce3c047755a7edbc340` |
+| 4 | WRONG (→ slash) | `3929aac6add28523f87b4ac9e02c9e2f59c6e940937e2256fdf9cc9e6c11aa98` | `4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11` |
 
-## Live LLM signal ✅ (real CoinGecko data → DeepSeek → on-chain)
+## Live LLM signals ✅ (real CoinGecko data → DeepSeek → on-chain)
 
-| Field | Value |
-|---|---|
-| Signal id | 0 |
-| Call | FLAT @ 55% (CSPR/USD, 24h horizon) |
-| Publish tx | `d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6` |
+| id | Call | Asset | Publish tx |
+|---|---|---|---|
+| 5 | FLAT @ 45% | CSPR/USD | `d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f` |
+| 6 | FLAT @ 65% | **PAXG (tokenized gold — RWA)** | `a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd` |
 
-- Publish tx: https://testnet.cspr.live/transaction/d1fa67bc38701082915427877d8a26e24df32c49291db92b02fd07a5adb5e3a6
+- CSPR signal: https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f
+- PAXG signal: https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd
 
 ## x402 payment token (X402Token) ✅ DEPLOYED + settling on-chain
 
@@ -74,32 +77,29 @@ authorization and **settled the CEP-18 transfer on-chain** (it pays the gas):
 | CAIP-2 network | `casper:casper-test` |
 | Hosted RPC | `https://node.testnet.cspr.cloud/rpc` (CSPR.cloud token) |
 
-## Staking + slashing (⏳ redeploy pending)
+## Staking + slashing ✅ LIVE (real collateral, real on-chain slash)
 
-The staking-enabled `SignalOracle` is built (`contracts/wasm/SignalOracle.wasm`,
-252 KB, MVP-lowered) and fully host-tested (26 tests). Redeploy it, then bond
-collateral. Run: `npm run deploy:sdk` (new SignalOracle) → `npm run enable:staking`
-→ `npm run seed` (its miss slashes on-chain) → `npm run oracle:publish` +
-`npm run oracle:publish-rwa`. Then `npm run web:snapshot` to refresh the dashboard.
+The oracle bonded **2000.00 x402USD** collateral behind its word; a wrong call
+**slashed 400.00 x402USD (20%) on-chain to the consumer treasury**, leaving 1600.00
+bonded. Bond gate to publish: 500.00 x402USD.
 
-New entry points on `SignalOracle`: `stake(amount)`, `withdraw_stake(amount)`,
-`set_stake_token(token)`, `set_min_stake(amount)`, `set_treasury(treasury)`; views
-`get_stake`, `min_stake`, `slashed_total`, `pending_count_of`, `stake_token`.
-Slash on wrong resolve = 20% of the remaining bond → treasury (set to the consumer).
-
-Fill in after the live run:
-
-| What | On-chain proof |
+| Step | On-chain tx |
 |---|---|
-| SignalOracle **v2** (staking) package hash | `________` |
-| `set_stake_token` tx | `________` |
-| `set_treasury` (→ consumer) tx | `________` |
-| `set_min_stake` tx | `________` |
-| Oracle `approve` (x402USD → oracle pkg) tx | `________` |
-| Oracle `stake` (bond) tx | `________` |
-| **First on-chain slash** (from seed's wrong resolve) | `________` |
-| PAXG (RWA) signal publish tx | `________` |
+| `set_stake_token` (x402USD as collateral) | `cd247c6845ddd9f4ed1fb8bcff05ddba4d51cf6f814974219be13d96f6031cbb` |
+| `set_treasury` (→ consumer `0082ec56…`) | `cf747c58a8be6fae6d87a449be65ceb27839f02da2597354fe4905d77d0e0236` |
+| `set_min_stake` (500 x402USD gate) | `2f8acc6666595a7f241c98008f43f3e41b8c330d4af6acbfb224e1e49eac6df5` |
+| Oracle `approve` (x402USD → oracle pkg) | `2fc5a89c7b577a25dba0bb620400ce408489872048605a02af9cf53779232a00` |
+| Oracle `stake` (bond 2000 x402USD) | `46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78` |
+| **On-chain slash** (400 x402USD, from signal #4's wrong resolve) | `4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11` |
 
-> Verify-live: the `approve` spender is a *contract* (the SignalOracle package). The
-> client builds the spender Key as `hash-<packageHash>`; if the token rejects it,
-> try the package/entity key form. This is the one thing not testable without funds.
+Entry points on `SignalOracle` v2: `stake(amount)`, `withdraw_stake(amount)`,
+`set_stake_token(token)`, `set_min_stake(amount)`, `set_treasury(treasury)`; views
+`get_stake`, `min_stake`, `slashed_total`, `pending_count_of`, `stake_token`. Slash on
+wrong resolve = 20% of the remaining bond → treasury.
+
+> Node quirk resolved during bring-up: the CSPR.cloud node rejects any transaction
+> whose timestamp "has not yet occurred". The build host clock ran ~5s ahead, so calls
+> intermittently failed with `-32016`. `callContract` now stamps transactions 60s in the
+> past (well within TTL), which fixed every call — including the cross-contract CLKey
+> ones (`approve`/`stake`). Redeploys also pass `odra_cfg_allow_key_override=true` so a
+> non-upgradable prior version can be replaced under the same named key.

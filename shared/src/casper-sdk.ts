@@ -23,6 +23,7 @@ export const {
   KeyAlgorithm,
   EntityIdentifier,
   Key,
+  Timestamp,
 } = sdk;
 
 // Re-export the class types so they can be used in type positions too.
