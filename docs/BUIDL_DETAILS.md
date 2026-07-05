@@ -71,7 +71,7 @@ A poor or unproven oracle literally *cannot move much capital*; an oracle below 
 
 ## Demo video
 
-A 63-second walkthrough — the autonomous `agent:loop` running live, then the dashboard with on-chain reputation, signals, and the loop log. *(Embed your YouTube link here.)*
+A ~77-second walkthrough — on-chain proof (SignalOracle v2 with staking, the real on-chain slash, the PAXG/RWA signal), the autonomous `agent:loop` running live (x402 payment + reputation + bonded-collateral gate), then the live dashboard. MiMo TTS voiceover + burned-in captions. *(Embed your YouTube link here.)*
 
 ## Long-term launch plan
 

@@ -1,11 +1,12 @@
 /**
- * Generate the demo voiceover with MiMo TTS (mimo-v2.5-tts). The TTS surface is
- * the chat/completions endpoint: an `assistant` message holds the line to speak,
- * and the WAV comes back as base64 in message.audio.data. Each line is saved as a
- * segment WAV, then concatenated to loop-output/video/voiceover.wav via ffmpeg.
+ * Generate the demo voiceover with MiMo TTS (mimo-v2.5-tts) on the Xiaomi MiMo
+ * platform (api.xiaomimimo.com). TTS is served over chat/completions: a `user`
+ * message carries the voice-style instruction, an `assistant` message carries the
+ * text to speak, and `audio` selects format/voice. The WAV comes back base64 in
+ * choices[0].message.audio.data. Each line → a segment WAV, concatenated to
+ * loop-output/video/voiceover.wav via ffmpeg.
  *
- * Env: MIMO_API_KEY, MIMO_BASE_URL (default Singapore token-plan).
- * Run: node scripts/make-voiceover.mjs
+ * Env: MIMO_API_KEY (required), MIMO_BASE_URL, MIMO_VOICE. Run: node scripts/make-voiceover.mjs
  */
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
@@ -16,19 +17,22 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = resolve(root, "loop-output/video");
 const segDir = resolve(outDir, "vo-seg");
 const KEY = process.env.MIMO_API_KEY;
-const BASE = process.env.MIMO_BASE_URL ?? "https://token-plan-sgp.xiaomimimo.com/v1";
+const BASE = process.env.MIMO_BASE_URL ?? "https://api.xiaomimimo.com/v1";
+const VOICE = process.env.MIMO_VOICE ?? "Chloe";
+const STYLE = "Speak in a calm, confident, professional tech-narrator voice at a measured pace.";
 if (!KEY) { console.error("Set MIMO_API_KEY"); process.exit(1); }
 
-// Narration paced to intro(16s) + terminal(17s) + dashboard(35s).
+// Narration for the v2 story (staking → on-chain slash → RWA), paced to
+// intro(~27s) + terminal(~17s) + dashboard(~35s).
 const LINES = [
-  "verity is a reputation-staked x402 signal oracle on Casper.",
-  "An oracle agent turns real market data into an on-chain signal; a DeFi agent pays for it and acts, with no human in the loop.",
-  "Everything lands on-chain: the Odra contract, the LLM signal, and the x402 settlement, all verifiable on cspr dot live.",
-  "Watch the autonomous loop. The agent discovers the oracle over MCP, then pays the x402 fee.",
-  "The Casper facilitator settles the payment on-chain, and the agent reads the oracle's reputation, seventy-five percent.",
-  "It sizes its trade by that reputation, buying five hundred eighteen, then swaps through the CSPR dot trade agent.",
-  "The live dashboard shows the reputation, every signal linked to its real transaction, and the autonomous loop log.",
-  "verity. The trust layer for the machine economy, on Casper.",
+  "verity is the trust layer for the machine economy, built on Casper.",
+  "Most oracles can be confidently wrong forever and never pay a price. verity fixes that.",
+  "The oracle bonds real collateral behind every call. A wrong call is slashed on-chain, and that capital pays the agents it misled.",
+  "An oracle agent turns real market data, Casper and tokenized gold, a real-world asset, into a calibrated on-chain signal.",
+  "The signal sits behind an x402 paywall. A DeFi agent pays per query, and the Casper facilitator settles it on-chain.",
+  "The agent reads the oracle's on-chain reputation, seventy-five percent, and its bonded collateral, refusing any oracle without real capital at risk.",
+  "Every step is a real transaction on cspr dot live: the contract, the signals, the payment, and the slash.",
+  "verity. Machine-verifiable, collateral-backed trust, with no human in the loop.",
 ];
 
 mkdirSync(segDir, { recursive: true });
@@ -36,8 +40,16 @@ mkdirSync(segDir, { recursive: true });
 async function tts(text, idx) {
   const res = await fetch(`${BASE}/chat/completions`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "mimo-v2.5-tts", messages: [{ role: "assistant", content: text }] }),
+    headers: { "api-key": KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "mimo-v2.5-tts",
+      messages: [
+        { role: "user", content: STYLE },
+        { role: "assistant", content: text },
+      ],
+      audio: { format: "wav", voice: VOICE },
+      stream: false,
+    }),
   });
   if (!res.ok) throw new Error(`TTS ${res.status}: ${await res.text()}`);
   const j = await res.json();

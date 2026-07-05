@@ -55,7 +55,7 @@ How it maps to the Final-Round judging criteria:
 | **Long-term launch plans** | x402 "verifiable data products" family with a staged roadmap (below). |
 | **Long-term impact** | Open SDK so any agent can publish/consume reputation-staked feeds — a self-pricing data economy on Casper. |
 
-**Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ✅ demo video (63s walkthrough, `loop-output/verity-demo.mp4`). Community voting runs via **CSPR.fans**.
+**Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ✅ demo video (~77s walkthrough, `loop-output/verity-demo.mp4`). Community voting runs via **CSPR.fans**.
 
 ## Architecture
 
@@ -189,7 +189,7 @@ verity is **live on Casper testnet** — the full loop ran end-to-end with real 
 | **On-chain reputation** | 75% — 3/4 resolved correct on v2 |
 | **Live dashboard** | https://web-eight-amber-iq6mjhp7bf.vercel.app |
 
-**Demo video:** a 63-second walkthrough — intro → real `agent:loop` terminal run → live dashboard, with voiceover + captions. See `loop-output/verity-demo.mp4` (or the submission link).
+**Demo video:** a ~77-second walkthrough — on-chain proof (staking, the on-chain slash, RWA) → real `agent:loop` terminal run → live dashboard, with MiMo TTS voiceover + captions. See `loop-output/verity-demo.mp4` (or the submission link).
 
 ## Long-term launch plan
 

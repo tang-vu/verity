@@ -12,17 +12,20 @@
  * Run: node scripts/build-demo-video.mjs
  */
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const vdir = resolve(root, "loop-output/video");
 
+// Playwright names webm files with random hashes, so pick the most-recently
+// written one (by mtime) rather than the alphabetically-last, or a rebuild would
+// silently reuse a stale recording.
 const newestWebm = (dir) => {
   const files = readdirSync(dir).filter((f) => f.endsWith(".webm")).map((f) => resolve(dir, f));
   if (!files.length) throw new Error(`no .webm in ${dir}`);
-  return files.sort().at(-1);
+  return files.sort((a, b) => statSync(a).mtimeMs - statSync(b).mtimeMs).at(-1);
 };
 
 const reel = newestWebm(resolve(vdir, "reel"));

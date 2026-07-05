@@ -31,14 +31,14 @@
     <div class="ln"><span class="mut">$ npm run agent:loop</span></div>
     <div class="ln"><span class="chain">1 ▸</span> discovering oracle via MCP… <span class="ok">✓ Casper MCP — 82 on-chain tools</span></div>
     <div class="ln"><span class="chain">2 ▸</span> paying x402 fee, reading latest signal…</div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="ok">✓ Signal #4: UP @ 69% (PAID)</span></div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="chain">⛓ x402 settled on-chain</span> <span class="mut">tx 0ee181dc…6f99b</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="ok">✓ Signal #6: FLAT @ 65% — PAXG tokenized gold (PAID)</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="chain">⛓ x402 settled on-chain</span> <span class="mut">tx 296f5f66…b110f8</span></div>
     <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">oracle reputation: 75.0% (3/4 resolved)</span></div>
-    <div class="ln"><span class="chain">3 ▸</span> weighting action by on-chain reputation…</div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="up">BUY 518 = accuracy 75.0% × confidence 69%</span></div>
-    <div class="ln"><span class="chain">4 ▸</span> executing via CSPR.trade MCP…</div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="ok">✓ swap built — BUY 518 casper-network</span></div>
-    <div class="ln"><span class="ok">✓ loop closed: signal → x402 payment → reputation-weighted action</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="bot">🔒 bonded collateral: 1600 x402 at risk · slashed to date: 400</span></div>
+    <div class="ln"><span class="chain">3 ▸</span> weighting by on-chain reputation + bonded stake…</div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">HOLD — flat signal; only collateralized oracles can move capital</span></div>
+    <div class="ln"><span class="chain">4 ▸</span> executing via CSPR.trade MCP… <span class="ok">✓ no trade on a flat signal</span></div>
+    <div class="ln"><span class="ok">✓ loop closed: signal → x402 payment → reputation + collateral-weighted action</span></div>
   </div>
 </body>
 </html>
