@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const EXPLORER = process.env.NEXT_PUBLIC_EXPLORER_BASE ?? "https://testnet.cspr.live";
 const CSPR_FANS = process.env.NEXT_PUBLIC_CSPR_FANS_URL ?? "https://cspr.fans";
 const GITHUB = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/tang-vu/verity";
-const DEMO = process.env.NEXT_PUBLIC_DEMO_URL ?? "https://github.com/tang-vu/verity/releases/tag/v1.0.0";
+const DEMO = process.env.NEXT_PUBLIC_DEMO_URL ?? "https://youtu.be/wp5KoLqxDU4";
 const TWITTER = process.env.NEXT_PUBLIC_TWITTER_URL ?? "https://x.com/verity_oracle";
 
 type StatusLabel = "PENDING" | "CORRECT" | "WRONG";
