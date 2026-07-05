@@ -73,3 +73,33 @@ authorization and **settled the CEP-18 transfer on-chain** (it pays the gas):
 | Facilitator | `https://x402-facilitator.cspr.cloud` |
 | CAIP-2 network | `casper:casper-test` |
 | Hosted RPC | `https://node.testnet.cspr.cloud/rpc` (CSPR.cloud token) |
+
+## Staking + slashing (⏳ redeploy pending)
+
+The staking-enabled `SignalOracle` is built (`contracts/wasm/SignalOracle.wasm`,
+252 KB, MVP-lowered) and fully host-tested (26 tests). Redeploy it, then bond
+collateral. Run: `npm run deploy:sdk` (new SignalOracle) → `npm run enable:staking`
+→ `npm run seed` (its miss slashes on-chain) → `npm run oracle:publish` +
+`npm run oracle:publish-rwa`. Then `npm run web:snapshot` to refresh the dashboard.
+
+New entry points on `SignalOracle`: `stake(amount)`, `withdraw_stake(amount)`,
+`set_stake_token(token)`, `set_min_stake(amount)`, `set_treasury(treasury)`; views
+`get_stake`, `min_stake`, `slashed_total`, `pending_count_of`, `stake_token`.
+Slash on wrong resolve = 20% of the remaining bond → treasury (set to the consumer).
+
+Fill in after the live run:
+
+| What | On-chain proof |
+|---|---|
+| SignalOracle **v2** (staking) package hash | `________` |
+| `set_stake_token` tx | `________` |
+| `set_treasury` (→ consumer) tx | `________` |
+| `set_min_stake` tx | `________` |
+| Oracle `approve` (x402USD → oracle pkg) tx | `________` |
+| Oracle `stake` (bond) tx | `________` |
+| **First on-chain slash** (from seed's wrong resolve) | `________` |
+| PAXG (RWA) signal publish tx | `________` |
+
+> Verify-live: the `approve` spender is a *contract* (the SignalOracle package). The
+> client builds the spender Key as `hash-<packageHash>`; if the token rejects it,
+> try the package/entity key form. This is the one thing not testable without funds.

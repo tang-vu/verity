@@ -3,12 +3,15 @@
 //! Exercises the full signal lifecycle and the on-chain reputation update that
 //! makes the oracle's word verifiable: publish -> resolve -> accuracy moves.
 
+use odra::casper_types::U256;
 use odra::host::{Deployer, HostRef, NoArgs};
+use odra::prelude::Addressable;
 use verity_signal_oracle::reputation_math::NEUTRAL_BPS;
 use verity_signal_oracle::signal_oracle::SignalOracle;
 use verity_signal_oracle::types::{
     OracleError, DIR_DOWN, DIR_UP, STATUS_CORRECT, STATUS_PENDING, STATUS_WRONG,
 };
+use verity_signal_oracle::x402_token::{X402Token, X402TokenHostRef, X402TokenInitArgs};
 
 fn deploy() -> (odra::host::HostEnv, SignalOracleHostRef) {
     let env = odra_test::env();
@@ -202,4 +205,148 @@ fn double_resolution_is_rejected() {
     oracle.resolve_signal(id, 1_100_000);
     let err = oracle.try_resolve_signal(id, 1_200_000).unwrap_err();
     assert_eq!(err, OracleError::AlreadyResolved.into());
+}
+
+// --- Staking + slashing (collateral behind the oracle's word) ----------------
+//
+// The stake asset is the x402USD CEP-18 token: the same asset consumers pay in,
+// so an oracle bonds real, slashable capital against its accuracy. These tests
+// deploy both contracts and exercise the full cross-contract collateral flow.
+
+/// Deploy the token + oracle, wire the token as collateral. Account 0 (the
+/// deployer) owns both and holds the token's full initial supply.
+fn deploy_with_stake() -> (odra::host::HostEnv, SignalOracleHostRef, X402TokenHostRef) {
+    let env = odra_test::env();
+    let token = X402Token::deploy(
+        &env,
+        X402TokenInitArgs { chain_name: "casper:casper-test".to_string() },
+    );
+    let mut oracle = SignalOracle::deploy(&env, NoArgs);
+    oracle.set_stake_token(token.address());
+    (env, oracle, token)
+}
+
+#[test]
+fn publish_requires_min_stake_when_set() {
+    let (env, mut oracle, mut token) = deploy_with_stake();
+    let owner = env.get_account(0);
+    oracle.set_min_stake(U256::from(100u64));
+
+    // Authorized but unbonded → publish is rejected.
+    let err = oracle
+        .try_publish_signal(
+            "casper-network".to_string(),
+            DIR_UP,
+            60,
+            24,
+            1_000_000,
+            "x".to_string(),
+        )
+        .unwrap_err();
+    assert_eq!(err, OracleError::InsufficientStake.into());
+
+    // Approve the oracle contract, bond collateral, then publishing works.
+    token.approve(&oracle.address(), &U256::from(1_000u64));
+    oracle.stake(U256::from(500u64));
+    assert_eq!(oracle.get_stake(owner), U256::from(500u64));
+
+    let id = oracle.publish_signal(
+        "casper-network".to_string(),
+        DIR_UP,
+        60,
+        24,
+        1_000_000,
+        "bonded".to_string(),
+    );
+    assert_eq!(id, 0);
+}
+
+#[test]
+fn wrong_resolution_slashes_bond_to_treasury() {
+    let (env, mut oracle, mut token) = deploy_with_stake();
+    let owner = env.get_account(0);
+    let treasury = env.get_account(1);
+    oracle.set_treasury(treasury);
+    oracle.set_min_stake(U256::from(100u64));
+    token.approve(&oracle.address(), &U256::from(1_000u64));
+    oracle.stake(U256::from(500u64));
+
+    let treasury_before = token.balance_of(&treasury);
+    let id = oracle.publish_signal(
+        "casper-network".to_string(),
+        DIR_DOWN,
+        60,
+        24,
+        1_000_000,
+        "down".to_string(),
+    );
+    // Price rose → DOWN wrong → slash 20% of 500 = 100.
+    oracle.resolve_signal(id, 1_050_000);
+
+    assert_eq!(oracle.get_stake(owner), U256::from(400u64));
+    assert_eq!(oracle.slashed_total(), U256::from(100u64));
+    assert_eq!(token.balance_of(&treasury), treasury_before + U256::from(100u64));
+}
+
+#[test]
+fn correct_resolution_keeps_bond_intact() {
+    let (env, mut oracle, mut token) = deploy_with_stake();
+    let owner = env.get_account(0);
+    oracle.set_min_stake(U256::from(100u64));
+    token.approve(&oracle.address(), &U256::from(1_000u64));
+    oracle.stake(U256::from(500u64));
+
+    let id = oracle.publish_signal(
+        "casper-network".to_string(),
+        DIR_UP,
+        60,
+        24,
+        1_000_000,
+        "up".to_string(),
+    );
+    oracle.resolve_signal(id, 1_100_000); // correct
+
+    assert_eq!(oracle.get_stake(owner), U256::from(500u64));
+    assert_eq!(oracle.slashed_total(), U256::zero());
+}
+
+#[test]
+fn stake_is_locked_until_signals_resolve() {
+    let (env, mut oracle, mut token) = deploy_with_stake();
+    let owner = env.get_account(0);
+    oracle.set_min_stake(U256::from(100u64));
+    token.approve(&oracle.address(), &U256::from(1_000u64));
+    oracle.stake(U256::from(500u64));
+
+    let id = oracle.publish_signal(
+        "casper-network".to_string(),
+        DIR_UP,
+        60,
+        24,
+        1_000_000,
+        "pending".to_string(),
+    );
+    // A pending signal locks the bond.
+    let err = oracle.try_withdraw_stake(U256::from(100u64)).unwrap_err();
+    assert_eq!(err, OracleError::StakeLocked.into());
+
+    oracle.resolve_signal(id, 1_100_000); // correct → pending clears
+    let bal_before = token.balance_of(&owner);
+    oracle.withdraw_stake(U256::from(500u64));
+    assert_eq!(oracle.get_stake(owner), U256::zero());
+    assert_eq!(token.balance_of(&owner), bal_before + U256::from(500u64));
+}
+
+#[test]
+fn staking_without_token_reverts() {
+    let (_env, mut oracle) = deploy(); // no stake token wired
+    let err = oracle.try_stake(U256::from(100u64)).unwrap_err();
+    assert_eq!(err, OracleError::StakeTokenNotSet.into());
+}
+
+#[test]
+fn zero_stake_amount_reverts() {
+    let (_env, mut oracle, _token) = deploy_with_stake();
+    let err = oracle.try_stake(U256::zero()).unwrap_err();
+    assert_eq!(err, OracleError::ZeroAmount.into());
 }

@@ -3,8 +3,25 @@
 import { useEffect, useState } from "react";
 
 const EXPLORER = process.env.NEXT_PUBLIC_EXPLORER_BASE ?? "https://testnet.cspr.live";
+const CSPR_FANS = process.env.NEXT_PUBLIC_CSPR_FANS_URL ?? "https://cspr.fans";
+const GITHUB = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/tang-vu/verity";
+const DEMO = process.env.NEXT_PUBLIC_DEMO_URL ?? "https://github.com/tang-vu/verity/releases/tag/v1.0.0";
+const TWITTER = process.env.NEXT_PUBLIC_TWITTER_URL ?? "https://x.com/verity_oracle";
 
 type StatusLabel = "PENDING" | "CORRECT" | "WRONG";
+
+interface Stake {
+  stakeSymbol: string;
+  decimals: number;
+  bondedBaseUnits: number;
+  minStakeBaseUnits: number;
+  slashedBaseUnits: number;
+  txs?: { label: string; txHash: string; explorerUrl: string }[];
+}
+
+function fmtUnits(baseUnits: number, decimals: number): string {
+  return (baseUnits / 10 ** decimals).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+}
 
 interface Signal {
   id: number;
@@ -32,7 +49,7 @@ interface Reputation {
 }
 
 interface SignalsResponse { count: number; signals: Signal[] }
-interface RepResponse { reputation: Reputation; contract: string | null; explorer: string | null }
+interface RepResponse { reputation: Reputation; stake?: Stake | null; contract: string | null; explorer: string | null }
 
 interface LoopEntry {
   at: number;
@@ -103,6 +120,7 @@ export default function Dashboard() {
 
   const accuracyPct = rep ? (rep.reputation.accuracyBps / 100).toFixed(1) : "—";
   const latest = signals[0];
+  const stake = rep?.stake ?? null;
 
   return (
     <div className="wrap">
@@ -112,8 +130,21 @@ export default function Dashboard() {
         <span className="pill">x402 · reputation-staked oracle</span>
       </div>
       <p className="tagline">
-        An oracle&apos;s word is worth exactly its on-chain accuracy. A DeFi agent pays per signal over
-        x402 and sizes its trade by that reputation — no human in the loop.
+        The trust layer for the machine economy. An oracle bonds real collateral behind every call —
+        its word is worth <strong>exactly</strong> its on-chain accuracy, and a wrong call <em>slashes</em> its
+        stake. A DeFi agent pays per signal over x402 and sizes its trade by that verifiable reputation.
+        No human in the loop.
+      </p>
+
+      <div className="cta">
+        <a className="btn primary" href={CSPR_FANS} target="_blank" rel="noreferrer">★ Vote on CSPR.fans</a>
+        <a className="btn" href={GITHUB} target="_blank" rel="noreferrer">GitHub</a>
+        <a className="btn" href={DEMO} target="_blank" rel="noreferrer">▶ Demo video</a>
+        <a className="btn" href={TWITTER} target="_blank" rel="noreferrer">Follow @verity_oracle</a>
+      </div>
+      <p className="sub" style={{ margin: "0 0 22px" }}>
+        Casper Agentic Buildathon 2026 · Build Direction #2 — RWA Oracle Agents with verifiable on-chain reputation.
+        Signals cover CSPR/USD and <strong>PAXG</strong> (tokenized gold — a real-world asset).
       </p>
 
       {error && (
@@ -140,6 +171,38 @@ export default function Dashboard() {
               <a href={rep.explorer ?? "#"} target="_blank" rel="noreferrer" className="mono">
                 {short(rep.contract)}
               </a>
+            </div>
+          )}
+        </div>
+
+        <div className="card">
+          <h2>Bonded collateral (skin in the game)</h2>
+          {stake ? (
+            <>
+              <div className="big" style={{ fontSize: 34 }}>
+                {fmtUnits(stake.bondedBaseUnits, stake.decimals)} <span className="sub" style={{ fontSize: 16 }}>{stake.stakeSymbol}</span>
+              </div>
+              <div className="sub" style={{ marginTop: 6 }}>
+                at risk now · gate to publish: {fmtUnits(stake.minStakeBaseUnits, stake.decimals)} {stake.stakeSymbol}
+              </div>
+              <div className="row" style={{ marginTop: 12 }}>
+                <span className="badge wrong">slashed {fmtUnits(stake.slashedBaseUnits, stake.decimals)} {stake.stakeSymbol}</span>
+                <span className="sub">to a consumer-protection treasury</span>
+              </div>
+              {stake.txs && stake.txs.length > 0 && (
+                <div className="sub" style={{ marginTop: 10 }}>
+                  {stake.txs.slice(-3).map((t, i) => (
+                    <span key={i} style={{ marginRight: 10 }}>
+                      <a className="mono" href={t.explorerUrl} target="_blank" rel="noreferrer">{t.label} {short(t.txHash)}</a>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="sub">
+              collateral not bonded yet — run <span className="mono">npm run enable:staking</span>.
+              Once bonded, wrong calls slash real capital on-chain.
             </div>
           )}
         </div>

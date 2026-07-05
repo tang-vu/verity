@@ -6,6 +6,7 @@
 //! updated. The consumer agent weights its action by that reputation — the
 //! oracle's word is only worth its proven track record.
 
+use odra::casper_types::U256;
 use odra::prelude::*;
 
 // --- Direction encoding (predicted price move over the horizon) --------------
@@ -81,6 +82,32 @@ pub struct PublisherAuthorized {
     pub authorized: bool,
 }
 
+/// An oracle bonded additional `x402USD` collateral. `total` is its new stake.
+#[odra::event]
+pub struct StakeDeposited {
+    pub oracle: Address,
+    pub amount: U256,
+    pub total: U256,
+}
+
+/// A wrong resolution burned part of the publisher's bond. `remaining` is the
+/// stake left after slashing; the slashed `amount` moved to the treasury.
+#[odra::event]
+pub struct StakeSlashed {
+    pub oracle: Address,
+    pub signal_id: u64,
+    pub amount: U256,
+    pub remaining: U256,
+}
+
+/// An oracle withdrew unlocked stake back to its own account.
+#[odra::event]
+pub struct StakeWithdrawn {
+    pub oracle: Address,
+    pub amount: U256,
+    pub remaining: U256,
+}
+
 // --- Errors ------------------------------------------------------------------
 
 #[odra::odra_error]
@@ -99,4 +126,14 @@ pub enum OracleError {
     NoSignals = 6,
     /// Asset id was empty.
     EmptyAsset = 7,
+    /// Staking attempted before the owner set the stake token.
+    StakeTokenNotSet = 8,
+    /// Publisher's bonded stake is below the required minimum.
+    InsufficientStake = 9,
+    /// Cannot withdraw stake while the oracle has unresolved signals.
+    StakeLocked = 10,
+    /// Withdraw amount is zero or exceeds the available (unslashed) stake.
+    NothingToWithdraw = 11,
+    /// A zero amount was supplied where a positive one is required.
+    ZeroAmount = 12,
 }

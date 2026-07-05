@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "tsx src/serve.ts",
     "publish-signal": "tsx src/publish-signal.ts",
+    "publish-rwa": "tsx src/publish-signal.ts --rwa",
     "resolve-signal": "tsx src/resolve-signal.ts",
     "typecheck": "tsc --noEmit"
   },

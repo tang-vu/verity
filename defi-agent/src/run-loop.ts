@@ -20,6 +20,8 @@ import {
   Reputation,
   section,
   Signal,
+  StakeState,
+  stakeToDisplay,
 } from "@verity/shared";
 import { connectMcp } from "./mcp-client.js";
 import { decideAction } from "./reputation-weighted-action.js";
@@ -29,6 +31,7 @@ import { payAndReadSignal } from "./x402-read-signal.js";
 interface OraclePayload {
   signal: Signal & { directionLabel: string };
   reputation: Reputation;
+  stake?: StakeState | null;
 }
 
 /** Step 1: best-effort MCP discovery of the oracle/chain. */
@@ -54,7 +57,7 @@ export async function runLoop(): Promise<void> {
   log("pay", "Step 2/4 — paying x402 fee and reading latest signal...");
   const signer = loadPrivateKey(config.consumerSecretKeyPath);
   const { payload, paid, settlement } = await payAndReadSignal(config, signer);
-  const { signal, reputation } = payload as OraclePayload;
+  const { signal, reputation, stake } = payload as OraclePayload;
   log(
     "ok",
     `Signal #${signal.id}: ${directionLabel(signal.direction)} @ ${signal.confidence}% ` +
@@ -63,15 +66,25 @@ export async function runLoop(): Promise<void> {
   if (settlement) log("chain", `x402 settlement: ${JSON.stringify(settlement)}`);
   log("info", `Oracle on-chain reputation: ${bpsToPercent(reputation.accuracyBps)} ` +
     `(${reputation.correctSignals}/${reputation.resolvedSignals} resolved)`);
+  if (stake) {
+    log(
+      "info",
+      `Oracle bonded collateral: ${stakeToDisplay(stake.bondedBaseUnits, stake.decimals)} ` +
+        `${stake.stakeSymbol} at risk (slashed to date: ` +
+        `${stakeToDisplay(stake.slashedBaseUnits, stake.decimals)})`
+    );
+  }
 
-  // 3. Weight by reputation.
-  log("bot", "Step 3/4 — weighting action by on-chain reputation...");
+  // 3. Weight by reputation AND require real collateral behind the word.
+  log("bot", "Step 3/4 — weighting action by on-chain reputation + bonded stake...");
   const decision = decideAction({
     direction: signal.direction,
     confidence: signal.confidence,
     reputation,
     maxNotional: Number(config.consumerMaxNotional),
     minReputationBps: config.consumerMinReputationBps,
+    stakeBaseUnits: stake?.bondedBaseUnits,
+    minStakeBaseUnits: stake ? config.consumerMinStakeBaseUnits : undefined,
   });
   log("info", `Decision: ${decision.side} — ${decision.rationale}`);
 

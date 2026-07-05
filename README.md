@@ -18,7 +18,7 @@ verity closes that loop with **on-chain reputation as collateral for truth**:
 2. The latest signal sits behind an **x402 paywall** — pay-per-query with a cryptographic payment proof, settled on Casper via the hosted x402 facilitator.
 3. A **Consumer (DeFi) agent** discovers the oracle over MCP, pays the x402 fee, reads the signal, **weights its action by the oracle's on-chain reputation**, and executes a swap/rebalance on Casper testnet via the CSPR.trade MCP server.
 
-**The novel mechanic:** the oracle's word is only worth its verifiable, on-chain reputation, and the consumer's capital-at-risk scales linearly with that number. A poor or unproven oracle simply *cannot* move much capital. This is trust-minimized, machine-priced truth.
+**The novel mechanic — reputation as *slashable collateral*:** the oracle bonds real capital (x402USD) behind its calls. A wrong resolution **slashes** 20% of that bond on-chain, and the slashed capital flows to a consumer-protection treasury — *bad data literally pays out to the agents it could have misled*. The consumer, in turn, weights its capital-at-risk by the oracle's on-chain accuracy **and refuses to act at all unless the oracle has real collateral bonded**. A poor, unproven, or undercollateralized oracle simply *cannot* move capital. This is trust-minimized, machine-priced, collateral-backed truth.
 
 ## Mapping to Casper's machine-economy thesis
 
@@ -26,12 +26,13 @@ Casper's AI toolkit is built so autonomous agents can transact with cryptographi
 
 | Casper machine-economy primitive | How verity uses it |
 |---|---|
-| **Smart contracts as trust anchors** | `SignalOracle` (Odra) stores signals *and* a tamper-proof accuracy score anyone can verify. |
+| **Smart contracts as trust anchors** | `SignalOracle` (Odra) stores signals, a tamper-proof accuracy score, *and* the oracle's bonded, slashable stake — all verifiable on-chain. |
 | **x402 micropayments** | The signal is a paid, machine-bought product — HTTP 402 → signed payment → on-chain settlement. |
 | **x402 Facilitator (sponsored testnet)** | The facilitator verifies + settles the CEP-18 payment and pays the gas, so agents transact without managing nodes. |
 | **MCP for agent discovery + action** | Consumer discovers via Casper MCP and *acts* via the CSPR.trade MCP server. |
 | **Typed-data signing (EIP-712)** | Payments are EIP-712 `transfer_with_authorization` over a CEP-18 token — gasless, verifiable authorization. |
-| **Reputation = on-chain collateral** | The consumer's trust (and capital) is a pure function of the oracle's verifiable history. |
+| **Reputation = slashable on-chain collateral** | The oracle bonds x402USD; wrong calls are slashed to a treasury. The consumer's trust (and capital) is a pure function of the oracle's verifiable history *and* live collateral. |
+| **RWA feed** | The same rails carry a **PAXG (tokenized gold)** signal — a genuine real-world asset — alongside CSPR/USD. |
 
 ## Buildathon alignment (Casper Agentic Buildathon 2026)
 
@@ -45,10 +46,10 @@ How it maps to the Final-Round judging criteria:
 
 | Judging criterion | Where verity delivers |
 |---|---|
-| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve). 14/14 tests. |
-| **Use of AI / agentic systems** | Two autonomous agents: an LLM oracle and a DeFi consumer that pays, reasons over reputation, and trades with no human in the loop. |
-| **Innovation & originality** | Reputation-as-collateral: the consumer's capital-at-risk scales with the oracle's *verifiable* on-chain accuracy. |
-| **Real-world applicability (DeFi/RWA)** | A trust-minimized data-feed market; the same rails extend to RWA valuations (see roadmap). |
+| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve/**stake**/**slash**/withdraw). 26 tests (contract + agent). |
+| **Use of AI / agentic systems** | Two autonomous agents: an LLM oracle and a DeFi consumer that pays, reasons over reputation + collateral, and trades with no human in the loop. |
+| **Innovation & originality** | Reputation as *slashable collateral*: the oracle bonds capital that a wrong call burns on-chain (to a consumer-protection treasury); the consumer refuses undercollateralized oracles outright. |
+| **Real-world applicability (DeFi/RWA)** | A trust-minimized data-feed market carrying both CSPR/USD and a **PAXG tokenized-gold (RWA)** feed on the same publish→resolve→reputation→x402 rails. |
 | **Technical execution** | Rust+Odra contract, TS agents, official x402 + MCP + EIP-712 toolkit pieces, tested end-to-end. |
 | **User experience & design** | Live Next.js dashboard: reputation chart, signal history, agent-loop log — every number links to a real cspr.live tx. |
 | **Long-term launch plans** | x402 "verifiable data products" family with a staged roadmap (below). |
@@ -88,8 +89,10 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 
 | Piece | File(s) |
 |---|---|
-| **Odra contract** (signals + reputation) | `contracts/src/signal_oracle.rs`, `contracts/src/types.rs`, `contracts/src/reputation_math.rs` |
-| **Contract tests** (`odra_test`) | `contracts/tests/signal_oracle_test.rs` (14 passing) |
+| **Odra contract** (signals + reputation + staking) | `contracts/src/signal_oracle.rs`, `contracts/src/types.rs`, `contracts/src/reputation_math.rs` |
+| **Staking + slashing** (slashable collateral) | `contracts/src/signal_oracle.rs` (`stake`/`withdraw_stake`/slash-on-resolve), `contracts/src/staking_math.rs` |
+| **Stake bring-up + on-chain audit trail** | `scripts/enable-staking.ts`, `shared/src/stake-store.ts` |
+| **Contract tests** (`odra_test`) | `contracts/tests/signal_oracle_test.rs` (15 integration incl. 6 staking; 8 unit; 26 total) |
 | **x402 paywall server** | `shared/src/x402-paywall-middleware.ts`, `oracle-agent/src/serve.ts` |
 | **x402 paying client** | `shared/src/x402-payment-client.ts` |
 | **x402 Facilitator client** (verify/settle) | `shared/src/facilitator-client.ts` |
@@ -130,9 +133,13 @@ npm run deploy:sdk         # SignalOracle → writes SIGNAL_ORACLE_PACKAGE_HASH
 npm run deploy:x402-token  # X402Token (CEP-18+3009+2612) → X402_ASSET_PACKAGE_HASH
                            # + funds the consumer so it can pay the paywall on-chain
 
-# 5. Seed reputation history (real on-chain publish+resolve), publish a live signal
+# 5. Bond the oracle's collateral (stake token, treasury, min-stake gate, stake),
+#    then seed reputation history (its deliberate miss produces a real on-chain
+#    slash), and publish live signals — CSPR/USD and the PAXG (tokenized-gold) RWA feed.
+npm run enable:staking
 npm run seed
 npm run oracle:publish
+npm run oracle:publish-rwa
 
 # 6. Run the oracle server + the full autonomous loop
 npm run oracle:serve      # terminal A
@@ -188,9 +195,9 @@ verity is the first member of an **x402 "verifiable data products" family** — 
 - **Who pays:** autonomous DeFi agents, trading bots, treasury-management agents, and other oracles that want a reputation-weighted second opinion. Every read is a micropayment.
 - **Positioning:** not "an oracle" but a *trust layer for the machine economy* — any data product (price, risk, sentiment, RWA valuation) can plug into the same publish→resolve→reputation→x402 rails.
 - **Roadmap:**
-  1. **Now (buildathon):** single oracle, single consumer, CSPR/USD direction, testnet.
-  2. **Q3:** multi-oracle marketplace; consumers pick by reputation; staking/slashing so oracles post bond against accuracy.
-  3. **Q4:** RWA feeds (tokenized treasury/commodity valuations) with the same reputation collateral; mainnet x402 settlement.
+  1. **Now (buildathon):** single oracle + consumer; CSPR/USD **and PAXG tokenized-gold (RWA)** feeds; **staking + slashing live** — the oracle bonds x402USD and wrong calls are slashed on-chain to a consumer-protection treasury; testnet.
+  2. **Q3:** multi-oracle marketplace; consumers pick by reputation *and* live bond; staking extended with per-oracle bond sizing and withdrawal timelocks.
+  3. **Q4:** more RWA feeds (tokenized treasury/commodity NAVs) on the same collateral rails; mainnet x402 settlement.
   4. **2027:** open SDK so any agent can publish a reputation-staked feed and any agent can consume it — a self-pricing data economy.
 - **Moat:** reputation is non-transferable and slow to build, so honest long-lived oracles accrue durable, on-chain pricing power.
 - **Socials & presence (in place for launch):**

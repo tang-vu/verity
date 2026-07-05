@@ -45,3 +45,29 @@ test("higher reputation deploys strictly more capital for the same signal", () =
   const strong = decideAction({ direction: Direction.Up, confidence: 80, reputation: rep(9000), ...base });
   assert.ok(strong.notional > weak.notional, "stronger reputation → larger position");
 });
+
+test("undercollateralized oracle is ignored regardless of accuracy", () => {
+  const d = decideAction({
+    direction: Direction.Up,
+    confidence: 100,
+    reputation: rep(10000), // perfect accuracy…
+    ...base,
+    stakeBaseUnits: 10_000, // …but bond below the required floor
+    minStakeBaseUnits: 50_000,
+  });
+  assert.equal(d.side, "HOLD");
+  assert.equal(d.reasonCode, "STAKE_BELOW_GATE");
+});
+
+test("sufficient bond passes the collateral gate and trades normally", () => {
+  const d = decideAction({
+    direction: Direction.Up,
+    confidence: 50,
+    reputation: rep(8000),
+    ...base,
+    stakeBaseUnits: 200_000,
+    minStakeBaseUnits: 50_000,
+  });
+  assert.equal(d.side, "BUY");
+  assert.equal(d.notional, 400); // gate passed → same reputation×confidence sizing
+});

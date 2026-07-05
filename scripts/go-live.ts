@@ -45,8 +45,18 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // Ordered pipeline; each step must succeed before the next.
-  const steps = ["build:wasm", "deploy:sdk", "deploy:x402-token", "seed", "oracle:publish"];
+  // Ordered pipeline; each step must succeed before the next. Staking is enabled
+  // before seeding so the seed's deliberate miss produces a real on-chain slash;
+  // the RWA feed publishes a second, tokenized-gold signal at the end.
+  const steps = [
+    "build:wasm",
+    "deploy:sdk",
+    "deploy:x402-token",
+    "enable:staking",
+    "seed",
+    "oracle:publish",
+    "oracle:publish-rwa",
+  ];
   for (const step of steps) {
     const code = await run(step);
     if (code !== 0) {

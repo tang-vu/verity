@@ -24,6 +24,10 @@ export interface DecisionInputs {
   reputation: Reputation;
   maxNotional: number; // asset smallest unit
   minReputationBps: number; // gate: below this -> HOLD
+  /** Oracle's live bonded collateral (stake token base units), if known. */
+  stakeBaseUnits?: number;
+  /** Minimum bond the consumer requires before trusting the oracle at all. */
+  minStakeBaseUnits?: number;
 }
 
 /**
@@ -37,6 +41,23 @@ export interface DecisionInputs {
 export function decideAction(inputs: DecisionInputs): ActionDecision {
   const { direction, confidence, reputation, maxNotional, minReputationBps } = inputs;
   const accuracyBps = reputation.accuracyBps;
+
+  // Collateral gate: a claim is only trustworthy if the oracle has real,
+  // slashable capital behind it. An oracle bonded below the floor is ignored
+  // outright — accuracy alone is not enough without skin in the game.
+  if (
+    inputs.minStakeBaseUnits !== undefined &&
+    inputs.stakeBaseUnits !== undefined &&
+    inputs.stakeBaseUnits < inputs.minStakeBaseUnits
+  ) {
+    return {
+      side: "HOLD",
+      notional: 0,
+      weight: 0,
+      reasonCode: "STAKE_BELOW_GATE",
+      rationale: `oracle bond ${inputs.stakeBaseUnits} < required ${inputs.minStakeBaseUnits} base units — no collateral at risk, refusing to act`,
+    };
+  }
 
   if (accuracyBps < minReputationBps) {
     return {

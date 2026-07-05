@@ -15,6 +15,7 @@ import {
   loadConfig,
   loadLoopLog,
   loadSignals,
+  loadStakeState,
   statusLabel,
 } from "@verity/shared";
 
@@ -27,6 +28,7 @@ const snapshot = {
   generatedAt: new Date().toISOString(),
   signals: signals.map((s) => ({ ...s, directionLabel: directionLabel(s.direction), statusLabel: statusLabel(s.status) })),
   reputation: computeReputation(signals),
+  stake: loadStakeState() ?? null,
   contract: pkg,
   explorer: pkg ? `${cfg.explorerBase}/contract-package/${pkg}` : null,
   loopLog: loadLoopLog().slice().reverse(),

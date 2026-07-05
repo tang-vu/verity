@@ -52,6 +52,13 @@ export interface VerityConfig {
   signalVsCurrency: string;
   consumerMaxNotional: string;
   consumerMinReputationBps: number;
+  // RWA feed (a second, tokenized real-world asset — PAXG = tokenized gold)
+  rwaAsset: string;
+  rwaVsCurrency: string;
+  // Staking (collateral behind the oracle's word, denominated in x402USD units)
+  oracleStakeBaseUnits: number;
+  minStakeBaseUnits: number;
+  consumerMinStakeBaseUnits: number;
 }
 
 function num(value: string | undefined, fallback: number): number {
@@ -94,6 +101,12 @@ export function loadConfig(): VerityConfig {
     signalVsCurrency: e.SIGNAL_VS_CURRENCY ?? "usd",
     consumerMaxNotional: e.CONSUMER_MAX_NOTIONAL ?? "1000",
     consumerMinReputationBps: num(e.CONSUMER_MIN_REPUTATION_BPS, 4000),
+    rwaAsset: e.RWA_ASSET ?? "pax-gold",
+    rwaVsCurrency: e.RWA_VS_CURRENCY ?? "usd",
+    // x402USD has 2 decimals: 200000 = 2,000.00 bonded, 50000 = 500.00 min gate.
+    oracleStakeBaseUnits: num(e.ORACLE_STAKE_BASE_UNITS, 200_000),
+    minStakeBaseUnits: num(e.MIN_STAKE_BASE_UNITS, 50_000),
+    consumerMinStakeBaseUnits: num(e.CONSUMER_MIN_STAKE_BASE_UNITS, 50_000),
   };
 }
 

@@ -19,6 +19,7 @@ import {
   loadConfig,
   loadLoopLog,
   loadSignals,
+  loadStakeState,
   log,
   latestSignal,
   PaywallResult,
@@ -47,6 +48,7 @@ app.get("/reputation", (_req, res) => {
   const pkg = config.signalOraclePackageHash ?? config.signalOracleContractHash;
   res.json({
     reputation: computeReputation(signals),
+    stake: loadStakeState() ?? null,
     contract: pkg ?? null,
     explorer: pkg ? `${config.explorerBase}/contract-package/${pkg}` : null,
   });
@@ -81,7 +83,8 @@ app.get("/signal/latest", paywall, (_req, res) => {
   res.json({
     signal: { ...latest, directionLabel: directionLabel(latest.direction) },
     reputation: computeReputation(signals),
-    note: "Weight your action by reputation.accuracyBps (0-10000).",
+    stake: loadStakeState() ?? null,
+    note: "Weight your action by reputation.accuracyBps (0-10000); require a bonded stake before trusting.",
   });
 });
 

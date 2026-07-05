@@ -26,13 +26,21 @@ import { generateSignal } from "./llm-signal.js";
 
 const DEFAULT_HORIZON_HOURS = 24;
 
-export async function publishOnce(): Promise<StoredSignal> {
+/**
+ * Publish one signal. With `{ rwa: true }` the subject is the configured RWA feed
+ * (default PAXG — tokenized physical gold, a genuine real-world asset) instead of
+ * the crypto pair, exercising the same publish→resolve→reputation→x402 rails for
+ * an RWA valuation. Same contract, same collateral, different asset.
+ */
+export async function publishOnce(opts?: { rwa?: boolean }): Promise<StoredSignal> {
   const config = loadConfig();
-  section("verity oracle — publish signal");
+  const asset = opts?.rwa ? config.rwaAsset : config.signalAsset;
+  const vsCurrency = opts?.rwa ? config.rwaVsCurrency : config.signalVsCurrency;
+  section(`verity oracle — publish ${opts?.rwa ? "RWA " : ""}signal`);
 
   // 1. Real-world data.
-  log("info", `Fetching market snapshot for ${config.signalAsset} (${config.signalVsCurrency})...`);
-  const snapshot = await fetchMarketSnapshot(config.signalAsset, config.signalVsCurrency);
+  log("info", `Fetching market snapshot for ${asset} (${vsCurrency})...`);
+  const snapshot = await fetchMarketSnapshot(asset, vsCurrency);
   log("ok", `Spot ${snapshot.price} ${snapshot.vsCurrency}, 24h ${snapshot.change24hPct.toFixed(2)}%`);
 
   // 2. LLM signal.
@@ -99,8 +107,8 @@ export async function publishOnce(): Promise<StoredSignal> {
   return stored;
 }
 
-// Execute when run directly.
-publishOnce().catch((err) => {
+// Execute when run directly. Pass --rwa to publish the tokenized-gold (RWA) feed.
+publishOnce({ rwa: process.argv.includes("--rwa") }).catch((err) => {
   log("err", err instanceof Error ? err.message : String(err));
   process.exit(1);
 });

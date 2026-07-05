@@ -2,6 +2,53 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-05 — Staking/slashing + RWA feed + landing/marketing (deadline-extension push)
+
+Buildathon deadline extended to 2026-07-07 → maximize win odds on both advancement
+paths (CSPR.fans top-3 vote + jury on 8 criteria).
+
+**Staking + slashing (Innovation upgrade).** `SignalOracle` now holds *slashable
+collateral* behind the oracle's word. Design decisions:
+- **Stake asset = x402USD (CEP-18), not native CSPR.** Native staking needs a
+  cargo-purse/session proxy (Odra payable), unreachable via casper-js-sdk
+  `ContractCallBuilder` on Windows. CEP-18 stake is callable with the existing
+  `callContract` machinery, is real collateral, and ties to the same asset consumers
+  pay in. Oracle `approve`s the SignalOracle package, then `stake(amount)` pulls via
+  `transfer_from`.
+- **Cross-contract call via a custom `#[odra::external_contract] StakeToken` trait**
+  (not `Cep18ContractRef`) — arg names must match the *deployed* X402Token (`to` for
+  `transfer`; `owner`/`recipient` for `transfer_from`); Cep18ContractRef sends
+  `recipient` for transfer → MissingArg. Custom trait avoids redeploying the token.
+- **Slash = 20% of remaining bond per wrong resolve**, routed to a treasury (set to
+  the consumer → "bad data pays its victims"). Withdraw locked while any signal pending
+  (`pending_count`). `min_stake` default 0 → **all 9 original tests unchanged**
+  (backward compatible); new tests set it > 0.
+- Pure `staking_math.rs` + 6 cross-contract host tests (deploy X402Token + SignalOracle).
+  **26 tests pass** (8 unit incl. 3 staking-math, 15 integration incl. 6 staking, 3 token).
+  Wasm builds clean (252 KB, MVP-lowered) — redeploy artifact ready.
+- Consumer: `decideAction` gains an optional collateral gate (HOLD if bond < floor,
+  regardless of accuracy). Stake surfaced via oracle server payload + `stake-store` +
+  dashboard collateral card. 7 agent tests pass.
+- Bring-up: `npm run enable:staking` (set_stake_token → set_treasury → set_min_stake →
+  approve → stake), then seed's deliberate miss produces a real on-chain slash. Wired
+  into `go-live`.
+
+**RWA feed.** CoinGecko already lists **PAXG (Pax Gold — tokenized physical gold)**, a
+genuine RWA, with the same market_data shape → the whole `market-data.ts` pipeline
+reuses unchanged. `publish-signal --rwa` (npm `oracle:publish-rwa`) publishes a PAXG
+signal; contract stores `asset` as a string so **no contract change for RWA**. Directly
+satisfies Build Direction #2's "RWA oracle" framing.
+
+**Landing/dashboard + marketing.** Dashboard upgraded with hero + CTA (Vote on
+CSPR.fans / GitHub / demo / socials) + a bonded-collateral card + RWA mention; OG
+metadata. Full community-vote & socials kit in `docs/marketing/` (CSPR.fans copy, X
+launch thread, TG/Discord announcement, handles checklist, cadence).
+
+**Still human-gated (B1):** the live redeploy (funded producer key + CSPR.cloud token)
+and the real X/Telegram/CSPR.fans account creation. One verify-live item: the `approve`
+spender **Key form** for a contract spender (`hash-<pkg>`) — confirm on the first funded
+`enable:staking` run; fallback is package/entity key form.
+
 ## 2026-06-17 — Phase 0 scaffold
 
 **Stack decision.** Contracts = Rust + Odra. Agents + x402 server/client + MCP +

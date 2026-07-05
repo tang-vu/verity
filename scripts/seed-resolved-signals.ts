@@ -13,17 +13,31 @@ import {
   Direction,
   loadConfig,
   loadPrivateKey,
+  loadStakeState,
   log,
   makeRpcClient,
   nextSignalId,
   publishSignalOnChain,
   require_,
   resolveSignalOnChain,
+  saveStakeState,
   section,
   SignalStatus,
   StoredSignal,
   usdToMicro,
 } from "@verity/shared";
+
+/** Mirror the contract's on-chain slash (SLASH_BPS = 20%) into the local store. */
+function recordSlash(resolveTxHash: string, explorerUrl: string): void {
+  const state = loadStakeState();
+  if (!state) return;
+  const slash = Math.floor((state.bondedBaseUnits * 2000) / 10000);
+  if (slash <= 0) return;
+  state.bondedBaseUnits -= slash;
+  state.slashedBaseUnits += slash;
+  state.txs.push({ label: "slash", txHash: resolveTxHash, explorerUrl, at: Date.now() });
+  saveStakeState(state);
+}
 
 interface Seed {
   direction: Direction;
@@ -78,6 +92,7 @@ async function main(): Promise<void> {
         ? resolveMicro < publishMicro
         : Math.abs(resolveMicro - publishMicro) * 10000 <= publishMicro * 50;
     log("ok", `  resolved #${id} (${correct ? "CORRECT" : "WRONG"}): ${resTx.txHash}`);
+    if (!correct) recordSlash(resTx.txHash, resTx.explorerUrl);
 
     const stored: StoredSignal = {
       id,
