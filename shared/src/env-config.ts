@@ -11,7 +11,7 @@ import { fromRepoRoot } from "./repo-root.js";
 
 // Load .env from the repo root, not process.cwd(): `npm run --workspace <pkg>`
 // runs with CWD set to the workspace dir, where there is no .env.
-dotenvConfig({ path: fromRepoRoot(".env") });
+dotenvConfig({ path: fromRepoRoot(".env"), quiet: true });
 
 export interface VerityConfig {
   // LLM (DeepSeek — OpenAI-compatible chat completions)
