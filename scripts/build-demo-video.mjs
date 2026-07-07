@@ -54,7 +54,9 @@ console.log(`captions.srt: ${timing.length} cues`);
 const out = resolve(root, "loop-output/verity-demo.mp4");
 const norm = "scale=1280:800:force_original_aspect_ratio=decrease,pad=1280:800:-1:-1:color=0x0a0e14,setsar=1,fps=30";
 // ffmpeg subtitles filter needs a forward-slash, escaped-colon path.
-const srtForFilter = srtPath.replace(/\\/g, "/").replace(/:/g, "\\:");
+// Single pass so each character is rewritten exactly once (backslash → slash,
+// colon → escaped colon) with no reprocessing of earlier replacements.
+const srtForFilter = srtPath.replace(/[\\:]/g, (ch) => (ch === "\\" ? "/" : "\\:"));
 const style =
   "FontName=Segoe UI,FontSize=20,PrimaryColour=&H00F3EDE6,OutlineColour=&H00140E0A,BorderStyle=1,Outline=2,Shadow=0,MarginV=40";
 

@@ -9,6 +9,7 @@
  * Run: `npm run smoke:x402`
  */
 import express from "express";
+import rateLimit from "express-rate-limit";
 import type { AddressInfo } from "node:net";
 import {
   createPaywall,
@@ -59,6 +60,9 @@ async function main(): Promise<void> {
 
   let captured: PaywallResult | undefined;
   const app = express();
+  // Same guard as the real oracle server: paywall verification is not free,
+  // so cap request rate even in the local smoke server.
+  app.use(rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: true, legacyHeaders: false }));
   const paywall = createPaywall({
     config: cfg,
     resourceUrl: (req) => `http://localhost${req.originalUrl}`,

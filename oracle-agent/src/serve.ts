@@ -12,6 +12,7 @@
  * Run: `npm run oracle:serve`.
  */
 import express from "express";
+import rateLimit from "express-rate-limit";
 import {
   computeReputation,
   createPaywall,
@@ -29,6 +30,17 @@ import {
 
 const config = loadConfig();
 const app = express();
+
+// Rate-limit every route (incl. the paywalled one) so unpaid probes and
+// signature-verification attempts can't be spammed.
+app.use(
+  rateLimit({
+    windowMs: 60_000,
+    limit: 120,
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "verity-oracle", chain: config.chainName });
