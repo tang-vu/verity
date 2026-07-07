@@ -29,6 +29,7 @@ const snapshot = {
   signals: signals.map((s) => ({ ...s, directionLabel: directionLabel(s.direction), statusLabel: statusLabel(s.status) })),
   reputation: computeReputation(signals),
   stake: loadStakeState() ?? null,
+  x402: { priceBaseUnits: cfg.x402Price, symbol: cfg.x402AssetSymbol, decimals: cfg.x402AssetDecimals },
   contract: pkg,
   explorer: pkg ? `${cfg.explorerBase}/contract-package/${pkg}` : null,
   loopLog: loadLoopLog().slice().reverse(),

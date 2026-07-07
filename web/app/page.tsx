@@ -1,87 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ReputationHistoryChart } from "./components/reputation-history-chart";
+import { X402RevenueCard } from "./components/x402-revenue-card";
+import {
+  EXPLORER,
+  fmtUnits,
+  getJson,
+  short,
+  txLink,
+  type LoopEntry,
+  type LoopResponse,
+  type RepResponse,
+  type Signal,
+  type SignalsResponse,
+} from "./lib/dashboard-data";
 
-const EXPLORER = process.env.NEXT_PUBLIC_EXPLORER_BASE ?? "https://testnet.cspr.live";
 const GITHUB = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/tang-vu/verity";
 const DEMO = process.env.NEXT_PUBLIC_DEMO_URL ?? "https://youtu.be/wp5KoLqxDU4";
 const CONTRACT = `${EXPLORER}/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0`;
-
-type StatusLabel = "PENDING" | "CORRECT" | "WRONG";
-
-interface Stake {
-  stakeSymbol: string;
-  decimals: number;
-  bondedBaseUnits: number;
-  minStakeBaseUnits: number;
-  slashedBaseUnits: number;
-  txs?: { label: string; txHash: string; explorerUrl: string }[];
-}
-
-function fmtUnits(baseUnits: number, decimals: number): string {
-  return (baseUnits / 10 ** decimals).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
-}
-
-interface Signal {
-  id: number;
-  asset: string;
-  symbol: string;
-  directionLabel: "UP" | "DOWN" | "FLAT";
-  confidence: number;
-  horizonHours: number;
-  priceUsdAtPublish: number;
-  priceUsdAtResolve?: number;
-  reasoning: string;
-  statusLabel: StatusLabel;
-  publishTxHash: string;
-  publishExplorerUrl: string;
-  resolveTxHash?: string;
-  resolveExplorerUrl?: string;
-  publishedAt: number;
-}
-
-interface Reputation {
-  accuracyBps: number;
-  totalSignals: number;
-  resolvedSignals: number;
-  correctSignals: number;
-}
-
-interface SignalsResponse { count: number; signals: Signal[] }
-interface RepResponse { reputation: Reputation; stake?: Stake | null; contract: string | null; explorer: string | null }
-
-interface LoopEntry {
-  at: number;
-  signalId: number;
-  directionLabel: string;
-  confidence: number;
-  reputationBps: number;
-  decisionSide: string;
-  decisionNotional: number;
-  decisionRationale: string;
-  paid: boolean;
-  settlementTx?: string;
-  swapVia: string;
-  swapTx?: string;
-  swapExplorerUrl?: string;
-  swapDetail: string;
-}
-interface LoopResponse { count: number; entries: LoopEntry[] }
-
-async function getJson<T>(path: string): Promise<T> {
-  const res = await fetch(path, { cache: "no-store" });
-  if (!res.ok) throw new Error(`${path} -> ${res.status}`);
-  return (await res.json()) as T;
-}
-
-function txLink(hash: string): string {
-  return `${EXPLORER}/transaction/${hash}`;
-}
-
-function short(hash?: string): string {
-  if (!hash || hash === "n/a") return "—";
-  return `${hash.slice(0, 8)}…${hash.slice(-6)}`;
-}
 
 export default function Dashboard() {
   const [signals, setSignals] = useState<Signal[]>([]);
@@ -163,6 +100,7 @@ export default function Dashboard() {
               ? `${rep.reputation.correctSignals}/${rep.reputation.resolvedSignals} resolved correct · ${rep.reputation.totalSignals} published`
               : "loading…"}
           </div>
+          <ReputationHistoryChart signals={signals} />
           {rep?.contract && (
             <div className="sub" style={{ marginTop: 8 }}>
               contract:{" "}
@@ -226,6 +164,8 @@ export default function Dashboard() {
             <div className="sub">no signals yet — run <span className="mono">npm run oracle:publish</span></div>
           )}
         </div>
+
+        <X402RevenueCard loop={loop} x402={rep?.x402} />
 
         <div className="card full">
           <h2>Signal history (each row links to its real testnet tx)</h2>

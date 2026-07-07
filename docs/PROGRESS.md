@@ -180,6 +180,14 @@ Seed script publishes 4 resolved signals on-chain (3 correct, 1 wrong → 75%).
 **Phase 3 (polish) built:** Next.js dashboard (signals, reputation chart, live loop
 log w/ tx links); `npm run demo` one-command runner; `scripts/reset.sh`.
 
+**Phase 4 (post-submission, 2026-07-07) built:** verity MCP server
+(`oracle-agent/src/mcp-server.ts`) — 4 stdio tools so ANY MCP agent can discover
+the oracle, audit reputation/collateral free, and buy the signal via real x402
+(e2e proof: `npm run smoke:mcp`). Dashboard: reputation-history SVG chart
+(cumulative accuracy per resolve) + x402 revenue card; page.tsx modularized into
+`web/app/lib/dashboard-data.ts` + `web/app/components/*`. Major deps upgraded
+(express 5, zod 4, dotenv 17, TS 6, Next 16).
+
 ## Deviations
 - **D1 — Windows deploy path.** Odra's Rust `--features livenet` deployer pulls
   `casper-types 6.1.0` which uses Unix-only APIs (`libc::sysconf`,

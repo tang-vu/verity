@@ -29,7 +29,7 @@ Casper's AI toolkit is built so autonomous agents can transact with cryptographi
 | **Smart contracts as trust anchors** | `SignalOracle` (Odra) stores signals, a tamper-proof accuracy score, *and* the oracle's bonded, slashable stake — all verifiable on-chain. |
 | **x402 micropayments** | The signal is a paid, machine-bought product — HTTP 402 → signed payment → on-chain settlement. |
 | **x402 Facilitator (sponsored testnet)** | The facilitator verifies + settles the CEP-18 payment and pays the gas, so agents transact without managing nodes. |
-| **MCP for agent discovery + action** | Consumer discovers via Casper MCP and *acts* via the CSPR.trade MCP server. |
+| **MCP for agent discovery + action** | Consumer discovers via Casper MCP and *acts* via the CSPR.trade MCP server. verity also **ships its own MCP server**: any MCP-capable agent (Claude, GPT, custom bots) can discover the oracle, audit its reputation for free, and buy the signal through x402. |
 | **Typed-data signing (EIP-712)** | Payments are EIP-712 `transfer_with_authorization` over a CEP-18 token — gasless, verifiable authorization. |
 | **Reputation = slashable on-chain collateral** | The oracle bonds x402USD; wrong calls are slashed to a treasury. The consumer's trust (and capital) is a pure function of the oracle's verifiable history *and* live collateral. |
 | **RWA feed** | The same rails carry a **PAXG (tokenized gold)** signal — a genuine real-world asset — alongside CSPR/USD. |
@@ -53,7 +53,7 @@ How it maps to the Final-Round judging criteria:
 | **Technical execution** | Rust+Odra contract, TS agents, official x402 + MCP + EIP-712 toolkit pieces, tested end-to-end. |
 | **User experience & design** | Live Next.js dashboard: reputation chart, signal history, agent-loop log — every number links to a real cspr.live tx. |
 | **Long-term launch plans** | x402 "verifiable data products" family with a staged roadmap (below). |
-| **Long-term impact** | Open SDK so any agent can publish/consume reputation-staked feeds — a self-pricing data economy on Casper. |
+| **Long-term impact** | Open SDK so any agent can publish/consume reputation-staked feeds — a self-pricing data economy on Casper. First piece shipped: the **verity MCP server** (4 tools) lets any MCP-capable agent check the oracle's track record and buy the signal over x402 today. |
 
 **Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ✅ demo video (~77s walkthrough, `loop-output/verity-demo.mp4`). Community voting runs via **CSPR.fans**.
 
@@ -99,6 +99,7 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 | **x402 payment token** (CEP-18 + CEP-3009 `transfer_with_authorization` + CEP-2612) | `contracts/src/x402_token.rs` (Odra `odra-modules`) |
 | **EIP-712 typed-data signing** | `shared/src/eip712-casper.ts` (official `@casper-ecosystem/casper-eip-712`) |
 | **MCP client** (discovery + CSPR.trade) | `defi-agent/src/mcp-client.ts`, `defi-agent/src/cspr-trade-executor.ts` |
+| **MCP server** (verity as a machine-consumable data product) | `oracle-agent/src/mcp-server.ts`, e2e proof: `scripts/smoke-mcp-buys-signal-via-x402.ts` |
 | **Reputation-weighted decision** (novel mechanic) | `defi-agent/src/reputation-weighted-action.ts` |
 | **LLM signal generation** (DeepSeek, OpenAI-compatible) | `oracle-agent/src/llm-signal.ts`, `prompts/signal-generation.md` |
 | **On-chain writes** (casper-js-sdk v5) | `shared/src/casper-client.ts`, `shared/src/oracle-contract-client.ts` |
@@ -108,7 +109,7 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 - **Contracts:** Rust + **Odra 2.8.1** (`cargo-odra`, wasm32, `odra_test`). Idiomatic Casper contract layer.
 - **Agents / x402 / MCP / dashboard:** **TypeScript / Node**. The official x402 *facilitator is a hosted CSPR.cloud HTTP service* consumed over the wire regardless of language; the Casper MCP, CSPR.trade MCP, and EIP-712 SDKs are all TS-native. (The official Go x402 reference informed the wire protocol; see `docs/PROGRESS.md`.)
 - **LLM:** DeepSeek API (`deepseek-chat` by default; OpenAI-compatible `/chat/completions`, JSON mode), strict-JSON validated signals. Any OpenAI-compatible endpoint works via `LLM_BASE_URL`/`LLM_MODEL`.
-- **Dashboard:** Next.js, live testnet data + reputation chart + agent-loop log with clickable tx links.
+- **Dashboard:** Next.js, live testnet data + reputation-history chart (every resolve moves the line; wrong calls visibly cost accuracy) + x402 revenue panel + agent-loop log with clickable tx links.
 
 ## Quickstart
 
@@ -148,11 +149,22 @@ npm run agent:loop        # terminal B
 
 > On Linux/macOS you can use `cargo odra build` instead of `npm run build:wasm`.
 
-No-funds sanity check (validates the full x402 sign⇄verify round-trip locally):
+No-funds sanity checks (validate the full x402 sign⇄verify round-trip and the MCP integration locally):
 
 ```bash
-npm run smoke:x402
+npm run smoke:x402        # 402 → EIP-712 signature → X-PAYMENT → unlocked signal
+npm run smoke:mcp         # an MCP agent discovers verity's 4 tools and BUYS the signal via x402
 ```
+
+## verity as an MCP server (any agent can consume the oracle)
+
+```bash
+npm run oracle:mcp        # stdio MCP server — plug it into Claude, GPT, or any MCP host
+```
+
+Tools: `verity_get_reputation` · `verity_get_signal_history` · `verity_get_payment_requirements` (all free) ·
+`verity_buy_latest_signal` (**paid** — executes the real x402 flow: 402 → EIP-712 `transfer_with_authorization` → X-PAYMENT).
+An agent's client config is one line: `{ "command": "npm", "args": ["run", "oracle:mcp"] }`.
 
 ## Run the demo
 

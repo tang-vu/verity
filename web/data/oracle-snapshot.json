@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-05T04:23:57.536Z",
+  "generatedAt": "2026-07-07T03:51:51.402Z",
   "signals": [
     {
       "id": 0,
@@ -232,6 +232,11 @@
       }
     ],
     "updatedAt": 1783220877011
+  },
+  "x402": {
+    "priceBaseUnits": "10",
+    "symbol": "x402",
+    "decimals": 2
   },
   "contract": "13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "explorer": "https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
