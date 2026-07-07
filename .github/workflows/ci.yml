@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  typescript:
+    name: TypeScript (typecheck + agent tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck all workspaces
+        run: npm run typecheck
+
+      - name: Run DeFi agent unit tests
+        run: npm run test:agent
+
+  contracts:
+    name: Contracts (Odra / cargo test)
+    runs-on: ubuntu-latest
+    env:
+      # rust-toolchain.toml pins the Windows-GNU host triple for local dev;
+      # override with a plain nightly so the Linux runner resolves its own host.
+      RUSTUP_TOOLCHAIN: nightly
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install nightly toolchain
+        run: rustup toolchain install nightly --profile minimal
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts
+
+      - name: Run contract test suite (OdraVM)
+        run: cargo test --locked
