@@ -48,6 +48,23 @@ export interface X402Info {
   decimals: number;
 }
 
+/** Live x402 revenue: on-chain facilitator settlements paying the oracle. */
+export interface RevenueInfo {
+  settledCount: number;
+  totalBaseUnits: number;
+  symbol: string;
+  decimals: number;
+  latestTxHash?: string;
+  latestExplorerUrl?: string;
+  latestAt?: number;
+}
+
+/** Whether the API served freshly reconstructed chain data or the snapshot. */
+export interface DataProvenance {
+  source: "live" | "snapshot";
+  generatedAt: string;
+}
+
 export interface LoopEntry {
   at: number;
   signalId: number;
@@ -65,11 +82,12 @@ export interface LoopEntry {
   swapDetail: string;
 }
 
-export interface SignalsResponse { count: number; signals: Signal[] }
-export interface RepResponse {
+export interface SignalsResponse extends DataProvenance { count: number; signals: Signal[] }
+export interface RepResponse extends DataProvenance {
   reputation: Reputation;
   stake?: Stake | null;
   x402?: X402Info | null;
+  revenue?: RevenueInfo | null;
   contract: string | null;
   explorer: string | null;
 }
@@ -84,6 +102,17 @@ export function fmtUnits(baseUnits: number, decimals: number): string {
 
 export function txLink(hash: string): string {
   return `${EXPLORER}/transaction/${hash}`;
+}
+
+/** USD prices span 5 orders of magnitude (CSPR ~$0.014, PAXG ~$4160). */
+export function fmtUsd(value?: number | null): string {
+  if (value == null) return "—";
+  return "$" + (value >= 1 ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : value.toPrecision(3));
+}
+
+export function fmtWhen(ms?: number | null): string {
+  if (!ms) return "—";
+  return new Date(ms).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 export function short(hash?: string): string {

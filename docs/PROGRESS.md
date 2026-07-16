@@ -2,6 +2,30 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-16 — Web app made USABLE (judge feedback, final-round prep)
+
+Judge: "improve the web app side, make it usable." Shipped:
+- **Live on-chain data, zero secrets:** dashboard reconstructs signals/reputation/
+  stake/slash/x402-revenue from the PUBLIC explorer API (`api.testnet.cspr.live`,
+  no token) — full deploy history w/ parsed args per contract package. Grading/
+  slash math mirrored 1:1 from `reputation_math.rs`/`staking_math.rs`; verified
+  identical to snapshot (7 signals, 3/4=75%, bonded 1600, slashed 400) + live
+  revenue (3 settlements) straight from the token contract. 30s cache, snapshot
+  fallback if explorer API down. `web/app/lib/explorer-api.ts` + `live-oracle-state.ts`.
+- **Real x402 paywall ON VERCEL:** `GET /api/x402/signal` → HTTP 402 challenge;
+  X-PAYMENT verified locally (casper-js-sdk in Next route, `serverExternalPackages`)
+  then settled via facilitator (needs `CSPR_CLOUD_ACCESS_TOKEN` env; else
+  verified-deferred). CORS open so any agent can pay from anywhere.
+- **One-click live purchase:** `POST /api/x402/demo-buy` — server-held demo consumer
+  key (`CONSUMER_SECRET_KEY_PEM` env) runs 402→EIP-712 sign→X-PAYMENT→settle against
+  the site's own paywall, returns step trace. Rate-limited 6/h/IP + 60/day.
+- **UX:** x402 playground panel + curl snippet, "test in 3 steps" judge guide, Asset
+  (CSPR vs PAXG·RWA) + Published columns, honest live/snapshot pill, public-friendly
+  copy (no `npm run …` errors on prod), tables scroll-x on mobile. page.tsx split into
+  components (signal-history-table, agent-loop-list, x402-playground, judge-testing-guide).
+- web/ stays self-contained (Vercel builds from web/): x402 protocol ported to
+  `web/app/lib/x402-*.ts`, public constants in `verity-public-config.ts`.
+
 ## 2026-07-05 — LIVE bring-up of v2 (staking) on testnet
 
 Deployed SignalOracle **v2** (`13b217e5…`, staking) and drove the whole staking loop

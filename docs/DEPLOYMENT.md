@@ -103,3 +103,22 @@ wrong resolve = 20% of the remaining bond → treasury.
 > past (well within TTL), which fixed every call — including the cross-contract CLKey
 > ones (`approve`/`stake`). Redeploys also pass `odra_cfg_allow_key_override=true` so a
 > non-upgradable prior version can be replaced under the same named key.
+
+## Web dashboard (Vercel) — live + interactive
+
+Deployed from `web/` (self-contained, Vercel CLI: `cd web && vercel --prod`).
+
+- **Live data needs NO secrets:** `/api/oracle/*` reconstructs signals/reputation/
+  stake/revenue from the public explorer API (`api.testnet.cspr.live`), snapshot
+  fallback in `web/data/oracle-snapshot.json`.
+- **Real x402 paywall:** `GET /api/x402/signal` returns HTTP 402 + payment
+  requirements; with `X-PAYMENT` it verifies the EIP-712 signature and settles via
+  the facilitator.
+- **Vercel env vars** (Project Settings → Environment Variables):
+
+| Var | Purpose | Without it |
+|---|---|---|
+| `CSPR_CLOUD_ACCESS_TOKEN` | facilitator verify+settle (real on-chain settlement) | paywall runs verified-deferred (sig checked, no settle tx) |
+| `CONSUMER_SECRET_KEY_PEM` | demo consumer key for the one-click "buy live" button (paste full PEM; testnet-only, low-value) | button returns 503, curl flow still works |
+
+Local test: `CONSUMER_SECRET_KEY_PATH=<repo>/keys/consumer_secret_key.pem npm run web:dev`.

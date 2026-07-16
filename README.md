@@ -51,7 +51,7 @@ How it maps to the Final-Round judging criteria:
 | **Innovation & originality** | Reputation as *slashable collateral*: the oracle bonds capital that a wrong call burns on-chain (to a consumer-protection treasury); the consumer refuses undercollateralized oracles outright. |
 | **Real-world applicability (DeFi/RWA)** | A trust-minimized data-feed market carrying both CSPR/USD and a **PAXG tokenized-gold (RWA)** feed on the same publish→resolve→reputation→x402 rails. |
 | **Technical execution** | Rust+Odra contract, TS agents, official x402 + MCP + EIP-712 toolkit pieces, tested end-to-end. |
-| **User experience & design** | Live Next.js dashboard: reputation chart, signal history, agent-loop log — every number links to a real cspr.live tx. |
+| **User experience & design** | Live, **interactive** Next.js dashboard: state reconstructed live from testnet (no backend needed), a one-click **real x402 purchase** button, a public `curl`-able 402 paywall, a "test in 3 steps" judge guide — every number links to a real cspr.live tx. |
 | **Long-term launch plans** | x402 "verifiable data products" family with a staged roadmap (below). |
 | **Long-term impact** | Open SDK so any agent can publish/consume reputation-staked feeds — a self-pricing data economy on Casper. First piece shipped: the **verity MCP server** (4 tools) lets any MCP-capable agent check the oracle's track record and buy the signal over x402 today. |
 
@@ -109,7 +109,7 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 - **Contracts:** Rust + **Odra 2.8.1** (`cargo-odra`, wasm32, `odra_test`). Idiomatic Casper contract layer.
 - **Agents / x402 / MCP / dashboard:** **TypeScript / Node**. The official x402 *facilitator is a hosted CSPR.cloud HTTP service* consumed over the wire regardless of language; the Casper MCP, CSPR.trade MCP, and EIP-712 SDKs are all TS-native. (The official Go x402 reference informed the wire protocol; see `docs/PROGRESS.md`.)
 - **LLM:** DeepSeek API (`deepseek-chat` by default; OpenAI-compatible `/chat/completions`, JSON mode), strict-JSON validated signals. Any OpenAI-compatible endpoint works via `LLM_BASE_URL`/`LLM_MODEL`.
-- **Dashboard:** Next.js, live testnet data + reputation-history chart (every resolve moves the line; wrong calls visibly cost accuracy) + x402 revenue panel + agent-loop log with clickable tx links.
+- **Dashboard:** Next.js — reconstructs the oracle's state **live from Casper testnet** on every load (public explorer API, no secrets) and hosts the **real x402 paywall as an API route**, so the deployed site is itself a working x402 resource server. Reputation-history chart, live x402 revenue (counted from on-chain settlements), agent-loop log — every number links to a real cspr.live tx.
 
 ## Quickstart
 
@@ -174,6 +174,21 @@ npm run web:dev           # dashboard at http://localhost:3000
 ```
 
 See **`docs/DEMO_SCRIPT.md`** for the 2–3 min video walkthrough.
+
+## Try it in the browser (no setup)
+
+The [live dashboard](https://web-eight-amber-iq6mjhp7bf.vercel.app) is fully usable on its own:
+
+1. **Everything is live** — signals, reputation, bonded/slashed collateral, and x402 revenue are
+   reconstructed from Casper testnet transaction history on every load (public explorer API, no
+   backend, no secrets). Click any hash to verify on cspr.live.
+2. **Buy the signal over x402 with one click** — the *Try it live* panel makes a demo consumer
+   agent run the real protocol against the site's own paywall: HTTP 402 → EIP-712
+   `transfer_with_authorization` → `X-PAYMENT` → facilitator settlement on-chain, with the full
+   protocol trace and the settlement tx link shown in the UI.
+3. **Or from your terminal** — the paywall is a standard x402 resource server:
+   `curl -i https://web-eight-amber-iq6mjhp7bf.vercel.app/api/x402/signal` returns the 402
+   challenge any paying agent would receive.
 
 ## Secrets (the only human inputs)
 

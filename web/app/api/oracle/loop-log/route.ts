@@ -1,8 +1,10 @@
-// Autonomous-loop log for the deployed dashboard — served from the testnet snapshot.
-import snapshot from "../../../../data/oracle-snapshot.json";
+// Autonomous-loop decision log. The loop's reasoning is off-chain by nature
+// (its txs ARE on-chain and linked); served from the committed testnet run.
+import { getOracleState } from "../../../lib/live-oracle-state";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  return Response.json({ count: snapshot.loopLog.length, entries: snapshot.loopLog });
+  const state = await getOracleState();
+  return Response.json({ count: state.loopLog.length, entries: state.loopLog });
 }
