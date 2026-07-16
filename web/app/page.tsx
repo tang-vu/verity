@@ -2,18 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { AgentLoopList } from "./components/agent-loop-list";
+import { CollateralCard } from "./components/collateral-card";
 import { JudgeTestingGuide } from "./components/judge-testing-guide";
-import { ReputationHistoryChart } from "./components/reputation-history-chart";
+import { LatestSignalCard } from "./components/latest-signal-card";
+import { MetricsTicker } from "./components/metrics-ticker";
+import { ReputationPanel } from "./components/reputation-panel";
 import { SignalHistoryTable } from "./components/signal-history-table";
 import { X402Playground } from "./components/x402-playground";
-import { X402RevenueCard } from "./components/x402-revenue-card";
 import {
   EXPLORER,
-  fmtUnits,
-  fmtUsd,
   getJson,
-  short,
-  txLink,
   type LoopEntry,
   type LoopResponse,
   type RepResponse,
@@ -43,7 +41,7 @@ export default function Dashboard() {
           getJson<LoopResponse>("/api/oracle/loop-log").catch(() => ({ count: 0, entries: [] as LoopEntry[] })),
         ]);
         if (!alive) return;
-        setSignals(s.signals.slice().reverse());
+        setSignals(s.signals.slice().reverse()); // newest first
         setRep(r);
         setLoop(l.entries);
         setError(null);
@@ -60,140 +58,72 @@ export default function Dashboard() {
     };
   }, []);
 
-  const accuracyPct = rep ? (rep.reputation.accuracyBps / 100).toFixed(1) : "—";
   const latest = signals[0];
-  const stake = rep?.stake ?? null;
   const live = rep?.source === "live";
 
   return (
     <div className="wrap">
-      <div className="header">
-        <h1>verity</h1>
-        <span className="pill">Casper testnet · casper-test</span>
-        <span className="pill">x402 · reputation-staked oracle</span>
+      <header className="topbar">
+        <span className="wordmark"><span className="tick">✓</span>verity</span>
         {rep && (
-          <span className={`pill ${live ? "live" : ""}`}>
-            {live ? "● live on-chain data" : "◌ snapshot data"}
+          <span className={`live-pill ${live ? "" : "snapshot"}`}>
+            <span className="live-dot" />
+            {live ? "live on-chain" : "snapshot"}
           </span>
         )}
-      </div>
-      <p className="tagline">
-        The trust layer for the machine economy. An oracle bonds real collateral behind every call —
-        its word is worth <strong>exactly</strong> its on-chain accuracy, and a wrong call <em>slashes</em> its
-        stake. A DeFi agent pays per signal over x402 and sizes its trade by that verifiable reputation.
-        No human in the loop.
-      </p>
+        <nav className="topnav">
+          <a href={DEMO} target="_blank" rel="noreferrer">demo film</a>
+          <a href={GITHUB} target="_blank" rel="noreferrer">github</a>
+          <a href={CONTRACT} target="_blank" rel="noreferrer">contract ↗</a>
+        </nav>
+      </header>
 
-      <div className="cta">
-        <a className="btn primary" href="#try-it">⚡ Try it live</a>
-        <a className="btn" href={DEMO} target="_blank" rel="noreferrer">▶ Demo video</a>
-        <a className="btn" href={GITHUB} target="_blank" rel="noreferrer">GitHub</a>
-        <a className="btn" href={CONTRACT} target="_blank" rel="noreferrer">Contract on cspr.live</a>
-      </div>
-      <p className="sub" style={{ margin: "0 0 22px" }}>
-        Casper Agentic Buildathon 2026 · Build Direction #2 — RWA Oracle Agents with verifiable on-chain reputation.
-        Signals cover CSPR/USD and <strong>PAXG</strong> (tokenized gold — a real-world asset).
-      </p>
-
-      {error && (
-        <p className="err">Data is temporarily unavailable — retrying automatically. ({error})</p>
-      )}
-
-      <div className="grid">
-        <div className="card">
-          <h2>Oracle on-chain reputation</h2>
-          <div className="big">{accuracyPct}%</div>
-          <div className="repbar">
-            <div style={{ width: `${rep ? rep.reputation.accuracyBps / 100 : 0}%` }} />
+      <section className="hero">
+        <div className="reveal">
+          <p className="eyebrow">Casper Agentic Buildathon 2026 · RWA oracle agents · build direction #2</p>
+          <h1>
+            An oracle whose word costs <em>exactly</em> its accuracy.
+          </h1>
+          <p className="lede">
+            verity bonds real collateral behind every market call it sells. A wrong call is{" "}
+            <strong>slashed 20% on-chain</strong> into a consumer-protection treasury; an autonomous DeFi
+            agent pays per signal over <strong>x402</strong> and sizes its trade by the oracle&apos;s
+            verifiable track record. Feeds: CSPR/USD and PAXG tokenized gold — no human in the loop.
+          </p>
+          <div className="cta">
+            <a className="btn primary" href="#try-it">⚡ Buy the signal live</a>
+            <a className="btn" href={DEMO} target="_blank" rel="noreferrer">▶ 77s demo</a>
+            <a className="btn" href={CONTRACT} target="_blank" rel="noreferrer">cspr.live ↗</a>
           </div>
-          <div className="sub">
-            {rep
-              ? `${rep.reputation.correctSignals}/${rep.reputation.resolvedSignals} resolved correct · ${rep.reputation.totalSignals} published`
-              : "loading…"}
-          </div>
-          <ReputationHistoryChart signals={signals} />
-          {rep?.contract && (
-            <div className="sub" style={{ marginTop: 8 }}>
-              contract:{" "}
-              <a href={rep.explorer ?? "#"} target="_blank" rel="noreferrer" className="mono">
-                {short(rep.contract)}
-              </a>
-            </div>
-          )}
+          {error && <p className="err" style={{ marginTop: 16 }}>Data is temporarily unavailable — retrying automatically.</p>}
         </div>
 
-        <div className="card">
-          <h2>Bonded collateral — skin in the game</h2>
-          {stake ? (
-            <>
-              <div className="big" style={{ fontSize: 34 }}>
-                {fmtUnits(stake.bondedBaseUnits, stake.decimals)}{" "}
-                <span className="sub" style={{ fontSize: 16 }}>{stake.stakeSymbol}USD</span>
-              </div>
-              <div className="sub" style={{ marginTop: 6 }}>
-                at risk right now · minimum to publish: {fmtUnits(stake.minStakeBaseUnits, stake.decimals)} {stake.stakeSymbol}USD
-              </div>
-              <div className="row" style={{ marginTop: 12 }}>
-                <span className="badge wrong">slashed {fmtUnits(stake.slashedBaseUnits, stake.decimals)} {stake.stakeSymbol}USD</span>
-                <span className="sub">to a consumer-protection treasury</span>
-              </div>
-              {stake.txs && stake.txs.length > 0 && (
-                <div className="sub" style={{ marginTop: 10 }}>
-                  {stake.txs.slice(-3).map((t, i) => (
-                    <span key={i} style={{ marginRight: 10 }}>
-                      <a className="mono" href={t.explorerUrl} target="_blank" rel="noreferrer">{t.label} {short(t.txHash)}</a>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="sub">{rep ? "No collateral bonded yet." : "loading…"}</div>
-          )}
-        </div>
+        <ReputationPanel rep={rep} signals={signals} />
+      </section>
 
-        <div className="card">
-          <h2>Latest signal — the paid product</h2>
-          {latest ? (
-            <>
-              <div className="row">
-                <span className={`badge ${latest.directionLabel.toLowerCase()}`}>{latest.directionLabel}</span>
-                <strong>{latest.symbol}</strong>
-                <span className="big" style={{ fontSize: 28 }}>{latest.confidence}%</span>
-                <span className="sub">confidence · {latest.horizonHours}h horizon</span>
-              </div>
-              <p className="sub" style={{ marginTop: 10 }}>{latest.reasoning}</p>
-              <div className="sub" style={{ marginTop: 8 }}>
-                {latest.symbol} @ {fmtUsd(latest.priceUsdAtPublish)} ·{" "}
-                <a href={latest.publishExplorerUrl || txLink(latest.publishTxHash)} target="_blank" rel="noreferrer" className="mono">
-                  tx {short(latest.publishTxHash)}
-                </a>
-              </div>
-            </>
-          ) : (
-            <div className="sub">{rep ? "No signals on-chain yet." : "loading…"}</div>
-          )}
-        </div>
+      <MetricsTicker rep={rep} signalCount={rep ? rep.reputation.totalSignals : null} />
 
-        <X402RevenueCard revenue={rep?.revenue} loop={loop} x402={rep?.x402} />
+      <section className="section bento reveal" style={{ animationDelay: "0.35s" }}>
+        <LatestSignalCard latest={latest} loading={!rep} />
+        <CollateralCard stake={rep?.stake ?? null} loading={!rep} />
+      </section>
 
-        <X402Playground x402={rep?.x402} />
+      <X402Playground x402={rep?.x402} />
 
-        <JudgeTestingGuide />
+      <JudgeTestingGuide />
 
-        <SignalHistoryTable signals={signals} />
+      <SignalHistoryTable signals={signals} />
 
-        <AgentLoopList loop={loop} />
-      </div>
+      <AgentLoopList loop={loop} />
 
-      <div className="foot row">
-        <span>verity · Casper Agentic Buildathon 2026</span>
+      <footer className="foot">
+        <span>✓ verity · Casper Agentic Buildathon 2026 · MIT</span>
         <span className="spacer" />
-        <span>
+        <span className="mono">
           {updatedAt ? `updated ${new Date(updatedAt).toLocaleTimeString()}` : "connecting…"}
-          {live ? " · reconstructed from Casper testnet · refreshes every 30s" : ""}
+          {live ? " · reconstructed from casper-test · refreshes 30s" : ""}
         </span>
-      </div>
+      </footer>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 /**
  * Step-by-step testing instructions for buildathon judges — the final-round
  * checklist asks for "intuitive UI workflows … concise step-by-step testing
- * instructions". Everything here is doable in under two minutes.
+ * instructions". Serif ghost numerals, hairline dividers, no card chrome.
  */
 import { contractExplorerUrl, ORACLE_PACKAGE_HASH } from "../lib/verity-public-config";
 
@@ -9,41 +9,44 @@ const MCP_SNIPPET = `{ "mcpServers": { "verity": { "command": "npm", "args": ["r
 
 export function JudgeTestingGuide() {
   return (
-    <div className="card full">
-      <h2>How to test verity in 3 steps</h2>
-      <ol className="guide">
-        <li>
-          <strong>Verify the data is real.</strong>{" "}
-          <span className="sub">
-            Every number on this page is reconstructed live from Casper testnet. Click any tx hash — the
-            publish/resolve/stake/slash transactions are on{" "}
+    <div className="section">
+      <p className="klabel">how to test verity in three steps</p>
+      <div className="guide-grid">
+        <div className="guide-step">
+          <div className="guide-no">01</div>
+          <h3>Verify the data is real</h3>
+          <p className="sub">
+            Every number on this page is reconstructed live from Casper testnet on load. Click any tx
+            hash — publish, resolve, stake and slash transactions all sit on{" "}
             <a href={contractExplorerUrl(ORACLE_PACKAGE_HASH)} target="_blank" rel="noreferrer">
-              the SignalOracle contract package
+              the SignalOracle package
             </a>{" "}
             on cspr.live.
-          </span>
-        </li>
-        <li>
-          <strong>Buy the signal over x402.</strong>{" "}
-          <span className="sub">
-            Use the <a href="#try-it">Try it live</a> button (one click, real on-chain settlement) or{" "}
-            <span className="mono">curl -i /api/x402/signal</span> to see the raw HTTP 402 challenge any
-            agent would receive.
-          </span>
-        </li>
-        <li>
-          <strong>Plug it into your own agent.</strong>{" "}
-          <span className="sub">
-            verity ships an MCP server (4 tools: reputation, history, payment requirements — free; buy
-            signal — paid via x402). Clone the repo and add to any MCP host:
-          </span>
-          <pre className="curl">{MCP_SNIPPET}</pre>
-        </li>
-      </ol>
-      <p className="sub" style={{ margin: 0 }}>
-        The economics in one line: the oracle bonds real collateral; a <strong>wrong call is slashed
-        20%</strong> on-chain to a consumer-protection treasury, and the consumer agent sizes its trade by
-        the oracle&apos;s verifiable accuracy — trust priced by track record, not promises.
+          </p>
+        </div>
+        <div className="guide-step">
+          <div className="guide-no">02</div>
+          <h3>Buy the signal over x402</h3>
+          <p className="sub">
+            One click in the <a href="#try-it">terminal above</a> runs the full paid flow with a real
+            on-chain settlement — or <span className="mono">curl -i /api/x402/signal</span> to see the
+            raw HTTP 402 challenge any agent receives.
+          </p>
+        </div>
+        <div className="guide-step">
+          <div className="guide-no">03</div>
+          <h3>Plug it into your own agent</h3>
+          <p className="sub">
+            verity ships an MCP server — reputation, history and payment requirements are free tools;
+            buying the signal runs the same x402 flow. One line in any MCP host:
+          </p>
+          <pre style={{ margin: "8px 0 0" }}>{MCP_SNIPPET}</pre>
+        </div>
+      </div>
+      <p className="sub" style={{ marginTop: 16, maxWidth: "78ch" }}>
+        The economics in one line: the oracle bonds real collateral, a <b style={{ color: "var(--down)" }}>wrong
+        call is slashed 20%</b> on-chain into a consumer-protection treasury, and the consumer agent sizes
+        its trade by the oracle&apos;s verifiable accuracy — trust priced by track record, not promises.
       </p>
     </div>
   );
