@@ -25,6 +25,13 @@ Judge: "improve the web app side, make it usable." Shipped:
   components (signal-history-table, agent-loop-list, x402-playground, judge-testing-guide).
 - web/ stays self-contained (Vercel builds from web/): x402 protocol ported to
   `web/app/lib/x402-*.ts`, public constants in `verity-public-config.ts`.
+- **Facilitator gas outage found + fixed:** hosted facilitator's account
+  (`0202b2d6…3449`) was at 0 CSPR → /settle failed "insufficient balance" →
+  verified-deferred fallback. Testnet: refilled it ourselves with 100 CSPR from
+  the consumer (`scripts/fund-x402-facilitator-gas.ts`, tx `3031517c…`). First
+  browser-triggered LIVE settlement from prod right after: tx `adb026dc…`.
+  Paywall now reports deferredReason (not_configured vs facilitator_error).
+  Vercel env set via CLI: `CSPR_CLOUD_ACCESS_TOKEN`, `CONSUMER_SECRET_KEY_PEM`.
 
 ## 2026-07-05 — LIVE bring-up of v2 (staking) on testnet
 

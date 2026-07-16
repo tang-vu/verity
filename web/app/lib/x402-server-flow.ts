@@ -21,6 +21,8 @@ export interface PaywallOutcome {
   settled: boolean;
   settlementTx?: string;
   payer?: string;
+  /** Why settlement was deferred (absent when settled). */
+  deferredReason?: "not_configured" | "facilitator_error";
 }
 
 interface FacilitatorVerifyResponse {
@@ -93,8 +95,15 @@ export async function settleOrDefer(
   localPayer?: string
 ): Promise<PaywallOutcome> {
   const token = process.env.CSPR_CLOUD_ACCESS_TOKEN;
-  const deferred: PaywallOutcome = { mode: "verified-deferred", settled: false, payer: localPayer };
-  if (!token) return deferred;
+  if (!token) {
+    return { mode: "verified-deferred", settled: false, payer: localPayer, deferredReason: "not_configured" };
+  }
+  const deferred: PaywallOutcome = {
+    mode: "verified-deferred",
+    settled: false,
+    payer: localPayer,
+    deferredReason: "facilitator_error",
+  };
 
   try {
     const body = facilitatorBody(payload, requirements);

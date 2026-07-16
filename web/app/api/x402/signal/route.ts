@@ -71,6 +71,7 @@ export async function GET(req: Request) {
         settlementTx: outcome.settlementTx ?? null,
         settlementExplorerUrl: outcome.settlementTx ? txExplorerUrl(outcome.settlementTx) : null,
         payer: outcome.payer ?? null,
+        deferredReason: outcome.deferredReason ?? null,
       },
       note: "Weight your action by reputation.accuracyBps (0-10000); require a bonded stake before trusting.",
     },

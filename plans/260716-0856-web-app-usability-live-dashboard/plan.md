@@ -46,4 +46,6 @@ server-side with zero secrets:
 - [x] x402 paywall route (402 challenge + local EIP-712 verify tested; settle needs Vercel token)
 - [x] demo-buy + playground UI (full flow tested locally, verified-deferred mode)
 - [x] Polish + docs (README, PROGRESS, DEPLOYMENT)
-- [ ] Vercel deploy + env vars (`CSPR_CLOUD_ACCESS_TOKEN`, `CONSUMER_SECRET_KEY_PEM`) + live settle check
+- [x] Vercel deploy + env vars set via CLI + LIVE settle from prod verified (tx `adb026dc…`)
+- [x] Bonus: facilitator gas account was dry (0 CSPR) — refilled 100 CSPR from consumer
+      (`scripts/fund-x402-facilitator-gas.ts`, tx `3031517c…`); deferredReason plumbed

@@ -122,3 +122,7 @@ Deployed from `web/` (self-contained, Vercel CLI: `cd web && vercel --prod`).
 | `CONSUMER_SECRET_KEY_PEM` | demo consumer key for the one-click "buy live" button (paste full PEM; testnet-only, low-value) | button returns 503, curl flow still works |
 
 Local test: `CONSUMER_SECRET_KEY_PATH=<repo>/keys/consumer_secret_key.pem npm run web:dev`.
+
+> Ops note: if paid buys start reporting "settlement deferred / facilitator_error",
+> the hosted facilitator's gas account (`0202b2d6…3449`) may be dry again — refill on
+> testnet with `node --import tsx scripts/fund-x402-facilitator-gas.ts 100`.

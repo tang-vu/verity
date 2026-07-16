@@ -91,12 +91,16 @@ export async function POST(req: Request) {
     try { settlement = JSON.parse(Buffer.from(settleHeader, "base64").toString("utf8")); } catch { settlement = settleHeader; }
   }
   const body = (await paid.json()) as Record<string, unknown>;
-  const x402 = body.x402 as { mode: string; settlementTx?: string; settlementExplorerUrl?: string } | undefined;
+  const x402 = body.x402 as
+    | { mode: string; settlementTx?: string; settlementExplorerUrl?: string; deferredReason?: string }
+    | undefined;
   steps.push({
     title: x402?.settlementTx ? "Settled on-chain by the facilitator" : "Payment verified (settlement deferred)",
     detail: x402?.settlementTx
       ? `CEP-18 transfer_with_authorization executed on casper-test — tx ${x402.settlementTx.slice(0, 12)}…`
-      : "signature cryptographically verified; facilitator settlement not configured on this deployment",
+      : x402?.deferredReason === "facilitator_error"
+        ? "signature cryptographically verified; the hosted facilitator is temporarily unavailable, settlement deferred"
+        : "signature cryptographically verified; facilitator settlement not configured on this deployment",
     data: settlement,
   });
 
