@@ -87,7 +87,7 @@ export default function Dashboard() {
           <p className="lede">
             verity bonds real collateral behind every market call it sells. A wrong call is{" "}
             <strong>slashed 20% on-chain</strong> into a consumer-protection treasury; an autonomous DeFi
-            agent pays per signal over <strong>x402</strong> and sizes its trade by the oracle&apos;s
+            agent pays per signal over <strong>x402</strong>&nbsp;and sizes its trade by the oracle&apos;s
             verifiable track record. Feeds: CSPR/USD and PAXG tokenized gold — no human in the loop.
           </p>
           <div className="cta">

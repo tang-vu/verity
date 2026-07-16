@@ -25,6 +25,16 @@ Judge: "improve the web app side, make it usable." Shipped:
   components (signal-history-table, agent-loop-list, x402-playground, judge-testing-guide).
 - web/ stays self-contained (Vercel builds from web/): x402 protocol ported to
   `web/app/lib/x402-*.ts`, public constants in `verity-public-config.ts`.
+- **Premium redesign (same day, "make it wow"):** Instrument Serif wordmark/
+  headline + Geist/Geist Mono data surface; graphite base, single verified-
+  emerald accent, gold = collateral/RWA; asymmetric hero w/ count-up accuracy
+  instrument + area chart, 5-metric ticker strip, bento panels, terminal-window
+  x402 playground w/ sequential step reveal, ghost-numeral judge guide,
+  timeline loop log, blueprint grid + grain, skeletons, reduced-motion.
+  Verified via Playwright screenshots desktop+mobile. Commit `2e9fa80`.
+- **Fresh signals published 2026-07-16:** #7 CSPR DOWN@55% (`f9efb759…`),
+  #8 PAXG FLAT@65% (`d42d2448…`) — CoinGecko free tier 429s aggressively;
+  publish scripts need retry spacing (~90s).
 - **Facilitator gas outage found + fixed:** hosted facilitator's account
   (`0202b2d6…3449`) was at 0 CSPR → /settle failed "insufficient balance" →
   verified-deferred fallback. Testnet: refilled it ourselves with 100 CSPR from
