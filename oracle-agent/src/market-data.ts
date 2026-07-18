@@ -18,8 +18,12 @@ export interface MarketSnapshot {
 }
 
 const COINGECKO = "https://api.coingecko.com/api/v3";
+const RATE_LIMIT_RETRIES = 3;
+const RATE_LIMIT_WAIT_MS = 90_000; // free tier throttles hard; ~90s spacing clears it
 
-/** Fetch a current market snapshot for an asset. Throws on network/data error. */
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Fetch a current market snapshot for an asset. Retries on 429; throws on other errors. */
 export async function fetchMarketSnapshot(
   assetId: string,
   vsCurrency: string
@@ -27,7 +31,12 @@ export async function fetchMarketSnapshot(
   const url =
     `${COINGECKO}/coins/${encodeURIComponent(assetId)}` +
     `?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false`;
-  const res = await fetch(url, { headers: { accept: "application/json" } });
+  let res = await fetch(url, { headers: { accept: "application/json" } });
+  for (let retry = 0; res.status === 429 && retry < RATE_LIMIT_RETRIES; retry++) {
+    console.log(`  CoinGecko 429 for ${assetId} — waiting ${RATE_LIMIT_WAIT_MS / 1000}s...`);
+    await sleep(RATE_LIMIT_WAIT_MS);
+    res = await fetch(url, { headers: { accept: "application/json" } });
+  }
   if (!res.ok) {
     throw new Error(`CoinGecko ${res.status} for ${assetId}: ${await res.text()}`);
   }

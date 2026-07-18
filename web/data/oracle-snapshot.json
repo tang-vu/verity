@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T03:51:51.402Z",
+  "generatedAt": "2026-07-18T07:57:24.503Z",
   "signals": [
     {
       "id": 0,
@@ -176,13 +176,117 @@
       "status": 0,
       "directionLabel": "FLAT",
       "statusLabel": "PENDING"
+    },
+    {
+      "id": 7,
+      "asset": "casper-network",
+      "symbol": "CSPR",
+      "direction": 0,
+      "confidence": 55,
+      "horizonHours": 24,
+      "priceAtPublish": 1901,
+      "priceUsdAtPublish": 0.00190079,
+      "reasoning": "Price near 24h low with high volume suggests selling pressure; 4.22% gain may be short-lived. Low market cap and thin liquidity increase downside risk.",
+      "keyFactors": [
+        "Near 24h low",
+        "High volume",
+        "Thin liquidity"
+      ],
+      "publishedAt": 1784172615278,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "f9efb759a436b6295ab3ff581c4a44315fcf3c4788c2a478be2de55488ed9a1c",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/f9efb759a436b6295ab3ff581c4a44315fcf3c4788c2a478be2de55488ed9a1c",
+      "status": 1,
+      "resolvedAt": 1784360854144,
+      "priceAtResolve": 1828,
+      "priceUsdAtResolve": 0.00182829,
+      "correct": true,
+      "resolveTxHash": "75e104ed4f11cd37b4aa6dd38eb2e3ec52b071cd1263d180a78fae9ea243ba5b",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/75e104ed4f11cd37b4aa6dd38eb2e3ec52b071cd1263d180a78fae9ea243ba5b",
+      "directionLabel": "DOWN",
+      "statusLabel": "CORRECT"
+    },
+    {
+      "id": 8,
+      "asset": "pax-gold",
+      "symbol": "PAXG",
+      "direction": 1,
+      "confidence": 65,
+      "horizonHours": 24,
+      "priceAtPublish": 4022710000,
+      "priceUsdAtPublish": 4022.71,
+      "reasoning": "PAXG spot at 4022.71, near 24h low 4014.56, slight 24h decline -0.06%, low volume 90M, gold stable; likely range-bound.",
+      "keyFactors": [
+        "Price near 24h low",
+        "Low volume",
+        "Gold stable"
+      ],
+      "publishedAt": 1784172672193,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "d42d24489c9a3222b0c0a55059f42326ca6a86d8e0d15f4df799850d9626e59f",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/d42d24489c9a3222b0c0a55059f42326ca6a86d8e0d15f4df799850d9626e59f",
+      "status": 1,
+      "resolvedAt": 1784360874703,
+      "priceAtResolve": 4009970000,
+      "priceUsdAtResolve": 4009.97,
+      "correct": true,
+      "resolveTxHash": "2560021bb8b761a4be1a56a66cf4c0bf77aa45ef8bd26be48be404da24c2e035",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/2560021bb8b761a4be1a56a66cf4c0bf77aa45ef8bd26be48be404da24c2e035",
+      "directionLabel": "FLAT",
+      "statusLabel": "CORRECT"
+    },
+    {
+      "id": 9,
+      "asset": "casper-network",
+      "symbol": "CSPR",
+      "direction": 0,
+      "confidence": 55,
+      "horizonHours": 24,
+      "priceAtPublish": 1822,
+      "priceUsdAtPublish": 0.00182186,
+      "reasoning": "Price near 24h low with declining volume and negative short-term momentum; low liquidity increases downside risk.",
+      "keyFactors": [
+        "Price near 24h low",
+        "Declining 24h volume",
+        "Negative 7d trend"
+      ],
+      "publishedAt": 1784361082983,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "0b108c97e609047fb4c1cff5a24eac12b71add06df247cf69580e2b0354a5392",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/0b108c97e609047fb4c1cff5a24eac12b71add06df247cf69580e2b0354a5392",
+      "status": 0,
+      "directionLabel": "DOWN",
+      "statusLabel": "PENDING"
+    },
+    {
+      "id": 10,
+      "asset": "pax-gold",
+      "symbol": "PAXG",
+      "direction": 2,
+      "confidence": 60,
+      "horizonHours": 24,
+      "priceAtPublish": 4009830000,
+      "priceUsdAtPublish": 4009.83,
+      "reasoning": "Spot at 4009.83 near 24h high of 4011.78 with +0.48% daily gain. Volume strong at 77.6M. 7d trend -2.44% but short-term bullish momentum suggests retest of high.",
+      "keyFactors": [
+        "Near 24h high",
+        "Positive daily change",
+        "High volume"
+      ],
+      "publishedAt": 1784361421001,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "c74af113c355193594613cd19344338cc115f1f855f19b5b75415c4686bd950b",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/c74af113c355193594613cd19344338cc115f1f855f19b5b75415c4686bd950b",
+      "status": 0,
+      "directionLabel": "UP",
+      "statusLabel": "PENDING"
     }
   ],
   "reputation": {
-    "accuracyBps": 7500,
-    "totalSignals": 7,
-    "resolvedSignals": 4,
-    "correctSignals": 3
+    "accuracyBps": 8333,
+    "totalSignals": 11,
+    "resolvedSignals": 6,
+    "correctSignals": 5
   },
   "stake": {
     "oracle": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
@@ -241,6 +345,34 @@
   "contract": "13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "explorer": "https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "loopLog": [
+    {
+      "at": 1784361110695,
+      "signalId": 9,
+      "directionLabel": "DOWN",
+      "confidence": 55,
+      "reputationBps": 8333,
+      "decisionSide": "SELL",
+      "decisionNotional": 458,
+      "decisionRationale": "weight 45.8% = accuracy 83.3% × confidence 55% → SELL 458 units",
+      "paid": true,
+      "settlementTx": "3a58e0a5606e66dba7e4fc5269ba73655cf0c68e6dc3efdd190192db440bdf58",
+      "swapVia": "cspr-trade-mcp",
+      "swapDetail": "SELL 458 casper-network via build_swap"
+    },
+    {
+      "at": 1784360958492,
+      "signalId": 8,
+      "directionLabel": "FLAT",
+      "confidence": 65,
+      "reputationBps": 8333,
+      "decisionSide": "HOLD",
+      "decisionNotional": 0,
+      "decisionRationale": "signal is FLAT — no directional trade",
+      "paid": true,
+      "settlementTx": "95769a90cd28fb4a309c1ae3d11acd1b3aa23f49cb76a8d1d2c5ee69c116cbbe",
+      "swapVia": "skipped",
+      "swapDetail": "HOLD — signal is FLAT — no directional trade"
+    },
     {
       "at": 1783225382169,
       "signalId": 6,

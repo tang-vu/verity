@@ -2,6 +2,30 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-18 — Final-round on-chain refresh: accuracy 83.3%, live loop w/ swap
+
+Qualified for Final Round (13–26/7). On-chain state refreshed inside the judging
+window:
+- **Resolved #7 CSPR DOWN (tx `75e104ed…`) + #8 PAXG FLAT (tx `2560021b…`) — both
+  CORRECT** → accuracy 75% → **83.3% (5/6)**, no new slash. Pre-checked spot vs
+  band before sending (CSPR 0.0018286 < 0.0019008; PAXG 4009.96 inside
+  4002.60–4042.82). #0/#5/#6 stay deliberately PENDING (would grade WRONG).
+- `resolve-signal.ts` gains **`--id N,M` filter** (selective resolve — required so
+  the wrong-grading pendings aren't swept up). `market-data.ts` gains **429 retry**
+  (3×, 90s spacing) — CoinGecko free tier throttling no longer kills publish/resolve.
+- **Fresh signals published:** #9 CSPR DOWN@55% (`0b108c97…`), #10 PAXG-RWA UP@60%
+  (`c74af113…`). Due for resolve 2026-07-19 ~15:00 ICT via
+  `node --import tsx oracle-agent/src/resolve-signal.ts --id 9,10` (NEVER without --id).
+- **2 full agent loops ran** w/ REAL x402 settlements (`95769a90…`, `3a58e0a5…`):
+  loop 2 bought #9 → reputation-weighted **SELL 458 units** (45.8% = 83.3% × 55%)
+  executed via CSPR.trade MCP `build_swap`. Loop log now 7 runs.
+- Snapshot regenerated (11 signals) + **deployed to Vercel prod**; live API verified
+  (source:"live", 8 settlements, revenue latest = today's loop). Facilitator gas
+  checked: ~1977 CSPR — no refill needed. Fixed pre-existing typecheck error in
+  `fund-x402-facilitator-gas.ts` (bigint → string amount).
+- Still human-gated: DoraHacks resubmission, socials, new demo video, pitch deck,
+  demo-day format question to organizers.
+
 ## 2026-07-16 — Web app made USABLE (judge feedback, final-round prep)
 
 Judge: "improve the web app side, make it usable." Shipped:

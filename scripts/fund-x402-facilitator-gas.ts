@@ -34,7 +34,7 @@ async function main(): Promise<void> {
   const tx = new NativeTransferBuilder()
     .from(consumer.publicKey)
     .target(PublicKey.fromHex(FACILITATOR_PUBLIC_KEY))
-    .amount(BigInt(Math.round(amountCspr * 1e9)))
+    .amount(String(Math.round(amountCspr * 1e9)))
     .id(Date.now())
     .chainName(config.chainName)
     .timestamp(new Timestamp(new Date(Date.now() - 60_000))) // node clock-skew buffer

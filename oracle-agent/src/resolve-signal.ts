@@ -3,8 +3,9 @@
  * elapsed, fetch the current price, call SignalOracle.resolve_signal on-chain
  * (which grades the call and updates accuracy), and record the outcome locally.
  *
- * Run: `tsx oracle-agent/src/resolve-signal.ts [--all]`
- *   --all  resolve every pending signal now, ignoring horizon (demo/seed use).
+ * Run: `tsx oracle-agent/src/resolve-signal.ts [--all] [--id 7,8]`
+ *   --all     resolve every pending signal now, ignoring horizon (demo/seed use).
+ *   --id N,M  only resolve the listed signal ids (still must be pending/due).
  */
 import {
   Direction,
@@ -39,7 +40,18 @@ function isDue(signal: StoredSignal, all: boolean): boolean {
   return Date.now() >= dueAt;
 }
 
-export async function resolveDue(all: boolean): Promise<void> {
+function parseIdFilter(argv: string[]): Set<number> | undefined {
+  const ids: number[] = [];
+  for (let i = 0; i < argv.length; i++) {
+    const next = argv[i + 1];
+    if (argv[i] === "--id" && next) {
+      ids.push(...next.split(",").map(Number).filter(Number.isInteger));
+    }
+  }
+  return ids.length > 0 ? new Set(ids) : undefined;
+}
+
+export async function resolveDue(all: boolean, idFilter?: Set<number>): Promise<void> {
   const config = loadConfig();
   section("verity oracle — resolve signals");
 
@@ -51,7 +63,9 @@ export async function resolveDue(all: boolean): Promise<void> {
   const signer = loadPrivateKey(config.producerSecretKeyPath);
   const rpc = makeRpcClient(config);
 
-  const due = loadSignals().filter((s) => isDue(s, all));
+  const due = loadSignals().filter(
+    (s) => isDue(s, all) && (!idFilter || idFilter.has(s.id))
+  );
   if (due.length === 0) {
     log("info", "No signals due for resolution.");
     return;
@@ -88,7 +102,7 @@ export async function resolveDue(all: boolean): Promise<void> {
 }
 
 const all = process.argv.includes("--all");
-resolveDue(all).catch((err) => {
+resolveDue(all, parseIdFilter(process.argv)).catch((err) => {
   log("err", err instanceof Error ? err.message : String(err));
   process.exit(1);
 });
