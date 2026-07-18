@@ -1,39 +1,55 @@
 <!doctype html>
-<!-- Intro + on-chain proof cards for the verity demo video. CSS keyframes drive
-     timing (~16s) so Playwright just records it. Real testnet tx hashes embedded. -->
+<!-- Intro + on-chain proof cards for the verity demo video (final-round cut).
+     CSS keyframes drive timing (~16s) so Playwright just records it.
+     Palette mirrors the live dashboard: graphite base, verified-emerald accent,
+     gold for collateral/RWA. Real testnet tx hashes embedded. -->
 <html lang="en">
 <head><meta charset="utf-8" /><style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { width:1280px; height:800px; overflow:hidden; background:#0a0e14; color:#e6edf3;
+  body { width:1280px; height:800px; overflow:hidden; background:#0b0d0c; color:#e9efec;
     font-family: ui-sans-serif, "Segoe UI", system-ui, sans-serif; }
+  body::before { content:""; position:fixed; inset:0;
+    background:
+      radial-gradient(900px 520px at 82% -10%, rgba(58,208,138,.08), transparent 60%),
+      radial-gradient(700px 480px at -10% 110%, rgba(210,167,94,.06), transparent 60%),
+      linear-gradient(rgba(233,239,236,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(233,239,236,.05) 1px, transparent 1px);
+    background-size: auto, auto, 72px 72px, 72px 72px; opacity:.6; }
   .scene { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center;
     padding:0 90px; opacity:0; }
   #s1 { animation: show 8s 0s both; }
-  #s3 { animation: show 8s 8s both; }
+  #s2 { animation: show 8s 8s both; }
   @keyframes show { 0%{opacity:0; transform:translateY(18px);} 8%{opacity:1; transform:none;}
     90%{opacity:1;} 100%{opacity:0;} }
-  h1 { font-size:88px; letter-spacing:-2px; }
-  .tag { color:#8a99ad; font-size:27px; margin-top:18px; max-width:920px; line-height:1.45; }
-  .pill { display:inline-block; margin-top:30px; margin-right:10px; font-size:16px; color:#4da3ff;
-    border:1px solid #243044; border-radius:999px; padding:6px 16px; }
-  .accent { color:#4da3ff; } .up { color:#2ec26b; }
-  h2 { font-size:30px; color:#8a99ad; text-transform:uppercase; letter-spacing:2px; margin-bottom:26px; }
-  .row { display:flex; gap:14px; font-size:23px; margin:11px 0; }
-  .k { color:#8a99ad; width:210px; } .v { font-family:ui-monospace,monospace; color:#e6edf3; }
-  .hash { color:#4da3ff; }
+  h1 { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight:400;
+    font-size:96px; letter-spacing:-1px; display:flex; align-items:baseline; gap:20px; }
+  h1 .tick { color:#3ad08a; font-style:normal; }
+  .tag { color:#a3b2ab; font-size:27px; margin-top:20px; max-width:960px; line-height:1.5; }
+  .tag strong { color:#e9efec; font-weight:600; }
+  .accent { color:#3ad08a; } .gold { color:#d2a75e; }
+  .pill { display:inline-block; margin-top:32px; margin-right:10px; font-size:16px; color:#3ad08a;
+    border:1px solid rgba(58,208,138,.35); border-radius:999px; padding:6px 16px;
+    background:rgba(58,208,138,.10); font-family: ui-monospace, monospace; }
+  .pill.gold { color:#d2a75e; border-color:rgba(210,167,94,.4); background:rgba(210,167,94,.12); }
+  h2 { font-size:24px; color:#647069; text-transform:uppercase; letter-spacing:3px; margin-bottom:30px;
+    font-family: ui-monospace, monospace; }
+  .row { display:flex; gap:14px; font-size:23px; margin:13px 0; align-items:baseline; }
+  .k { color:#a3b2ab; width:250px; flex:none; } .v { font-family:ui-monospace,monospace; color:#e9efec; }
+  .hash { color:#3ad08a; }
 </style></head>
 <body>
   <div class="scene" id="s1">
-    <h1>verity</h1>
-    <div class="tag">An oracle that bonds <span class="accent">real collateral</span> behind every call — a wrong call is <span class="accent">slashed on-chain</span>. A DeFi agent pays per signal over <span class="accent">x402</span> and sizes its trade by that reputation. Live on Casper testnet.</div>
-    <div><span class="pill">Odra + staking</span><span class="pill">on-chain slashing</span><span class="pill">x402 micropayments</span><span class="pill">RWA: tokenized gold</span></div>
+    <h1><span class="tick">✓</span>verity</h1>
+    <div class="tag">An oracle that bonds <span class="accent">real collateral</span> behind every call — a wrong call is <span class="accent">slashed on-chain</span>. A DeFi agent pays per signal over <span class="accent">x402</span> and sizes its trade by that <strong>verifiable reputation</strong>. Live on Casper testnet.</div>
+    <div><span class="pill">Odra + staking</span><span class="pill">on-chain slashing</span><span class="pill">x402 micropayments</span><span class="pill gold">RWA: tokenized gold</span><span class="pill">MCP server</span></div>
   </div>
-  <div class="scene" id="s3">
+  <div class="scene" id="s2">
     <h2>On-chain proof · testnet.cspr.live</h2>
     <div class="row"><span class="k">SignalOracle v2</span><span class="v">Odra + staking · contract-package <span class="hash">13b217e5…14ffd0</span></span></div>
-    <div class="row"><span class="k">Bonded collateral</span><span class="v">oracle staked 2000 x402USD · <span class="hash">46a5d9b1…</span></span></div>
-    <div class="row"><span class="k">On-chain SLASH</span><span class="v">a wrong call burned <span class="up">400 x402USD</span> → treasury · <span class="hash">4ae1e222…</span></span></div>
-    <div class="row"><span class="k">RWA + reputation</span><span class="v">PAXG gold signal <span class="hash">a11dcebb…</span> · <span class="up">75%</span> on-chain</span></div>
+    <div class="row"><span class="k">Bonded collateral</span><span class="v"><span class="gold">2000 x402USD</span> staked behind the feed · <span class="hash">46a5d9b1…</span></span></div>
+    <div class="row"><span class="k">On-chain SLASH</span><span class="v">a wrong call burned <span class="gold">400 x402USD</span> → consumer treasury · <span class="hash">4ae1e222…</span></span></div>
+    <div class="row"><span class="k">Reputation</span><span class="v"><span class="accent">83.3% on-chain</span> · 5/6 graded against reality · <span class="hash">75e104ed…</span></span></div>
+    <div class="row"><span class="k">x402 revenue</span><span class="v">8 real settlements · latest <span class="hash">3a58e0a5…</span></span></div>
   </div>
 </body>
 </html>

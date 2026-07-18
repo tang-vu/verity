@@ -31,8 +31,19 @@ window:
   `web/app/pitch/` (page + pitch-deck + pitch-stats + 2 slide files + pitch.css,
   each <200 LoC). Topnav "pitch" link added. Verified via Playwright screenshots
   (slides 1/4/5/8/10), deployed to Vercel prod (200 on /pitch).
-- Still human-gated: DoraHacks resubmission, socials, new demo video,
-  demo-day format question to organizers. Pitch narration: rehearse over /pitch.
+- **New demo video (final-round cut) rendered** (same session):
+  `loop-output/verity-demo.mp4`, 77.6s. Pipeline upgrades: scenes restyled to the
+  live brand (graphite/emerald/gold, serif wordmark); terminal scene = today's
+  real #9 SELL-458 run; dashboard footage recorded against **production Vercel**
+  (warm-up context kills the cold-start white lead) with a live demo-buy on
+  camera — recording waits for step [3/3] "Settled on-chain" (real tx
+  `e1349067…`) so the finale always shows a completed settlement. Voiceover:
+  MiMo if MIMO_API_KEY set, else keyless Edge neural TTS (msedge-tts, 3×
+  retries) — narration updated (83.3%, MCP server, browser paywall), grouped
+  with silence pads to scene boundaries (16s/40s); build cuts at audio+2.5s.
+  Human-gated: upload mp4 to YouTube + swap NEXT_PUBLIC_DEMO_URL.
+- Still human-gated: DoraHacks resubmission, socials, YouTube upload of the new
+  demo, demo-day format question to organizers. Pitch: rehearse over /pitch.
 
 ## 2026-07-16 — Web app made USABLE (judge feedback, final-round prep)
 

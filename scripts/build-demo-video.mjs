@@ -52,20 +52,32 @@ console.log(`captions.srt: ${timing.length} cues`);
 
 // --- ffmpeg: normalize + concat 3 scenes, mux voiceover, burn subtitles -----
 const out = resolve(root, "loop-output/verity-demo.mp4");
-const norm = "scale=1280:800:force_original_aspect_ratio=decrease,pad=1280:800:-1:-1:color=0x0a0e14,setsar=1,fps=30";
+const norm = "scale=1280:800:force_original_aspect_ratio=decrease,pad=1280:800:-1:-1:color=0x0b0d0c,setsar=1,fps=30";
 // ffmpeg subtitles filter needs a forward-slash, escaped-colon path.
 // Single pass so each character is rewritten exactly once (backslash → slash,
 // colon → escaped colon) with no reprocessing of earlier replacements.
 const srtForFilter = srtPath.replace(/[\\:]/g, (ch) => (ch === "\\" ? "/" : "\\:"));
 const style =
-  "FontName=Segoe UI,FontSize=20,PrimaryColour=&H00F3EDE6,OutlineColour=&H00140E0A,BorderStyle=1,Outline=2,Shadow=0,MarginV=40";
+  "FontName=Segoe UI,FontSize=20,PrimaryColour=&H00ECEFE9,OutlineColour=&H000C0D0B,BorderStyle=1,Outline=2,Shadow=0,MarginV=40";
 
 const filter =
   `[0:v]${norm}[v0];[1:v]${norm}[v1];[2:v]${norm}[v2];` +
   `[v0][v1][v2]concat=n=3:v=1:a=0[cat];` +
   `[cat]subtitles='${srtForFilter}':force_style='${style}'[v]`;
 
-console.log("Encoding verity-demo.mp4 ...");
+// End the cut ~2.5s after the narration finishes so a variable-length dashboard
+// recording never leaves a long silent tail.
+const voDur = parseFloat(
+  String(
+    execFileSync("ffprobe", [
+      "-v", "error", "-show_entries", "format=duration",
+      "-of", "default=noprint_wrappers=1:nokey=1", voiceover,
+    ])
+  ).trim()
+);
+const totalSec = (voDur + 2.5).toFixed(2);
+
+console.log(`Encoding verity-demo.mp4 (cut at ${totalSec}s) ...`);
 execFileSync(
   "ffmpeg",
   [
@@ -77,6 +89,7 @@ execFileSync(
     "-filter_complex", filter,
     "-map", "[v]",
     "-map", "3:a",
+    "-t", totalSec,
     "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-pix_fmt", "yuv420p",
     "-c:a", "aac", "-b:a", "160k",
     out,

@@ -3,7 +3,11 @@
  * built-in video recording. Produces loop-output/video/<hash>.webm which the
  * build-demo-video pipeline converts to mp4 and stitches with terminal + voiceover.
  *
- * Prereqs: oracle server (4021) + web dashboard (3000) running.
+ * The tour scrolls by SECTION ELEMENT (not fixed offsets) so it survives layout
+ * changes, and clicks the live x402 demo-buy button so the recording captures a
+ * REAL on-chain purchase settling. ~42s.
+ *
+ * Prereqs: web dashboard on 3000 (self-contained; reads the chain via explorer API).
  * Run: node scripts/record-dashboard.mjs
  */
 import { chromium } from "playwright";
@@ -17,6 +21,16 @@ const URL = process.env.WEB_URL ?? "http://localhost:3000";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const browser = await chromium.launch();
+
+// Warm the deployment first (cold serverless start paints seconds of white that
+// would otherwise open the recording), then record against the warm server.
+{
+  const warm = await browser.newContext();
+  const warmPage = await warm.newPage();
+  await warmPage.goto(URL, { waitUntil: "networkidle", timeout: 60_000 }).catch(() => {});
+  await warm.close();
+}
+
 const context = await browser.newContext({
   viewport: { width: 1280, height: 800 },
   recordVideo: { dir: outDir, size: { width: 1280, height: 800 } },
@@ -26,14 +40,18 @@ const page = await context.newPage();
 
 console.log(`Opening ${URL} ...`);
 await page.goto(URL, { waitUntil: "networkidle", timeout: 60_000 });
-await sleep(3500); // let the 5s poll populate reputation + signals + loop
+await page.waitForSelector(".rep-figure", { timeout: 30_000 }).catch(() => {});
+await sleep(2500); // let live data + count-up animation land
 
-// Smooth scripted tour (~35s) so the recording reads like a walkthrough.
-async function smoothScrollTo(y) {
-  await page.evaluate((target) => {
+/** Smooth-scroll so `selector` sits ~70px from the top of the viewport. */
+async function scrollToSection(selector) {
+  await page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    const target = window.scrollY + el.getBoundingClientRect().top - 70;
     return new Promise((res) => {
       const start = window.scrollY;
-      const dur = 1400;
+      const dur = 1300;
       const t0 = performance.now();
       function step(t) {
         const k = Math.min(1, (t - t0) / dur);
@@ -44,20 +62,34 @@ async function smoothScrollTo(y) {
       }
       requestAnimationFrame(step);
     });
-  }, y);
+  }, selector);
 }
 
-await sleep(2500); // hold on the hero + reputation card
-await smoothScrollTo(280);
-await sleep(2500); // latest signal card
-await smoothScrollTo(620);
-await sleep(3500); // signal history table (tx links)
-await smoothScrollTo(1050);
-await sleep(4000); // autonomous loop panel
-await smoothScrollTo(620);
-await sleep(2000);
-await smoothScrollTo(0);
-await sleep(2500);
+await sleep(2000); // hold: hero + reputation instrument (count-up)
+await scrollToSection(".ticker");
+await sleep(2200); // 5-metric strip
+await scrollToSection(".bento");
+await sleep(2800); // latest signal + bonded collateral cards
+await scrollToSection(".section:has(table)");
+await sleep(3000); // signal history (tx links, CSPR + PAXG RWA)
+await scrollToSection(".loglist");
+await sleep(3000); // autonomous loop timeline
+
+// Finale — live x402 purchase: click the demo-buy button and wait until step
+// [3/3] (settled on-chain) is actually rendered, so the closing frames always
+// show the completed real settlement.
+await scrollToSection("#try-it");
+await sleep(1200);
+const buyBtn = page.locator("#try-it button.btn.primary");
+if (await buyBtn.count()) {
+  await buyBtn.first().click().catch(() => {});
+  console.log("demo-buy clicked — waiting for live settlement steps...");
+  await page
+    .locator("#try-it", { hasText: "[3/3]" })
+    .waitFor({ timeout: 22_000 })
+    .catch(() => console.log("settle step not seen in time — ending anyway"));
+}
+await sleep(3000);
 
 await context.close(); // flush video
 await browser.close();
