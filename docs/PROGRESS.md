@@ -23,8 +23,16 @@ window:
   (source:"live", 8 settlements, revenue latest = today's loop). Facilitator gas
   checked: ~1977 CSPR — no refill needed. Fixed pre-existing typecheck error in
   `fund-x402-facilitator-gas.ts` (bigint → string amount).
-- Still human-gated: DoraHacks resubmission, socials, new demo video, pitch deck,
-  demo-day format question to organizers.
+- **Pitch deck shipped as `/pitch` on the live site** (same session): 10 keyboard-
+  driven slides (←/→/Space/Home/End) on the dashboard design system — title,
+  problem, solution, 4-step loop, LIVE proof slide (accuracy/bonded/settlements
+  fetched from `/api/oracle/reputation`, snapshot fallback for offline stage),
+  slash story, Casper stack, 8-criteria scorecard, launch plan, close. Files:
+  `web/app/pitch/` (page + pitch-deck + pitch-stats + 2 slide files + pitch.css,
+  each <200 LoC). Topnav "pitch" link added. Verified via Playwright screenshots
+  (slides 1/4/5/8/10), deployed to Vercel prod (200 on /pitch).
+- Still human-gated: DoraHacks resubmission, socials, new demo video,
+  demo-day format question to organizers. Pitch narration: rehearse over /pitch.
 
 ## 2026-07-16 — Web app made USABLE (judge feedback, final-round prep)
 

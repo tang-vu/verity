@@ -1,0 +1,143 @@
+/* ============================================================
+   verity — pitch deck (/pitch)
+   Full-viewport slides on the same graphite/emerald system as
+   the dashboard. Keyboard-driven; content stays inside 1040px.
+   ============================================================ */
+
+.pitch-root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.pitch-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px 24px;
+  overflow-y: auto;
+}
+.pitch-slide {
+  width: min(1040px, 100%);
+  animation: rise 0.55s var(--ease-spring) both;
+}
+
+/* ---------- typography ---------- */
+.pitch-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 22px;
+}
+.pitch-h {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(34px, 5.2vw, 62px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0 0 22px;
+  text-wrap: balance;
+}
+.pitch-h em { font-style: italic; color: var(--accent); }
+.pitch-h .gold { font-style: italic; color: var(--gold); }
+.pitch-lede { color: var(--ink-2); font-size: clamp(15px, 1.6vw, 18px); max-width: 62ch; margin: 0 0 18px; text-wrap: pretty; }
+.pitch-lede strong { color: var(--ink); font-weight: 600; }
+.pitch-punch {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.6vw, 30px);
+  color: var(--ink);
+  border-left: 2px solid var(--accent);
+  padding-left: 18px;
+  margin: 30px 0 0;
+  max-width: 30ch;
+  text-wrap: balance;
+}
+
+/* ---------- title / close ---------- */
+.pitch-wordmark {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(64px, 10vw, 128px);
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+}
+.pitch-wordmark .tick { color: var(--accent); font-style: normal; }
+
+/* ---------- pillar / criteria grids ---------- */
+.pitch-grid { display: grid; gap: 14px; margin-top: 26px; }
+.pitch-grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pitch-grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 860px) {
+  .pitch-grid.cols-3 { grid-template-columns: 1fr; }
+  .pitch-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+.pitch-cell {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, var(--bg-raise), transparent 80%);
+  padding: 16px 18px;
+  min-width: 0;
+}
+.pitch-cell h3 { margin: 8px 0 6px; font-size: 15px; font-weight: 650; }
+.pitch-cell p { margin: 0; color: var(--ink-2); font-size: 13px; }
+.pitch-cell .no { font-family: var(--serif); font-style: italic; font-size: 30px; color: var(--ink-3); line-height: 1; }
+.pitch-cell.hot { border-color: var(--accent-line); background: linear-gradient(180deg, var(--accent-dim), transparent 75%); }
+.pitch-cell.gold-cell { border-color: rgba(210, 167, 94, 0.4); background: linear-gradient(180deg, var(--gold-dim), transparent 75%); }
+
+/* ---------- live figure slide ---------- */
+.pitch-figure {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: clamp(80px, 14vw, 172px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.pitch-figure .unit { font-size: 0.32em; font-weight: 500; color: var(--ink-2); }
+
+/* ---------- footer chrome ---------- */
+.pitch-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.pitch-bar .brand { color: var(--ink-2); }
+.pitch-bar .brand .tick { color: var(--accent); }
+.pitch-count { font-variant-numeric: tabular-nums; }
+.pitch-keys { display: flex; gap: 6px; align-items: center; }
+.pitch-keys kbd {
+  font-family: var(--mono);
+  font-size: 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  padding: 2px 7px;
+  background: var(--bg-raise);
+}
+.pitch-nav-btn {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--bg-raise);
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.pitch-nav-btn:hover { color: var(--ink); background: var(--bg-raise-2); }
+.pitch-nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+.pitch-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 10; background: var(--bg-raise); }
+.pitch-progress > div { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); transition: width 0.3s var(--ease-spring); }

@@ -72,6 +72,7 @@ export default function Dashboard() {
           </span>
         )}
         <nav className="topnav">
+          <a href="/pitch">pitch</a>
           <a href={DEMO} target="_blank" rel="noreferrer">demo film</a>
           <a href={GITHUB} target="_blank" rel="noreferrer">github</a>
           <a href={CONTRACT} target="_blank" rel="noreferrer">contract ↗</a>
