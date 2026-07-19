@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T14:46:10.481Z",
+  "generatedAt": "2026-07-19T15:00:04.602Z",
   "signals": [
     {
       "id": 0,
@@ -428,6 +428,20 @@
   "contract": "13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "explorer": "https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "loopLog": [
+    {
+      "at": 1784472642708,
+      "signalId": 12,
+      "directionLabel": "FLAT",
+      "confidence": 55,
+      "reputationBps": 6250,
+      "decisionSide": "HOLD",
+      "decisionNotional": 0,
+      "decisionRationale": "signal is FLAT — no directional trade",
+      "paid": true,
+      "settlementTx": "339be587f52528e823bf3aaa85f7fca1e2fc7ab70989a613b79269d96cb696f4",
+      "swapVia": "skipped",
+      "swapDetail": "HOLD — signal is FLAT — no directional trade"
+    },
     {
       "at": 1784361110695,
       "signalId": 9,

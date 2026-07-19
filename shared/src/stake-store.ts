@@ -14,6 +14,9 @@ export interface StakeTx {
   txHash: string;
   explorerUrl: string;
   at: number;
+  /** Collateral moved by this tx, when the entry represents one. Absent on the
+   *  configuration steps, and on slash entries recorded before it was tracked. */
+  amountBaseUnits?: number;
 }
 
 export interface StakeState {
@@ -82,7 +85,13 @@ export function recordSlash(tx: { txHash: string; explorerUrl: string }): number
   const cut = slashAmount(state.bondedBaseUnits);
   state.bondedBaseUnits -= cut;
   state.slashedBaseUnits += cut;
-  state.txs.push({ label: "slash", txHash: tx.txHash, explorerUrl: tx.explorerUrl, at: Date.now() });
+  state.txs.push({
+    label: "slash",
+    txHash: tx.txHash,
+    explorerUrl: tx.explorerUrl,
+    at: Date.now(),
+    amountBaseUnits: cut,
+  });
   saveStakeState(state);
   return cut;
 }

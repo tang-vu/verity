@@ -88,8 +88,13 @@ async function main(): Promise<void> {
 
   if ((await run("web:snapshot")) !== 0) throw new Error("snapshot step failed");
 
+  // Leave build-in-public drafts ready for review. Nothing is posted; a turn of the
+  // oracle just means there is something true to say waiting in loop-output/.
+  if ((await run("drafts")) !== 0) log("warn", "draft generation failed — cycle itself was fine.");
+
   section("cycle complete");
   log("ok", `${open} open call(s); dashboard snapshot refreshed.`);
+  log("info", "Post drafts: loop-output/social-drafts.md");
   log("info", "Live state: the dashboard reads the chain directly; the snapshot is its fallback.");
 }
 
