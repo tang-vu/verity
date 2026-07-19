@@ -2,6 +2,45 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-20 — The chain is the oracle's memory; cycle runs off-laptop
+
+README claimed an "unattended cycle", but the cycle could only run on the one
+Windows box holding `loop-output/signals.json` (gitignored). Two real defects
+behind that, not hypotheticals:
+- **Id collision.** `nextSignalId()` = local book length. A cold store → next
+  publish takes `#0`, on top of signals already on-chain.
+- **Amnesia.** Open calls exist only in that file; lose it and they can never be
+  resolved → reputation freezes with calls stuck PENDING forever.
+
+Fix — reconstruct the book from chain, the same replay the dashboard already
+does, moved to the agent side:
+- `shared/src/chain-signal-reader.ts` — paginated public-explorer fetch +
+  publish/resolve replay → `StoredSignal[]`. Ids from publish order (mirrors
+  client-side assignment); failed deploys ignored; duplicate/unknown resolves
+  skipped (contract rejects them, so they never graded anything).
+- `shared/src/reputation-math.ts` — grading rule extracted; `resolve-signal.ts`
+  now imports it instead of carrying its own `isCorrect`. Web keeps a deliberate
+  copy (must stay Node-free for Vercel) — 3 mirrors: Rust contract, shared, web.
+- `npm run rehydrate [-- --dry-run]` — rebuild/diff local book vs chain.
+- `npm run cycle` starts with rehydrate → machine-independent turn.
+- `.github/workflows/oracle-cycle.yml` — every 6h + manual dispatch, concurrency
+  guard (never double-publish), key restored from secret then removed, skips
+  cleanly when `PRODUCER_SECRET_KEY_PEM` is absent. CI now runs `npm test`
+  (previously `test:agent` only — the stake tests weren't running in CI).
+
+Verified against live testnet: reader independently reconstructs **13 signals,
+8 resolved, 5 correct = 62.5%**, matching the local book and the dashboard.
+Cold-store recovery test (`VERITY_STORE_PATH` → empty temp file) recovered all
+13 and set next id **#13, not #0**. Chain-vs-local diff: every on-chain field
+identical; only `publishedAt` differs (~1 min — chain records deploy time, local
+recorded post-confirmation wall-clock; chain's is the verifiable one).
+
+Tests: 12 new replay tests (47 total: 23 contract + 24 TS). Typecheck clean.
+
+**Open:** GH Actions turns need `PRODUCER_SECRET_KEY_PEM` + the 4 other secrets
+added in repo settings — until then the scheduled job skips and the cycle stays
+laptop-bound. Producer key is testnet-only but does hold the oracle's bond.
+
 ## 2026-07-18 — Final-round on-chain refresh: accuracy 83.3%, live loop w/ swap
 
 Qualified for Final Round (13–26/7). On-chain state refreshed inside the judging

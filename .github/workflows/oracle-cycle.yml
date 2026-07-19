@@ -1,0 +1,120 @@
+name: Oracle cycle
+
+# The oracle's unattended life. Every turn it rebuilds its book from the chain,
+# grades whatever has come due, and publishes a fresh call if the book is thin —
+# so the public dashboard keeps showing real, recent, graded calls with no
+# operator and no particular machine switched on.
+#
+# The turn starts from chain state (npm run rehydrate), which is what makes it
+# safe to run here: the runner keeps nothing between jobs and needs to.
+#
+# Setup — repo Settings > Secrets and variables > Actions:
+#   PRODUCER_SECRET_KEY_PEM     contents of keys/producer_secret_key.pem
+#   SIGNAL_ORACLE_PACKAGE_HASH  deployed SignalOracle package
+#   X402_ASSET_PACKAGE_HASH     deployed X402Token package
+#   DEEPSEEK_API_KEY            LLM key for signal generation
+#   CSPR_CLOUD_ACCESS_TOKEN     hosted RPC + facilitator (optional)
+# Without PRODUCER_SECRET_KEY_PEM the job skips instead of failing, so a fork
+# or a clone with no secrets stays green.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # four turns a day
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Plan the turn without sending anything on-chain"
+        type: boolean
+        default: false
+
+# Only the snapshot commit needs write; nothing else here does.
+permissions:
+  contents: write
+
+# A turn sends real transactions — never let two overlap and double-publish.
+concurrency:
+  group: oracle-cycle
+  cancel-in-progress: false
+
+jobs:
+  cycle:
+    name: Take a turn
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check the oracle key is configured
+        id: guard
+        env:
+          PRODUCER_SECRET_KEY_PEM: ${{ secrets.PRODUCER_SECRET_KEY_PEM }}
+        run: |
+          if [ -z "$PRODUCER_SECRET_KEY_PEM" ]; then
+            echo "No PRODUCER_SECRET_KEY_PEM secret — skipping the turn."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore the producer key
+        if: steps.guard.outputs.configured == 'true'
+        env:
+          PRODUCER_SECRET_KEY_PEM: ${{ secrets.PRODUCER_SECRET_KEY_PEM }}
+        run: |
+          mkdir -p keys
+          printf '%s' "$PRODUCER_SECRET_KEY_PEM" > keys/producer_secret_key.pem
+          chmod 600 keys/producer_secret_key.pem
+
+      - name: Write the run configuration
+        if: steps.guard.outputs.configured == 'true'
+        env:
+          SIGNAL_ORACLE_PACKAGE_HASH: ${{ secrets.SIGNAL_ORACLE_PACKAGE_HASH }}
+          X402_ASSET_PACKAGE_HASH: ${{ secrets.X402_ASSET_PACKAGE_HASH }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          CSPR_CLOUD_ACCESS_TOKEN: ${{ secrets.CSPR_CLOUD_ACCESS_TOKEN }}
+        run: |
+          {
+            echo "CASPER_CHAIN_NAME=casper-test"
+            echo "CASPER_EXPLORER_BASE=https://testnet.cspr.live"
+            echo "PRODUCER_SECRET_KEY_PATH=./keys/producer_secret_key.pem"
+            echo "SIGNAL_ORACLE_PACKAGE_HASH=${SIGNAL_ORACLE_PACKAGE_HASH}"
+            echo "X402_ASSET_PACKAGE_HASH=${X402_ASSET_PACKAGE_HASH}"
+            echo "DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}"
+            echo "CSPR_CLOUD_ACCESS_TOKEN=${CSPR_CLOUD_ACCESS_TOKEN}"
+            # A token buys the hosted RPC; without one, fall back to a public peer.
+            if [ -n "${CSPR_CLOUD_ACCESS_TOKEN}" ]; then
+              echo "CASPER_NODE_RPC_URL=https://node.testnet.cspr.cloud/rpc"
+            else
+              echo "CASPER_NODE_RPC_URL=https://rpc.testnet.casperlabs.io/rpc"
+            fi
+          } > .env
+
+      - name: Run the cycle
+        if: steps.guard.outputs.configured == 'true'
+        run: npm run cycle ${{ inputs.dry_run && '-- --dry-run' || '' }}
+
+      - name: Commit the refreshed dashboard snapshot
+        # The dashboard reads the chain directly; this snapshot is only its
+        # offline fallback, so it is worth keeping current but never urgent.
+        if: steps.guard.outputs.configured == 'true' && !inputs.dry_run
+        run: |
+          if git diff --quiet -- web/data/oracle-snapshot.json; then
+            echo "Snapshot unchanged."
+            exit 0
+          fi
+          git config user.name "verity-oracle"
+          git config user.email "oracle@verity.invalid"
+          git add web/data/oracle-snapshot.json
+          git commit -m "chore(oracle): refresh dashboard snapshot after cycle"
+          git push
+
+      - name: Remove the key from the runner
+        if: always()
+        run: rm -f keys/producer_secret_key.pem .env

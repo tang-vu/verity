@@ -28,8 +28,8 @@ jobs:
       - name: Typecheck all workspaces
         run: npm run typecheck
 
-      - name: Run DeFi agent unit tests
-        run: npm run test:agent
+      - name: Run agent + shared unit tests
+        run: npm test
 
   contracts:
     name: Contracts (Odra / cargo test)

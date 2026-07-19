@@ -13,7 +13,7 @@
  * that have nothing to do with the window those calls were made for.
  */
 import {
-  Direction,
+  isCorrect,
   loadConfig,
   loadPrivateKey,
   loadSignals,
@@ -30,15 +30,6 @@ import {
   usdToMicro,
 } from "@verity/shared";
 import { fetchMarketSnapshot } from "./market-data.js";
-
-const FLAT_BAND_BPS = 50; // mirrors contract: +/-0.50% counts as FLAT-correct
-
-function isCorrect(direction: Direction, publishMicro: number, resolveMicro: number): boolean {
-  if (direction === Direction.Up) return resolveMicro > publishMicro;
-  if (direction === Direction.Down) return resolveMicro < publishMicro;
-  const delta = Math.abs(resolveMicro - publishMicro);
-  return delta * 10_000 <= publishMicro * FLAT_BAND_BPS;
-}
 
 function dueAt(signal: StoredSignal): number {
   return signal.publishedAt + signal.horizonHours * 3_600_000;

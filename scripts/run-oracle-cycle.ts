@@ -1,6 +1,11 @@
 /**
- * One turn of the oracle's normal life: resolve whatever has come due, publish a
- * fresh call if the book is thin, then refresh the dashboard's fallback snapshot.
+ * One turn of the oracle's normal life: rehydrate the book from the chain,
+ * resolve whatever has come due, publish a fresh call if the book is thin, then
+ * refresh the dashboard's fallback snapshot.
+ *
+ * Because the turn starts from chain state, it is machine-independent: any
+ * runner holding the producer key can take a turn, and a lost local store costs
+ * nothing.
  *
  * This is what keeps the deployed oracle a living thing rather than a frozen
  * demo — run it on a scheduler (Task Scheduler / cron) and the public dashboard
@@ -59,6 +64,14 @@ async function main(): Promise<void> {
   const minOpen = numberFlag(argv, "--min-open", DEFAULT_MIN_OPEN);
 
   section(`verity — oracle cycle${dryRun ? " (dry run)" : ""}`);
+
+  // Start from what the chain says, not from whatever this machine happens to
+  // have cached. Without this a runner with a cold store would think it had no
+  // open calls, republish from id #0 over signals that already exist on-chain,
+  // and never grade the calls it had actually made.
+  if ((await run("rehydrate", dryRun ? ["--dry-run"] : [])) !== 0) {
+    throw new Error("rehydrate step failed");
+  }
 
   const resolveArgs = dryRun ? ["--dry-run"] : [];
   if ((await run("oracle:resolve", resolveArgs)) !== 0) {

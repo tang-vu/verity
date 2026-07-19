@@ -46,7 +46,7 @@ How it maps to the Final-Round judging criteria:
 
 | Judging criterion | Where verity delivers |
 |---|---|
-| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve/**stake**/**slash**/withdraw). 26 tests (contract + agent). |
+| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve/**stake**/**slash**/withdraw). 47 tests (23 contract + 24 TS). |
 | **Use of AI / agentic systems** | Two autonomous agents: an LLM oracle and a DeFi consumer that pays, reasons over reputation + collateral, and trades with no human in the loop. |
 | **Innovation & originality** | Reputation as *slashable collateral*: the oracle bonds capital that a wrong call burns on-chain (to a consumer-protection treasury); the consumer refuses undercollateralized oracles outright. |
 | **Real-world applicability (DeFi/RWA)** | A trust-minimized data-feed market carrying both CSPR/USD and a **PAXG tokenized-gold (RWA)** feed on the same publish→resolve→reputation→x402 rails. |
@@ -92,6 +92,8 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 | **Odra contract** (signals + reputation + staking) | `contracts/src/signal_oracle.rs`, `contracts/src/types.rs`, `contracts/src/reputation_math.rs` |
 | **Staking + slashing** (slashable collateral) | `contracts/src/signal_oracle.rs` (`stake`/`withdraw_stake`/slash-on-resolve), `contracts/src/staking_math.rs` |
 | **Stake bring-up + on-chain audit trail** | `scripts/enable-staking.ts`, `shared/src/stake-store.ts` |
+| **Chain as the oracle's memory** (recover the book from on-chain history) | `shared/src/chain-signal-reader.ts`, `scripts/rehydrate-store-from-chain.ts` |
+| **Unattended operation** (scheduled turns, no operator, no laptop) | `scripts/run-oracle-cycle.ts`, `.github/workflows/oracle-cycle.yml` |
 | **Contract tests** (`odra_test`) | `contracts/tests/signal_oracle_test.rs` (15 integration incl. 6 staking; 8 unit; 26 total) |
 | **x402 paywall server** | `shared/src/x402-paywall-middleware.ts`, `oracle-agent/src/serve.ts` |
 | **x402 paying client** | `shared/src/x402-payment-client.ts` |
@@ -155,6 +157,37 @@ No-funds sanity checks (validate the full x402 sign⇄verify round-trip and the 
 npm run smoke:x402        # 402 → EIP-712 signature → X-PAYMENT → unlocked signal
 npm run smoke:mcp         # an MCP agent discovers verity's 4 tools and BUYS the signal via x402
 ```
+
+## Running the oracle unattended
+
+A live oracle has to keep calling and keep being graded, or its reputation is a
+frozen screenshot. One turn of that life is a single command:
+
+```bash
+npm run cycle              # rehydrate from chain → resolve what's due → publish if thin → refresh snapshot
+npm run cycle -- --dry-run # plan the turn, touch nothing on-chain
+```
+
+**The chain is the oracle's memory, not the local file.** `loop-output/signals.json`
+is a cache on whichever machine last ran the agent; the record is the contract.
+Every turn starts by replaying the package's publish/resolve history back into
+the book:
+
+```bash
+npm run rehydrate              # rebuild the local book from on-chain history
+npm run rehydrate -- --dry-run # show chain-vs-local drift, write nothing
+```
+
+That is what makes the oracle machine-independent: a fresh clone can take a turn,
+and a lost cache costs nothing. It also closes a real failure mode — signal ids
+are assigned client-side from the book's length, so an agent with a cold store
+would have republished from `#0` on top of signals that already exist on-chain
+and never graded the calls it actually made.
+
+`.github/workflows/oracle-cycle.yml` runs that turn on a schedule (every 6h), so
+the deployed oracle keeps publishing and grading with no operator and no
+particular machine switched on. It needs the producer key as a repo secret
+(`PRODUCER_SECRET_KEY_PEM`); without it the job skips rather than fails.
 
 ## verity as an MCP server (any agent can consume the oracle)
 
