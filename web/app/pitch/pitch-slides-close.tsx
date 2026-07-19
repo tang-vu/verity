@@ -140,7 +140,7 @@ export const CLOSE_SLIDES: PitchSlide[] = [
         <div className="cta" style={{ marginTop: 28 }}>
           <a className="btn primary" href="/">⚡ Live dashboard</a>
           <a className="btn" href={GITHUB} target="_blank" rel="noreferrer">GitHub</a>
-          <a className="btn" href={X_URL} target="_blank" rel="noreferrer">𝕏 {X_HANDLE}</a>
+          <a className="btn" href={X_URL} target="_blank" rel="noreferrer">X · {X_HANDLE} ↗</a>
           <a className="btn" href={CONTRACT_URL} target="_blank" rel="noreferrer">Contract on cspr.live ↗</a>
         </div>
         <p className="sub mono" style={{ marginTop: 26 }}>

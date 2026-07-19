@@ -89,7 +89,7 @@ export function LaunchPlan() {
         <div className="lp-social">
           <span className="sub dim">Follow the build</span>
           <a className="btn" href={X_URL} target="_blank" rel="noreferrer">
-            𝕏 {X_HANDLE}
+            X · {X_HANDLE} ↗
           </a>
           <a className="btn" href={GITHUB_URL} target="_blank" rel="noreferrer">
             GitHub ↗
