@@ -5,6 +5,7 @@ import { AgentLoopList } from "./components/agent-loop-list";
 import { CollateralCard } from "./components/collateral-card";
 import { JudgeTestingGuide } from "./components/judge-testing-guide";
 import { LatestSignalCard } from "./components/latest-signal-card";
+import { LaunchPlan } from "./components/launch-plan";
 import { MetricsTicker } from "./components/metrics-ticker";
 import { ReputationPanel } from "./components/reputation-panel";
 import { SignalHistoryTable } from "./components/signal-history-table";
@@ -18,9 +19,8 @@ import {
   type Signal,
   type SignalsResponse,
 } from "./lib/dashboard-data";
+import { DEMO_URL as DEMO, GITHUB_URL as GITHUB, X_HANDLE, X_URL } from "./lib/verity-public-config";
 
-const GITHUB = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/tang-vu/verity";
-const DEMO = process.env.NEXT_PUBLIC_DEMO_URL ?? "https://youtu.be/wp5KoLqxDU4";
 const CONTRACT = `${EXPLORER}/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0`;
 const REFRESH_MS = 30_000;
 
@@ -73,6 +73,7 @@ export default function Dashboard() {
         )}
         <nav className="topnav">
           <a href="/pitch">pitch</a>
+          <a href="#launch-plan">roadmap</a>
           <a href={DEMO} target="_blank" rel="noreferrer">demo film</a>
           <a href={GITHUB} target="_blank" rel="noreferrer">github</a>
           <a href={CONTRACT} target="_blank" rel="noreferrer">contract ↗</a>
@@ -117,8 +118,12 @@ export default function Dashboard() {
 
       <AgentLoopList loop={loop} />
 
+      <LaunchPlan />
+
       <footer className="foot">
         <span>✓ verity · Casper Agentic Buildathon 2026 · MIT</span>
+        <a href={X_URL} target="_blank" rel="noreferrer">{X_HANDLE}</a>
+        <a href={GITHUB} target="_blank" rel="noreferrer">github</a>
         <span className="spacer" />
         <span className="mono">
           {updatedAt ? `updated ${new Date(updatedAt).toLocaleTimeString()}` : "connecting…"}

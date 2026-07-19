@@ -2,6 +2,7 @@
  * Pitch slides 6–10: skin in the game, Casper stack, judging criteria map,
  * launch plan, close. Static content — live numbers live in the story slides.
  */
+import { X_HANDLE, X_URL } from "../lib/verity-public-config";
 import type { PitchSlide } from "./pitch-slides-story";
 
 const GITHUB = process.env.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/tang-vu/verity";
@@ -139,6 +140,7 @@ export const CLOSE_SLIDES: PitchSlide[] = [
         <div className="cta" style={{ marginTop: 28 }}>
           <a className="btn primary" href="/">⚡ Live dashboard</a>
           <a className="btn" href={GITHUB} target="_blank" rel="noreferrer">GitHub</a>
+          <a className="btn" href={X_URL} target="_blank" rel="noreferrer">𝕏 {X_HANDLE}</a>
           <a className="btn" href={CONTRACT_URL} target="_blank" rel="noreferrer">Contract on cspr.live ↗</a>
         </div>
         <p className="sub mono" style={{ marginTop: 26 }}>

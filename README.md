@@ -230,9 +230,10 @@ verity is the first member of an **x402 "verifiable data products" family** — 
   3. **Q4:** more RWA feeds (tokenized treasury/commodity NAVs) on the same collateral rails; mainnet x402 settlement.
   4. **2027:** open SDK so any agent can publish a reputation-staked feed and any agent can consume it — a self-pricing data economy.
 - **Moat:** reputation is non-transferable and slow to build, so honest long-lived oracles accrue durable, on-chain pricing power.
-- **Socials & presence (in place for launch):**
-  - X / Twitter: `@verity_oracle` *(handle to be confirmed)*
-  - GitHub: https://github.com/tang-vu/verity
+- **Socials & presence (in place):**
+  - X / Twitter: [@tangvu_dev](https://x.com/tangvu_dev) — build updates and signal-accuracy posts
+  - Live dashboard + public roadmap: https://web-eight-amber-iq6mjhp7bf.vercel.app/#launch-plan
+  - GitHub (MIT, open source): https://github.com/tang-vu/verity
   - Demo video: see `docs/DEMO_SCRIPT.md`
   - Community: Casper Discord / Telegram (CSPR.fans for buildathon voting)
 

@@ -380,6 +380,65 @@ pre.curl::before { content: "$ "; color: var(--ink-3); }
   animation: rise 0.6s var(--ease-spring) both;
 }
 
+/* ---------- launch plan ---------- */
+.lp-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+@media (max-width: 1040px) { .lp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .lp-grid { grid-template-columns: 1fr; } }
+.lp-phase { padding: 20px 22px 22px; border-left: 1px solid var(--line); }
+.lp-phase:first-child { border-left: 0; padding-left: 0; }
+@media (max-width: 1040px) {
+  .lp-phase { border-top: 1px solid var(--line); }
+  .lp-phase:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .lp-phase:first-child { border-top: 0; }
+}
+@media (max-width: 640px) {
+  .lp-phase { border-left: 0; padding-left: 0; }
+  .lp-phase:nth-child(2) { border-top: 1px solid var(--line); }
+}
+.lp-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.lp-when {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink-3);
+}
+.lp-phase.live .lp-when { color: var(--accent); }
+.lp-state {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-3);
+}
+.lp-state.live { color: var(--accent); border-color: var(--accent-line); background: var(--accent-dim); }
+.lp-state.next { color: var(--gold); border-color: rgba(210, 167, 94, 0.35); background: var(--gold-dim); }
+.lp-phase h3 { font-size: 15px; margin: 0 0 10px; font-weight: 650; }
+.lp-items { list-style: none; padding: 0; margin: 0; }
+.lp-items li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.lp-items li::before { content: "—"; position: absolute; left: 0; color: var(--ink-3); }
+.lp-phase.live .lp-items li::before { content: "✓"; color: var(--accent); font-size: 11px; top: 1px; }
+.lp-foot {
+  display: flex;
+  gap: 20px 28px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.lp-social { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+
 /* ---------- judge guide ---------- */
 .guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
 @media (max-width: 940px) { .guide-grid { grid-template-columns: 1fr; } }
