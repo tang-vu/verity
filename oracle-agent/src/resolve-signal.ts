@@ -14,9 +14,11 @@ import {
   loadSignals,
   log,
   makeRpcClient,
+  recordSlash,
   require_,
   resolveSignalOnChain,
   section,
+  stakeToDisplay,
   SignalStatus,
   StoredSignal,
   updateSignal,
@@ -88,6 +90,15 @@ export async function resolveDue(all: boolean, idFilter?: Set<number>): Promise<
     });
     log("ok", `Resolved #${signal.id}. tx: ${tx.txHash}`);
     log("chain", tx.explorerUrl);
+
+    // A wrong call slashes the bond inside resolve_signal; mirror it locally so the
+    // audit trail and the dashboard snapshot do not keep showing burned collateral.
+    if (!correct) {
+      const cut = recordSlash(tx);
+      if (cut !== undefined) {
+        log("warn", `Slashed ${stakeToDisplay(cut, config.x402AssetDecimals)} ${config.x402AssetSymbol} for the wrong call.`);
+      }
+    }
 
     updateSignal(signal.id, {
       status: correct ? SignalStatus.Correct : SignalStatus.Wrong,

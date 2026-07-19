@@ -8,7 +8,10 @@
  * X402_ASSET_PACKAGE_HASH in .env), funded producer key. The producer deployed the
  * token so it holds the supply it bonds here.
  *
- * Run: `npm run enable:staking`.
+ * Run: `npm run enable:staking`                    — first-time bring-up (5 steps).
+ *      `npm run enable:staking -- --top-up 57600`  — re-bond after slashing:
+ *        approve + stake only, leaving token/treasury/min-stake wiring untouched.
+ *        Re-collateralising after a loss is the normal protocol lifecycle, not setup.
  */
 import {
   approveStakeOnChain,
@@ -28,7 +31,85 @@ import {
   StakeState,
 } from "@verity/shared";
 
+/** `--top-up <baseUnits>` → amount to bond on top of the existing stake. */
+function parseTopUp(argv: string[]): number | undefined {
+  const i = argv.indexOf("--top-up");
+  if (i === -1) return undefined;
+  const amount = Number(argv[i + 1]);
+  if (!Number.isInteger(amount) || amount <= 0) {
+    throw new Error("--top-up needs a positive integer amount in stake base units, e.g. --top-up 57600");
+  }
+  return amount;
+}
+
+/**
+ * Currently bonded collateral, read back from the dashboard's on-chain
+ * reconstruction (it replays every stake/slash deploy from the explorer, so it
+ * accounts for slashing that the local store never sees). Returns undefined if
+ * unreachable — the caller then falls back to the local store and says so.
+ */
+async function fetchLiveBondedBaseUnits(): Promise<number | undefined> {
+  const base = process.env.VERITY_DASHBOARD_URL ?? "https://web-eight-amber-iq6mjhp7bf.vercel.app";
+  try {
+    const res = await fetch(`${base}/api/oracle/reputation`, { signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) return undefined;
+    const body = (await res.json()) as { stake?: { bondedBaseUnits?: number } };
+    const bonded = body.stake?.bondedBaseUnits;
+    return typeof bonded === "number" ? bonded : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Re-bond collateral after slashing: approve + stake, no re-configuration. */
+async function topUp(amountBaseUnits: number): Promise<void> {
+  const config = loadConfig();
+  const decimals = config.x402AssetDecimals;
+  const display = `${stakeToDisplay(amountBaseUnits, decimals)} ${config.x402AssetSymbol}`;
+  section(`verity — top up stake (+${display})`);
+
+  const packageHash = require_(config, "signalOraclePackageHash", "Deploy SignalOracle first");
+  const tokenPackageHash = require_(config, "x402AssetPackageHash", "Deploy X402Token first");
+  const signer = loadPrivateKey(config.producerSecretKeyPath);
+  const rpc = makeRpcClient(config);
+
+  const prior = loadStakeState();
+  if (!prior) throw new Error("No stake state found — run `npm run enable:staking` first.");
+
+  const liveBonded = await fetchLiveBondedBaseUnits();
+  if (liveBonded === undefined) {
+    log("warn", "Could not read live bonded amount; falling back to the local store, which does not track slashes.");
+  } else {
+    log("info", `Live bonded before top-up: ${stakeToDisplay(liveBonded, decimals)} ${config.x402AssetSymbol}`);
+  }
+  const bondedBefore = liveBonded ?? prior.bondedBaseUnits;
+
+  const txs = [...prior.txs];
+  const record = (label: string, r: { txHash: string; explorerUrl: string }) => {
+    txs.push({ label, txHash: r.txHash, explorerUrl: r.explorerUrl, at: Date.now() });
+    log("ok", `  ${label}: ${r.txHash}`);
+    log("chain", `  ${r.explorerUrl}`);
+  };
+
+  log("chain", `1/2 approve (let the oracle contract pull ${display})...`);
+  record("approve", await approveStakeOnChain({
+    rpc, config, signer, tokenPackageHash, oraclePackageHash: packageHash, amountBaseUnits,
+  }));
+
+  log("chain", `2/2 stake (bond ${display})...`);
+  record("stake", await stakeOnChain({ rpc, config, signer, packageHash, amountBaseUnits }));
+
+  const bondedAfter = bondedBefore + amountBaseUnits;
+  saveStakeState({ ...prior, bondedBaseUnits: bondedAfter, txs });
+
+  section("stake topped up");
+  log("ok", `Bonded ${stakeToDisplay(bondedBefore, decimals)} → ${stakeToDisplay(bondedAfter, decimals)} ${config.x402AssetSymbol}.`);
+}
+
 async function main(): Promise<void> {
+  const amount = parseTopUp(process.argv);
+  if (amount !== undefined) return topUp(amount);
+
   const config = loadConfig();
   section("verity — enable staking (bond collateral behind the oracle)");
 

@@ -56,3 +56,33 @@ export function saveStakeState(state: StakeState): void {
 export function stakeToDisplay(baseUnits: number, decimals: number): number {
   return baseUnits / 10 ** decimals;
 }
+
+/**
+ * Fraction (bps) of the *remaining* bond destroyed by one wrong resolution.
+ * Mirrors the contract's SLASH_BPS — losses compound, so live collateral tracks
+ * recent honesty rather than a lifetime average.
+ */
+export const SLASH_BPS = 2_000;
+
+/** Collateral destroyed by a single wrong resolution, integer-floored as on-chain. */
+export function slashAmount(bondedBaseUnits: number): number {
+  return Math.floor((bondedBaseUnits * SLASH_BPS) / 10_000);
+}
+
+/**
+ * Mirror into the local store the slash that `resolve_signal` just applied on-chain
+ * for a wrong call. The contract is the source of truth; without this the store —
+ * and the dashboard snapshot built from it — keeps reporting a bond that was
+ * already burned. Shares the resolve tx hash, since the slash happens inside it.
+ * Returns the slashed amount, or undefined when there is no stake state yet.
+ */
+export function recordSlash(tx: { txHash: string; explorerUrl: string }): number | undefined {
+  const state = loadStakeState();
+  if (!state) return undefined;
+  const cut = slashAmount(state.bondedBaseUnits);
+  state.bondedBaseUnits -= cut;
+  state.slashedBaseUnits += cut;
+  state.txs.push({ label: "slash", txHash: tx.txHash, explorerUrl: tx.explorerUrl, at: Date.now() });
+  saveStakeState(state);
+  return cut;
+}
