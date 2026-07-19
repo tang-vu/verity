@@ -6,6 +6,11 @@
  * Run: `tsx oracle-agent/src/resolve-signal.ts [--all] [--id 7,8]`
  *   --all     resolve every pending signal now, ignoring horizon (demo/seed use).
  *   --id N,M  only resolve the listed signal ids (still must be pending/due).
+ *   --dry-run print what would be resolved and stop before any on-chain call.
+ *
+ * Signals far past their horizon are skipped unless named explicitly — see
+ * `isStale`. This keeps an unattended run from grading old calls against prices
+ * that have nothing to do with the window those calls were made for.
  */
 import {
   Direction,
@@ -35,11 +40,24 @@ function isCorrect(direction: Direction, publishMicro: number, resolveMicro: num
   return delta * 10_000 <= publishMicro * FLAT_BAND_BPS;
 }
 
+function dueAt(signal: StoredSignal): number {
+  return signal.publishedAt + signal.horizonHours * 3_600_000;
+}
+
 function isDue(signal: StoredSignal, all: boolean): boolean {
   if (signal.status !== SignalStatus.Pending) return false;
   if (all) return true;
-  const dueAt = signal.publishedAt + signal.horizonHours * 3_600_000;
-  return Date.now() >= dueAt;
+  return Date.now() >= dueAt(signal);
+}
+
+/**
+ * A call is stale once a further full horizon has passed beyond its deadline.
+ * Grading a 24h call against a price from days later measures drift, not the
+ * forecast, yet still slashes the bond for it — so an unattended run leaves
+ * these alone and an operator has to name the id to resolve one anyway.
+ */
+function isStale(signal: StoredSignal): boolean {
+  return Date.now() > dueAt(signal) + signal.horizonHours * 3_600_000;
 }
 
 function parseIdFilter(argv: string[]): Set<number> | undefined {
@@ -53,7 +71,11 @@ function parseIdFilter(argv: string[]): Set<number> | undefined {
   return ids.length > 0 ? new Set(ids) : undefined;
 }
 
-export async function resolveDue(all: boolean, idFilter?: Set<number>): Promise<void> {
+export async function resolveDue(
+  all: boolean,
+  idFilter?: Set<number>,
+  dryRun = false
+): Promise<void> {
   const config = loadConfig();
   section("verity oracle — resolve signals");
 
@@ -65,14 +87,34 @@ export async function resolveDue(all: boolean, idFilter?: Set<number>): Promise<
   const signer = loadPrivateKey(config.producerSecretKeyPath);
   const rpc = makeRpcClient(config);
 
-  const due = loadSignals().filter(
+  const candidates = loadSignals().filter(
     (s) => isDue(s, all) && (!idFilter || idFilter.has(s.id))
   );
+  // Named ids (and --all) are an explicit operator decision; anything else that
+  // has gone stale is held back rather than silently graded and slashed.
+  const explicit = all || idFilter !== undefined;
+  const stale = explicit ? [] : candidates.filter(isStale);
+  const due = explicit ? candidates : candidates.filter((s) => !isStale(s));
+
+  if (stale.length > 0) {
+    log(
+      "warn",
+      `Skipping ${stale.length} stale signal(s): #${stale.map((s) => s.id).join(", #")}. ` +
+        `Resolve one deliberately with --id if that is what you want.`
+    );
+  }
   if (due.length === 0) {
     log("info", "No signals due for resolution.");
     return;
   }
   log("info", `${due.length} signal(s) to resolve.`);
+  if (dryRun) {
+    for (const s of due) {
+      log("info", `  would resolve #${s.id} (${s.asset}, due ${new Date(dueAt(s)).toISOString()})`);
+    }
+    log("ok", "Dry run — nothing was sent on-chain.");
+    return;
+  }
 
   for (const signal of due) {
     const snapshot = await fetchMarketSnapshot(signal.asset, config.signalVsCurrency);
@@ -113,7 +155,8 @@ export async function resolveDue(all: boolean, idFilter?: Set<number>): Promise<
 }
 
 const all = process.argv.includes("--all");
-resolveDue(all, parseIdFilter(process.argv)).catch((err) => {
+const dryRun = process.argv.includes("--dry-run");
+resolveDue(all, parseIdFilter(process.argv), dryRun).catch((err) => {
   log("err", err instanceof Error ? err.message : String(err));
   process.exit(1);
 });

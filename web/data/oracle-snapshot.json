@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T14:00:27.097Z",
+  "generatedAt": "2026-07-19T14:11:22.333Z",
   "signals": [
     {
       "id": 0,
@@ -292,11 +292,58 @@
       "resolveExplorerUrl": "https://testnet.cspr.live/transaction/50c8f93d8dabac916a80f8e8f445eac423eb1cb065ffde9503c049c2f536feb7",
       "directionLabel": "UP",
       "statusLabel": "WRONG"
+    },
+    {
+      "id": 11,
+      "asset": "casper-network",
+      "symbol": "CSPR",
+      "direction": 1,
+      "confidence": 55,
+      "horizonHours": 24,
+      "priceAtPublish": 1861,
+      "priceUsdAtPublish": 0.00186125,
+      "reasoning": "Price near 24h low with low volume, 7d slight uptrend but 24h negative. Mixed signals, expect consolidation.",
+      "keyFactors": [
+        "24h change -0.13%",
+        "7d change +0.26%",
+        "Low volume 1.16M",
+        "Near 24h low"
+      ],
+      "publishedAt": 1784470169344,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "fa25e2eb181b37dbbf4fb85882116cf7eb5997770d7d03147d48057e2945c5ea",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/fa25e2eb181b37dbbf4fb85882116cf7eb5997770d7d03147d48057e2945c5ea",
+      "status": 0,
+      "directionLabel": "FLAT",
+      "statusLabel": "PENDING"
+    },
+    {
+      "id": 12,
+      "asset": "pax-gold",
+      "symbol": "PAXG",
+      "direction": 1,
+      "confidence": 55,
+      "horizonHours": 24,
+      "priceAtPublish": 4004000000,
+      "priceUsdAtPublish": 4004,
+      "reasoning": "Tight range (4001-4012), low volatility, slight negative bias but volume moderate; no strong catalyst.",
+      "keyFactors": [
+        "24h change -0.11%",
+        "Narrow high-low spread",
+        "Volume moderate at 35.9M"
+      ],
+      "publishedAt": 1784470267984,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "70aea308591c9068c9693e5a6e9f24fff4471c83bcfa6fb6021a9341681b4d8f",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/70aea308591c9068c9693e5a6e9f24fff4471c83bcfa6fb6021a9341681b4d8f",
+      "status": 0,
+      "directionLabel": "FLAT",
+      "statusLabel": "PENDING"
     }
   ],
   "reputation": {
     "accuracyBps": 6250,
-    "totalSignals": 11,
+    "totalSignals": 13,
     "resolvedSignals": 8,
     "correctSignals": 5
   },

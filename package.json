@@ -26,6 +26,8 @@
     "oracle:mcp": "npm run mcp --workspace oracle-agent",
     "oracle:publish": "npm run publish-signal --workspace oracle-agent",
     "oracle:publish-rwa": "npm run publish-rwa --workspace oracle-agent",
+    "oracle:resolve": "node --import tsx oracle-agent/src/resolve-signal.ts",
+    "cycle": "node --import tsx scripts/run-oracle-cycle.ts",
     "agent:loop": "npm run loop --workspace defi-agent",
     "seed": "node --import tsx scripts/seed-resolved-signals.ts",
     "smoke:x402": "node --import tsx scripts/smoke-x402-local.ts",
