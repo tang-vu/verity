@@ -213,7 +213,7 @@ verity is **live on Casper testnet** — the full loop ran end-to-end with real 
 | **Live LLM signal — CSPR/USD** (CoinGecko → DeepSeek → on-chain) | [`d9fb786f…`](https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f) |
 | **Live LLM signal — PAXG (tokenized gold, RWA)** | [`a11dcebb…`](https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd) |
 | **x402 settled on-chain** (facilitator `transfer_with_authorization`) | [`0ee181dc…`](https://testnet.cspr.live/transaction/0ee181dc4b5356dd5ef0fbcdc15a783023144605e361202b869de5246896f99b) |
-| **On-chain reputation** | 75% — 3/4 resolved correct on v2 |
+| **On-chain reputation** | 62.5% — 5/8 resolved correct on v2, and still moving: the oracle publishes and grades on an unattended cycle, so this number is whatever the chain says when you read it |
 | **Live dashboard** | https://web-eight-amber-iq6mjhp7bf.vercel.app |
 
 **Demo video (~77s):** https://youtu.be/wp5KoLqxDU4 — on-chain proof (staking, the on-chain slash, RWA) → real `agent:loop` terminal run → live dashboard, with MiMo TTS voiceover + captions.

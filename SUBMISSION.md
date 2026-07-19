@@ -33,7 +33,7 @@ A poor, unproven, or **undercollateralized** oracle literally *cannot move capit
 | Live LLM signal — CSPR/USD (FLAT @ 45%) | [`d9fb786f…`](https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f) |
 | Live LLM signal — **PAXG tokenized gold (RWA, FLAT @ 65%)** | [`a11dcebb…`](https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd) |
 | x402 settled on-chain (facilitator `transfer_with_authorization`) | [`296f5f66…`](https://testnet.cspr.live/transaction/296f5f667c05364883b24ed680bcb47df68faa6fc85dead2d45e7742cfb110f8) |
-| On-chain reputation | **75%** — 3/4 resolved correct |
+| On-chain reputation | **62.5%** — 5/8 resolved correct, and still moving: the oracle publishes and grades on an unattended cycle, so this is whatever the chain says when you read it |
 
 ## Casper AI toolkit — every piece used, all real (not mocked)
 

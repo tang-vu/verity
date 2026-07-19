@@ -1,7 +1,7 @@
 # DEPLOYMENT — Casper testnet (`casper-test`)
 
 Authoritative record of on-chain artifacts. Explorer base: https://testnet.cspr.live
-**Status: FULL STACK LIVE (v2 — staking) — SignalOracle v2 with staking/slashing deployed, oracle bonded 2000 x402USD collateral, reputation 75%, a WRONG call SLASHED 400 x402USD on-chain to the consumer treasury, live CSPR/USD + PAXG (RWA) LLM signals published, x402 settled on-chain. ✅**
+**Status: FULL STACK LIVE (v2 — staking) — SignalOracle v2 with staking/slashing deployed, reputation 62.5% (5/8) after three WRONG calls SLASHED 976 x402USD on-chain to the consumer treasury, oracle re-bonded to 1600, live CSPR/USD + PAXG (RWA) LLM signals published on an unattended cycle, x402 settled on-chain. ✅**
 
 > v1 (pre-staking) SignalOracle was `e6a502b9…f79167`; superseded by v2 below (same
 > `verity_signal_oracle_package_hash` named key, re-installed with staking).
@@ -91,6 +91,15 @@ bonded. Bond gate to publish: 500.00 x402USD.
 | Oracle `approve` (x402USD → oracle pkg) | `2fc5a89c7b577a25dba0bb620400ce408489872048605a02af9cf53779232a00` |
 | Oracle `stake` (bond 2000 x402USD) | `46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78` |
 | **On-chain slash** (400 x402USD, from signal #4's wrong resolve) | `4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11` |
+| **On-chain slash** (320 x402USD, signal #9 resolved WRONG) | `2da6824271f85b95578f8d1eba1cfee73443fa153510ccd581326ff93834748f` |
+| **On-chain slash** (256 x402USD, signal #10 resolved WRONG) | `50c8f93d8dabac916a80f8e8f445eac423eb1cb065ffde9503c049c2f536feb7` |
+| Oracle `approve` + `stake` (re-bond 576 after slashing) | `83d64e34c4b04f5005a8dda62e78acce26af618febc2f9fde58357e1e449ec11` · `5683a7f6228f1a0557143f2c3af53825e99a6217052612d28c17586f7756b7e0` |
+
+Two wrong calls on 2026-07-19 (#9 CSPR DOWN, #10 PAXG UP) compounded the bond down
+1600 → 1280 → 1024 and took accuracy to **62.5% (5/8)**; the oracle then re-bonded
+576 back to 1600 via `npm run enable:staking -- --top-up 57600`. Cumulative slashed:
+**976.00 x402USD**. Re-collateralising after a loss is the normal protocol lifecycle,
+which is why top-up is a first-class mode rather than a re-run of setup.
 
 Entry points on `SignalOracle` v2: `stake(amount)`, `withdraw_stake(amount)`,
 `set_stake_token(token)`, `set_min_stake(amount)`, `set_treasury(treasury)`; views
@@ -126,3 +135,28 @@ Local test: `CONSUMER_SECRET_KEY_PATH=<repo>/keys/consumer_secret_key.pem npm ru
 > Ops note: if paid buys start reporting "settlement deferred / facilitator_error",
 > the hosted facilitator's gas account (`0202b2d6…3449`) may be dry again — refill on
 > testnet with `node --import tsx scripts/fund-x402-facilitator-gas.ts 100`.
+
+## Unattended operation (`npm run cycle`)
+
+One turn of the oracle's normal life: resolve what has come due, top the book back
+up to `--min-open` calls (alternating CSPR and PAXG/RWA), refresh the dashboard's
+fallback snapshot. `npm run cycle -- --dry-run` plans the turn without touching the
+chain.
+
+Resolution is guarded: a signal more than a full extra horizon past its deadline is
+skipped unless an operator names it with `--id`. Grading a 24h call against a price
+from days later measures drift rather than the forecast, and would still slash the
+bond for it. Signals #0/#5/#6 (published 2026-07-05) sit permanently in that bucket.
+
+Scheduled on the operator's Windows box for the final round:
+
+```
+schtasks /Create /TN "verity-oracle-cycle" ^
+  /TR "<repo>\scripts\run-oracle-cycle.cmd" ^
+  /SC HOURLY /MO 12 /ST 22:00 /ED 07/27/2026 /F
+```
+
+The wrapper resolves the repo from its own path (Task Scheduler starts in system32)
+and appends to `loop-output\cycle.log`. Signing keys never leave the machine — the
+reason this runs here rather than in CI, where a public repo would need the producer
+key in secrets. Remove with `schtasks /Delete /TN "verity-oracle-cycle" /F`.
