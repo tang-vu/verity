@@ -6,7 +6,7 @@
  * whole protocol prices — everything else on the page derives from it.
  */
 import { useEffect, useRef, useState } from "react";
-import { short, type RepResponse, type Signal } from "../lib/dashboard-data";
+import { fmtUnits, short, type RepResponse, type Signal } from "../lib/dashboard-data";
 import { ReputationHistoryChart } from "./reputation-history-chart";
 
 /** Count from 0 to target once, ~0.9s, spring-ish ease. Reduced-motion: jump. */
@@ -61,6 +61,17 @@ export function ReputationPanel({ rep, signals }: { rep: RepResponse | null; sig
             <b>{rep.reputation.correctSignals}/{rep.reputation.resolvedSignals}</b> resolved correct ·{" "}
             <b>{rep.reputation.totalSignals}</b> published · wrong calls slash{" "}
             <b style={{ color: "var(--down)" }}>20%</b> of the bond
+            {/* The rule only means something once it has cost the oracle money — so
+                say what it has actually destroyed, not just what it threatens to. */}
+            {rep.stake && rep.stake.slashedBaseUnits > 0 && (
+              <>
+                {" — "}
+                <b style={{ color: "var(--down)" }}>
+                  {fmtUnits(rep.stake.slashedBaseUnits, rep.stake.decimals)} {rep.stake.stakeSymbol}USD
+                </b>{" "}
+                already burned that way
+              </>
+            )}
           </>
         ) : (
           "reading contract state…"

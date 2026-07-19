@@ -127,7 +127,7 @@ export default function Dashboard() {
         <span className="spacer" />
         <span className="mono">
           {updatedAt ? `updated ${new Date(updatedAt).toLocaleTimeString()}` : "connecting…"}
-          {live ? " · reconstructed from casper-test · refreshes 30s" : ""}
+          {live ? " · reconstructed from casper-test · refreshes 30s · oracle publishes and grades itself on a 12h cycle" : ""}
         </span>
       </footer>
     </div>

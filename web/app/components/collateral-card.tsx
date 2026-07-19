@@ -22,6 +22,16 @@ export function CollateralCard({ stake, loading }: { stake: Stake | null; loadin
           <div className="row" style={{ marginTop: 12 }}>
             <span className="badge wrong">−{fmtUnits(stake.slashedBaseUnits, stake.decimals)} {stake.stakeSymbol}USD slashed</span>
           </div>
+          {stake.slashedBaseUnits > 0 && (
+            // An oracle that had never been slashed would prove nothing about the
+            // mechanism. Losing capital and then putting more back up is the whole
+            // lifecycle, so state it rather than leaving a red badge to read as failure.
+            <div className="sub" style={{ marginTop: 8 }}>
+              Capital already destroyed by this oracle&apos;s own wrong calls — paid to the
+              consumer treasury, then re-bonded. The figure above is what is at risk{" "}
+              <b>right now</b>.
+            </div>
+          )}
           {stake.txs && stake.txs.length > 0 && (
             <div className="row" style={{ marginTop: 12, gap: 6 }}>
               {stake.txs.slice(-3).map((t, i) => (
