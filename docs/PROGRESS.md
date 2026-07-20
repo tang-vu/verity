@@ -2,6 +2,39 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-20 — The unattended cycle was blanking the collateral card
+
+Found while checking prod drift. The scheduled cycle commits a snapshot built by
+`generate-web-snapshot.ts`, which read **stake and loop log from local files**
+(`loop-output/`, gitignored). A CI runner has neither → committed snapshot had
+`stake.txs: 0`, no bonded/slashed, `loopLog: 0`. Same class of bug as the cold
+signal store fixed in `d666e98`, missed because only signals were rehydrated.
+
+Silent because the dashboard's live path reads the chain directly — only the
+offline fallback was gutted, and only until someone looked.
+
+Fix splits by what chain history can actually prove:
+- **Stake → rebuilt from chain.** New `shared/src/chain-stake-reader.ts`
+  (`replayStake`/`readStakeFromChain`) reusing `fetchPackageDeploys`. Replays
+  set_stake_token/set_min_stake/stake/withdraw, and slashes 20% of the
+  *remaining* bond on each resolve the book graded WRONG — contract's own rule.
+  Returns undefined (not a zero bond) until a stake token is set, so "staking
+  off" never renders as "staked nothing".
+- **Loop log → carried forward.** No chain read can reconstruct it (the web's own
+  live path also falls back to the snapshot for it), so an empty local store now
+  keeps the previous snapshot's entries instead of overwriting with `[]`.
+- Merge keeps config-only fields the chain can't show (oracle, treasury).
+
+Verified by simulating a runner: hid `loop-output/`, ran rehydrate + snapshot.
+Chain-derived bond/slashed/min match the agent-built local store **exactly**
+(128000 / 129600 / 50000). Tx trail differs by explainable entries only — the two
+CEP-18 `approve`s live on the *token* package so an oracle-package replay can't
+see them (they move no collateral), while the chain caught an early
+`set_min_stake` the local store had missed. Chain now wins for stake, so local
+and CI stop producing thrashing diffs.
+
+8 new tests (46 TS total).
+
 ## 2026-07-20 — Confidence graded, not just direction (closed a free-lever bug)
 
 Found an incentive hole in our own novel mechanic. Consumer sizes with

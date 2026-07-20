@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T15:10:13.812Z",
+  "generatedAt": "2026-07-20T15:40:37.834Z",
   "signals": [
     {
       "id": 0,
@@ -416,40 +416,41 @@
     "treasury": "account-hash-82ec56fef048bec1bec5811f123c1460615ba1514b6b1b886ce3c5b97a15d780",
     "txs": [
       {
+        "label": "set_min_stake",
+        "txHash": "978a92809de49085ffae3cc8c6f09aee1ef7da4bc022900040b1f395bb66485e",
+        "explorerUrl": "https://testnet.cspr.live/transaction/978a92809de49085ffae3cc8c6f09aee1ef7da4bc022900040b1f395bb66485e",
+        "at": 1783219565000
+      },
+      {
         "label": "set_stake_token",
         "txHash": "cd247c6845ddd9f4ed1fb8bcff05ddba4d51cf6f814974219be13d96f6031cbb",
         "explorerUrl": "https://testnet.cspr.live/transaction/cd247c6845ddd9f4ed1fb8bcff05ddba4d51cf6f814974219be13d96f6031cbb",
-        "at": 1783220548777
+        "at": 1783220484000
       },
       {
         "label": "set_treasury",
         "txHash": "cf747c58a8be6fae6d87a449be65ceb27839f02da2597354fe4905d77d0e0236",
         "explorerUrl": "https://testnet.cspr.live/transaction/cf747c58a8be6fae6d87a449be65ceb27839f02da2597354fe4905d77d0e0236",
-        "at": 1783220557649
+        "at": 1783220489000
       },
       {
         "label": "set_min_stake",
         "txHash": "2f8acc6666595a7f241c98008f43f3e41b8c330d4af6acbfb224e1e49eac6df5",
         "explorerUrl": "https://testnet.cspr.live/transaction/2f8acc6666595a7f241c98008f43f3e41b8c330d4af6acbfb224e1e49eac6df5",
-        "at": 1783220564899
-      },
-      {
-        "label": "approve",
-        "txHash": "2fc5a89c7b577a25dba0bb620400ce408489872048605a02af9cf53779232a00",
-        "explorerUrl": "https://testnet.cspr.live/transaction/2fc5a89c7b577a25dba0bb620400ce408489872048605a02af9cf53779232a00",
-        "at": 1783220572838
+        "at": 1783220498000
       },
       {
         "label": "stake",
         "txHash": "46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78",
         "explorerUrl": "https://testnet.cspr.live/transaction/46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78",
-        "at": 1783220581369
+        "at": 1783220513000,
+        "amountBaseUnits": 200000
       },
       {
         "label": "slash",
         "txHash": "4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11",
         "explorerUrl": "https://testnet.cspr.live/transaction/4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11",
-        "at": 1783220877011,
+        "at": 1783220809000,
         "amountBaseUnits": 40000
       },
       {
@@ -467,22 +468,17 @@
         "amountBaseUnits": 25600
       },
       {
-        "label": "approve",
-        "txHash": "83d64e34c4b04f5005a8dda62e78acce26af618febc2f9fde58357e1e449ec11",
-        "explorerUrl": "https://testnet.cspr.live/transaction/83d64e34c4b04f5005a8dda62e78acce26af618febc2f9fde58357e1e449ec11",
-        "at": 1784469343390
-      },
-      {
         "label": "stake",
         "txHash": "5683a7f6228f1a0557143f2c3af53825e99a6217052612d28c17586f7756b7e0",
         "explorerUrl": "https://testnet.cspr.live/transaction/5683a7f6228f1a0557143f2c3af53825e99a6217052612d28c17586f7756b7e0",
-        "at": 1784469351620
+        "at": 1784469283000,
+        "amountBaseUnits": 57600
       },
       {
         "label": "slash",
         "txHash": "2a7170d19c1d6b9a33b40ab1b8f25110ee4848ee38144fa6e4f780e8d4de681e",
         "explorerUrl": "https://testnet.cspr.live/transaction/2a7170d19c1d6b9a33b40ab1b8f25110ee4848ee38144fa6e4f780e8d4de681e",
-        "at": 1784559619782,
+        "at": 1784559555000,
         "amountBaseUnits": 32000
       }
     ],

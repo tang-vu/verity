@@ -36,7 +36,7 @@
     "smoke:mcp": "node --import tsx scripts/smoke-mcp-buys-signal-via-x402.ts",
     "test": "npm run test:agent && npm run test:shared",
     "test:agent": "node --import tsx --test defi-agent/src/reputation-weighted-action.test.ts",
-    "test:shared": "node --import tsx --test shared/src/stake-store.test.ts shared/src/chain-signal-reader.test.ts shared/src/calibration.test.ts",
+    "test:shared": "node --import tsx --test shared/src/stake-store.test.ts shared/src/chain-signal-reader.test.ts shared/src/chain-stake-reader.test.ts shared/src/calibration.test.ts",
     "test:stake": "node --import tsx --test shared/src/stake-store.test.ts",
     "go-live": "node --import tsx scripts/go-live.ts",
     "demo": "node --import tsx scripts/run-demo.ts",

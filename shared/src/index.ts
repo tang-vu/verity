@@ -8,6 +8,7 @@ export * from "./reputation-math.js";
 export * from "./calibration.js";
 export * from "./signal-store.js";
 export * from "./chain-signal-reader.js";
+export * from "./chain-stake-reader.js";
 export * from "./stake-store.js";
 export * from "./loop-log-store.js";
 export * from "./casper-client.js";
