@@ -1,6 +1,6 @@
 # verity — the trust layer for the machine economy, on Casper
 
-**An oracle bonds real collateral behind its word — worth exactly its on-chain accuracy, and slashed on-chain when it's wrong.** verity is a reputation-staked x402 signal oracle plus an autonomous DeFi agent that trusts it only as far as its verifiable, on-chain track record. Built for the Casper Agentic Buildathon 2026 — matching **Build Direction #2** (RWA Oracle Agents with verifiable on-chain reputation) almost exactly.
+**An oracle bonds real collateral behind its word — worth exactly its on-chain accuracy, slashed on-chain when it's wrong, and discounted when it claims more certainty than it delivers.** verity is a reputation-staked x402 signal oracle plus an autonomous DeFi agent that trusts it only as far as its verifiable, on-chain track record. Built for the Casper Agentic Buildathon 2026 — matching **Build Direction #2** (RWA Oracle Agents with verifiable on-chain reputation) almost exactly.
 
 ## The problem
 
@@ -10,17 +10,23 @@ Agent-to-agent commerce is coming, but agents have no native way to decide *whos
 
 verity is two cooperating autonomous agents and two smart contracts on Casper testnet:
 
-1. **Oracle Agent (producer)** — fetches real market data (CoinGecko — CSPR/USD **and PAXG, tokenized gold, a genuine real-world asset**), uses an LLM (DeepSeek) to produce a directional signal with a *calibrated* confidence + reasoning, and writes it on-chain. The `SignalOracle` Odra contract stores each signal, maintains a **tamper-proof reputation score**, and holds the oracle's **bonded collateral (x402USD)**. The latest signal sits behind an **x402 paywall**.
+1. **Oracle Agent (producer)** — fetches real market data (CoinGecko — CSPR/USD **and PAXG, tokenized gold, a genuine real-world asset**), uses an LLM (DeepSeek) to produce a directional signal with a stated confidence + reasoning, and writes it on-chain. The `SignalOracle` Odra contract stores each signal, maintains a **tamper-proof reputation score**, and holds the oracle's **bonded collateral (x402USD)**. The latest signal sits behind an **x402 paywall**.
 
-2. **DeFi Agent (consumer)** — autonomously **discovers** the oracle via MCP, **pays** the x402 fee (settled on-chain by the Casper facilitator), reads the signal, **weights its action by the oracle's on-chain reputation — and refuses any oracle without real collateral at risk** — then executes a **swap** on Casper DeFi via the **CSPR.trade MCP**. No human in the loop; every step prints a real tx hash with a cspr.live link.
+2. **DeFi Agent (consumer)** — autonomously **discovers** the oracle via MCP, **pays** the x402 fee, reads the signal, **weights its action by the oracle's on-chain reputation — refusing any oracle without real collateral at risk** — then executes a **swap** on Casper DeFi via the **CSPR.trade MCP**. No human in the loop; every step prints a real tx hash with a cspr.live link.
+
+The oracle keeps living without an operator: a scheduled cycle rebuilds its book **from chain history**, grades whatever calls have come due, and publishes fresh ones — so the reputation on the dashboard is a live number, not a frozen screenshot.
 
 ## The novel mechanic — reputation as *slashable collateral*
 
-The oracle bonds real capital (x402USD) behind its calls. A wrong resolution **slashes 20% of that bond on-chain**, routed to a consumer-protection treasury — *bad data literally pays out to the agents it could have misled*. The consumer's capital-at-risk is then a pure function of that verifiable reputation:
+The oracle bonds real capital (x402USD) behind its calls. A wrong resolution **slashes 20% of the remaining bond on-chain**, routed to a consumer-protection treasury — *bad data literally pays out to the agents it could have misled*. Losses compound, so live collateral tracks recent honesty rather than a lifetime average.
 
-> **notional = max_size × on-chain_accuracy × signal_confidence** — gated on the oracle holding real bonded collateral.
+**And the oracle's confidence is graded too.** Accuracy is scored by the contract and collateral is slashed by it, but stated confidence is the one sizing input the oracle writes *about itself* — and it multiplies the position directly. Left ungraded, "always claim 95%" would move strictly more of a buyer's capital at zero cost. So every resolved call is scored against what was claimed on it (Brier score, plus the gap between average claim and realised hit rate), and the consumer discounts future confidence by that record:
 
-A poor, unproven, or **undercollateralized** oracle literally *cannot move capital*. Reputation is non-transferable and slow to build, so honest, long-lived oracles accrue durable on-chain pricing power. Truth becomes machine-priced, trust-minimized, and collateral-backed.
+> **notional = max_size × on-chain_accuracy × (stated_confidence × calibration_factor)** — gated on the oracle holding real bonded collateral.
+
+The consumer computes that calibration **from chain history itself**, never from the oracle's own report — confidence and outcome are both stored on-chain per signal, so any agent can recheck it independently.
+
+A poor, unproven, or **undercollateralized** oracle literally *cannot move capital*, and an oracle that overstates its certainty shrinks its own future sizing. Reputation is non-transferable and slow to build, so honest, long-lived oracles accrue durable on-chain pricing power. Truth becomes machine-priced, trust-minimized, and collateral-backed.
 
 ## Live on Casper testnet (`casper-test`) — all real transactions
 
@@ -29,11 +35,15 @@ A poor, unproven, or **undercollateralized** oracle literally *cannot move capit
 | SignalOracle v2 (Odra, staking) | [`13b217e5…14ffd0`](https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0) |
 | X402Token (CEP-18 + CEP-3009 + CEP-2612) | [`4373bc32…c128cc`](https://testnet.cspr.live/contract-package/4373bc321abc569b8d336d85bc37e9830a65f86f564cfe97edd32f4125c128cc) |
 | Oracle bonds **2000 x402USD** collateral | [`46a5d9b1…`](https://testnet.cspr.live/transaction/46a5d9b1a1f1dea027ae1bdca25f55e427879e7cdbc08714c753b11ac5ff0c78) |
-| **On-chain SLASH** — a wrong call burns **400 x402USD** → consumer treasury | [`4ae1e222…`](https://testnet.cspr.live/transaction/4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11) |
-| Live LLM signal — CSPR/USD (FLAT @ 45%) | [`d9fb786f…`](https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f) |
-| Live LLM signal — **PAXG tokenized gold (RWA, FLAT @ 65%)** | [`a11dcebb…`](https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd) |
+| **On-chain SLASH** — a wrong call burns 20% of the bond → consumer treasury | [`4ae1e222…`](https://testnet.cspr.live/transaction/4ae1e222a9234c0a3cd9d3c437af247d352ea0359f99fa98fc748b1b4ba79f11) |
+| Live LLM signal — CSPR/USD | [`d9fb786f…`](https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f) |
+| Live LLM signal — **PAXG tokenized gold (RWA)** | [`a11dcebb…`](https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd) |
 | x402 settled on-chain (facilitator `transfer_with_authorization`) | [`296f5f66…`](https://testnet.cspr.live/transaction/296f5f667c05364883b24ed680bcb47df68faa6fc85dead2d45e7742cfb110f8) |
-| On-chain reputation | **62.5%** — 5/8 resolved correct, and still moving: the oracle publishes and grades on an unattended cycle, so this is whatever the chain says when you read it |
+| **On-chain reputation** | **60%** — 6/10 resolved correct, and still moving: the oracle publishes and grades unattended, so this is whatever the chain says when you read it |
+| **Collateral destroyed to date** | **1296 x402USD** burned by its own wrong calls · **1280** still at risk right now |
+| **Confidence calibration** | `CALIBRATED` — claimed 63% on average, delivered 60% (Brier 0.223) → a 3% haircut on its stated confidence |
+
+*Live-status note (2026-07-20): the hosted facilitator changed the argument name it uses when building the settlement transaction — it now sends `value` where the deployed CEP-3009 token declares `amount`, so new settlements revert with `MissingArg` and payments complete in verified-deferred mode (the EIP-712 authorization is still real and cryptographically verified). The 8 settlements already on-chain remain verifiable. Nothing on our side selects that argument name — the facilitator builds the deploy — so this clears when the hosted service does.*
 
 ## Casper AI toolkit — every piece used, all real (not mocked)
 
@@ -44,8 +54,9 @@ A poor, unproven, or **undercollateralized** oracle literally *cannot move capit
 | **x402 Facilitator** | Verifies the payment and submits the CEP-18 transfer on-chain (pays gas) |
 | **Casper MCP** (82 tools) | The consumer discovers the oracle / chain state |
 | **CSPR.trade MCP** | The consumer executes the reputation-weighted swap |
+| **verity's own MCP server** | 4 stdio tools so *any* MCP agent can audit the oracle's reputation and calibration for free, and buy the signal over real x402 |
 | **Typed-data signing (EIP-712)** | `transfer_with_authorization` over a CEP-18 token — gasless, verifiable |
-| **LLM** (DeepSeek) | Generates the calibrated, strict-JSON market signal |
+| **LLM** (DeepSeek) | Generates the strict-JSON market signal |
 
 ## Architecture
 
@@ -61,34 +72,35 @@ A poor, unproven, or **undercollateralized** oracle literally *cannot move capit
           │ signal         └───│ CONSUMER  │        │ x402         │
           └───────────────────▶│ DeFi agent│───────▶│ Facilitator  │
                                │ weight by │        └──────────────┘
-                               │ rep + bond│──▶ CSPR.trade MCP → swap
+                               │ rep+bond+ │──▶ CSPR.trade MCP → swap
+                               │ calibrat. │
                                └───────────┘
 
 ## Tech stack
 
-- **Contracts:** Rust + Odra 2.8 (`SignalOracle` with staking/slashing, `X402Token`), **26 tests** (contract + agent, incl. cross-contract collateral flow), deployed to testnet.
+- **Contracts:** Rust + Odra 2.8.1 (`SignalOracle` with staking/slashing, `X402Token`), deployed to testnet. **72 tests** — 26 contract (incl. the cross-contract collateral flow) + 46 TypeScript (incl. the calibration rule and the chain-replay readers).
 - **Agents / x402 / MCP / dashboard:** TypeScript + Node. Official `@casper-ecosystem/casper-eip-712`, `casper-js-sdk` v5, MCP SDK, DeepSeek (OpenAI-compatible).
-- **Dashboard:** Next.js — on-chain reputation, a **bonded-collateral card**, signal history (each row links to its cspr.live tx), and the autonomous loop log.
+- **Dashboard:** Next.js — reconstructs the oracle's whole state **live from the public Casper explorer on every load** (no backend, no secrets): reputation, a bonded-collateral card, a confidence-calibration card, signal history where each row links to its cspr.live tx, and the autonomous loop log. It also hosts the **real x402 paywall as an API route**, so the deployed site is itself a working x402 resource server you can `curl`.
 
 ## Demo video
 
-**▶️ https://youtu.be/h3nx_mftOUE** — a ~98-second walkthrough: on-chain proof (SignalOracle v2 with staking, the real on-chain slash, the PAXG/RWA signal) → the autonomous `agent:loop` running live, reading 60% accuracy over 10 graded calls and declining to trade on a flat call → the live dashboard, including the confidence-calibration grade. MiMo TTS voiceover + burned-in captions. Every figure spoken is read off the chain at recording time.
+**▶️ https://youtu.be/h3nx_mftOUE** — a ~99-second walkthrough: on-chain proof (SignalOracle v2 with staking, the real on-chain slash, the PAXG/RWA signal) → the autonomous `agent:loop` running live, reading 60% accuracy over 10 graded calls and **declining to trade on a flat call** → the live dashboard, including the confidence-calibration grade. MiMo TTS voiceover + burned-in captions. Every figure spoken is read off the chain at recording time.
 
 ## Long-term launch plan
 
 verity is the first member of an **x402 "verifiable data products" family** — paid, machine-bought data feeds whose price is backed by on-chain reputation.
 
 - **Who pays:** autonomous DeFi agents, trading bots, treasury managers, and other oracles wanting a reputation-weighted second opinion. Every read is a micropayment.
-- **Roadmap:** (1) **now** — oracle + consumer; CSPR/USD **and PAXG (RWA)**; **staking + on-chain slashing live**; testnet · (2) multi-oracle marketplace, consumers pick by reputation *and* live bond · (3) more RWA feeds (tokenized treasury/commodity NAVs) on mainnet x402 · (4) open SDK so any agent can publish or consume reputation-staked feeds.
+- **Roadmap:** (1) **now** — oracle + consumer; CSPR/USD **and PAXG (RWA)**; **staking, on-chain slashing and confidence calibration live**; testnet · (2) multi-oracle marketplace, consumers pick by reputation, live bond *and* calibration · (3) more RWA feeds (tokenized treasury/commodity NAVs) on mainnet x402 · (4) open SDK so any agent can publish or consume reputation-staked feeds.
 - **Moat:** reputation is non-transferable and slow to build — a durable, on-chain trust primitive.
 
 ## Links
 
 - **Live dashboard:** https://web-eight-amber-iq6mjhp7bf.vercel.app
-- **Public roadmap (on the live site):** https://web-eight-amber-iq6mjhp7bf.vercel.app/#launch-plan
-- **X / Twitter:** https://x.com/tangvu_dev
 - **Demo video:** https://youtu.be/h3nx_mftOUE
 - **GitHub (open-source, MIT):** https://github.com/tang-vu/verity
 - **Full deployment record (all tx hashes):** [`docs/DEPLOYMENT.md`](https://github.com/tang-vu/verity/blob/main/docs/DEPLOYMENT.md)
+- **Public roadmap (on the live site):** https://web-eight-amber-iq6mjhp7bf.vercel.app/#launch-plan
+- **X / Twitter:** https://x.com/tangvu_dev
 
 *All code original and newly developed for the Casper Agentic Buildathon 2026.*

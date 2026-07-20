@@ -47,7 +47,7 @@ How it maps to the Final-Round judging criteria:
 
 | Judging criterion | Where verity delivers |
 |---|---|
-| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve/**stake**/**slash**/withdraw). 64 tests (26 contract + 38 TS). |
+| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve/**stake**/**slash**/withdraw). 72 tests (26 contract + 46 TS). |
 | **Use of AI / agentic systems** | Two autonomous agents: an LLM oracle and a DeFi consumer that pays, reasons over reputation + collateral, and trades with no human in the loop. |
 | **Innovation & originality** | Reputation as *slashable collateral*: the oracle bonds capital that a wrong call burns on-chain (to a consumer-protection treasury); the consumer refuses undercollateralized oracles outright. |
 | **Real-world applicability (DeFi/RWA)** | A trust-minimized data-feed market carrying both CSPR/USD and a **PAXG tokenized-gold (RWA)** feed on the same publish→resolve→reputation→x402 rails. |
