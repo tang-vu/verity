@@ -22,35 +22,37 @@
   .ln { opacity:0; white-space:nowrap; }
   .mut{color:#a3b2ab;} .dim{color:#647069;} .ok{color:#3ad08a;} .chain{color:#7fe9b6;}
   .gold{color:#d2a75e;} .sell{color:#e0655f;}
-  .ln:nth-child(1){animation:r .25s 0.4s both;}
-  .ln:nth-child(2){animation:r .25s 1.7s both;}
-  .ln:nth-child(3){animation:r .25s 3.2s both;}
-  .ln:nth-child(4){animation:r .25s 4.8s both;}
-  .ln:nth-child(5){animation:r .25s 6.4s both;}
-  .ln:nth-child(6){animation:r .25s 8.0s both;}
-  .ln:nth-child(7){animation:r .25s 9.6s both;}
-  .ln:nth-child(8){animation:r .25s 11.2s both;}
-  .ln:nth-child(9){animation:r .25s 13.0s both;}
-  .ln:nth-child(10){animation:r .25s 15.0s both;}
-  .ln:nth-child(11){animation:r .25s 16.8s both;}
-  .ln:nth-child(12){animation:r .25s 18.2s both;}
+  /* Paced to the narration for this scene (~29s), so lines land as they are
+     spoken instead of finishing early and holding a static frame. */
+  .ln:nth-child(1){animation:r .25s 0.5s both;}
+  .ln:nth-child(2){animation:r .25s 2.4s both;}
+  .ln:nth-child(3){animation:r .25s 4.6s both;}
+  .ln:nth-child(4){animation:r .25s 6.8s both;}
+  .ln:nth-child(5){animation:r .25s 9.0s both;}
+  .ln:nth-child(6){animation:r .25s 11.4s both;}
+  .ln:nth-child(7){animation:r .25s 13.8s both;}
+  .ln:nth-child(8){animation:r .25s 16.2s both;}
+  .ln:nth-child(9){animation:r .25s 18.6s both;}
+  .ln:nth-child(10){animation:r .25s 21.0s both;}
+  .ln:nth-child(11){animation:r .25s 23.4s both;}
+  .ln:nth-child(12){animation:r .25s 25.6s both;}
   @keyframes r { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:none;} }
 </style></head>
 <body>
-  <h2>The autonomous loop — npm run agent:loop (real testnet run · 2026-07-18)</h2>
+  <h2>The autonomous loop — npm run agent:loop (real testnet run · 2026-07-20)</h2>
   <div class="term">
     <div class="ln"><span class="dim">$ npm run agent:loop</span></div>
     <div class="ln"><span class="chain">1 ▸</span> discovering oracle via MCP… <span class="ok">✓ Casper MCP — 82 on-chain tools</span></div>
     <div class="ln"><span class="chain">2 ▸</span> paying x402 fee, reading latest signal…</div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="ok">✓ Signal #9: DOWN @ 55% — CSPR/USD (PAID)</span></div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="chain">⛓ x402 settled on-chain</span> <span class="dim">tx 3a58e0a5…0bdf58</span></div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">oracle reputation: <span class="ok">83.3%</span> (5/6 resolved)</span></div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="gold">🔒 bonded collateral: 1600 x402 at risk · slashed to date: 400</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="ok">✓ Signal #14: FLAT @ 65% — PAXG/USD (PAID)</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="chain">⛓ x402 payment verified</span> <span class="dim">EIP-712 · payer 0082ec56…</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">oracle reputation: <span class="ok">60.0%</span> (6/10 resolved)</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="gold">🔒 bonded collateral: 1280 x402 at risk · slashed to date: 1296</span></div>
     <div class="ln"><span class="chain">3 ▸</span> weighting by on-chain reputation + bonded stake…</div>
-    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">decision: <span class="sell">SELL</span> — weight 45.8% = accuracy 83.3% × confidence 55% → <span class="sell">458 units</span></span></div>
-    <div class="ln"><span class="chain">4 ▸</span> executing via CSPR.trade MCP… <span class="ok">✓ swap executed via build_swap</span></div>
-    <div class="ln"><span class="ok">✓ loop closed: signal → x402 payment → reputation-weighted action</span></div>
-    <div class="ln"><span class="dim">every hash above is a live transaction on testnet.cspr.live</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">confidence calibration: <span class="ok">calibrated</span> — claimed 63%, delivered 60% over 10 → 3% haircut</span></div>
+    <div class="ln">&nbsp;&nbsp;&nbsp;<span class="mut">decision: <span class="sell">HOLD</span> — signal is FLAT, no directional trade</span></div>
+    <div class="ln"><span class="chain">4 ▸</span> execution skipped — <span class="ok">the agent declines to trade on a flat call</span></div>
+    <div class="ln"><span class="dim">reputation, collateral and calibration all read from testnet.cspr.live</span></div>
   </div>
 </body>
 </html>

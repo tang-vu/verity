@@ -56,7 +56,7 @@ How it maps to the Final-Round judging criteria:
 | **Long-term launch plans** | x402 "verifiable data products" family with a staged roadmap (below). |
 | **Long-term impact** | Open SDK so any agent can publish/consume reputation-staked feeds — a self-pricing data economy on Casper. First piece shipped: the **verity MCP server** (4 tools) lets any MCP-capable agent check the oracle's track record and buy the signal over x402 today. |
 
-**Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ✅ demo video (~77s walkthrough, `loop-output/verity-demo.mp4`). Community voting runs via **CSPR.fans**.
+**Submission checklist:** ✅ working prototype on Casper Testnet with a transaction-producing on-chain component · ✅ open-source GitHub repo with README · ✅ demo video (~98s walkthrough, `loop-output/verity-demo.mp4`). Community voting runs via **CSPR.fans**.
 
 ## Architecture
 
@@ -266,6 +266,17 @@ The [live dashboard](https://web-eight-amber-iq6mjhp7bf.vercel.app) is fully usa
    `curl -i https://web-eight-amber-iq6mjhp7bf.vercel.app/api/x402/signal` returns the 402
    challenge any paying agent would receive.
 
+> **Note on live settlement (since 2026-07-20).** The hosted CSPR.cloud facilitator
+> changed the argument name it uses when building the settlement transaction —
+> it now sends `value` where the deployed CEP-3009 token expects `amount`, so the
+> deploy reverts with `User error: 64658` (MissingArg). Payments therefore
+> complete in **verified-deferred** mode: the EIP-712 authorization is real and
+> cryptographically checked, but on-chain settlement is skipped. The 8 settlements
+> already on-chain (latest [`339be587…`](https://testnet.cspr.live/deploy/339be587f5)),
+> and the revenue they fund, remain verifiable. Nothing on our side selects that
+> argument name — the facilitator builds the deploy — so this clears when the
+> hosted service does.
+
 ## Secrets (the only human inputs)
 
 Set these in `.env` (see `.env.example`):
@@ -292,7 +303,7 @@ verity is **live on Casper testnet** — the full loop ran end-to-end with real 
 | **On-chain reputation** | 60% — 6/10 resolved correct on v2, and still moving: the oracle publishes and grades on an unattended cycle, so this number is whatever the chain says when you read it |
 | **Live dashboard** | https://web-eight-amber-iq6mjhp7bf.vercel.app |
 
-**Demo video (~77s):** https://youtu.be/wp5KoLqxDU4 — on-chain proof (staking, the on-chain slash, RWA) → real `agent:loop` terminal run → live dashboard, with MiMo TTS voiceover + captions.
+**Demo video (~98s):** https://youtu.be/wp5KoLqxDU4 — on-chain proof (staking, the on-chain slash, RWA) → a real `agent:loop` terminal run, including the confidence-calibration grade and the agent declining to trade on a flat call → live dashboard. MiMo TTS voiceover + captions. Every figure spoken is read off the chain at recording time.
 
 ## Long-term launch plan
 

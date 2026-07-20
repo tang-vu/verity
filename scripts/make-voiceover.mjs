@@ -28,31 +28,35 @@ const MIMO_VOICE = process.env.MIMO_VOICE ?? "Chloe";
 const EDGE_VOICE = process.env.EDGE_VOICE ?? "en-US-AndrewNeural";
 const STYLE = "Speak in a calm, confident, professional tech-narrator voice at a measured pace.";
 
-// Narration for the final-round cut (83.3% reputation, live x402 paywall, MCP
-// server). Groups end on the scene boundaries of the stitched video.
+// Narration for the final-round cut. Every figure here is read off the chain at
+// recording time (60% reputation over 10 graded calls, 1296 x402USD slashed to
+// date, calibrated confidence) — restate them from the dashboard before a
+// re-record rather than trusting this comment. Groups end on the scene
+// boundaries of the stitched video.
 const GROUPS = [
   {
-    endAt: 16, // intro reel
+    endAt: 17, // intro reel
     lines: [
       "verity is the trust layer for the machine economy, built on Casper.",
       "Most oracles can be confidently wrong forever, and never pay a price. verity makes an oracle's word cost exactly its accuracy.",
     ],
   },
   {
-    endAt: 40, // terminal loop scene
+    endAt: 46, // terminal loop scene
     lines: [
-      "The loop runs live on testnet: a DeFi agent discovers the oracle over MCP, hits an x402 paywall, and pays per signal, settled on-chain.",
-      "It reads the oracle's on-chain record, eighty three percent, and its bonded collateral, then sizes the trade: accuracy times confidence.",
-      "This run: sell, four hundred fifty eight units, via the CSPR dot trade MCP. No human touched anything.",
+      "The loop runs live on testnet: a DeFi agent discovers the oracle over MCP, pays the x402 paywall, and reads the signal.",
+      "It weighs the oracle's on-chain record, sixty percent over ten graded calls, and the collateral bonded behind it.",
+      "This call came in flat, so the agent declined to trade. No human in the loop.",
     ],
   },
   {
     endAt: null, // dashboard walkthrough
     lines: [
-      "Everything lands on a live dashboard, reconstructed in real time from the public Casper explorer.",
-      "The oracle bonds real collateral behind every call. When it was wrong, the contract slashed four hundred x402 dollars on-chain, into a consumer-protection treasury.",
-      "Feeds cover Casper and tokenized gold, a real world asset. And anyone — human or agent — can buy the signal over x402 right from the browser, or through verity's own MCP server.",
-      "verity. Machine-verifiable, collateral-backed trust, with no human in the loop. Live on Casper testnet.",
+      "Everything lands on a live dashboard, rebuilt in real time from the public Casper explorer.",
+      "Wrong calls have already burned twelve hundred and ninety six x402 dollars on-chain, into a consumer-protection treasury.",
+      "verity also grades the oracle's confidence: it claimed sixty three percent and delivered sixty, so its word is discounted before capital moves.",
+      "Feeds cover Casper and tokenized gold. Any agent can buy the signal over x402, or through verity's own MCP server.",
+      "verity. Collateral-backed trust, with no human in the loop. Live on Casper testnet.",
     ],
   },
 ];

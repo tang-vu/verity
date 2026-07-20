@@ -57,8 +57,10 @@ const norm = "scale=1280:800:force_original_aspect_ratio=decrease,pad=1280:800:-
 // Single pass so each character is rewritten exactly once (backslash → slash,
 // colon → escaped colon) with no reprocessing of earlier replacements.
 const srtForFilter = srtPath.replace(/[\\:]/g, (ch) => (ch === "\\" ? "/" : "\\:"));
+// Small enough not to cover the dashboard cards the narration is pointing at —
+// at FontSize 20 a two-line cue sat right on top of the calibration figures.
 const style =
-  "FontName=Segoe UI,FontSize=20,PrimaryColour=&H00ECEFE9,OutlineColour=&H000C0D0B,BorderStyle=1,Outline=2,Shadow=0,MarginV=40";
+  "FontName=Segoe UI,FontSize=14,PrimaryColour=&H00ECEFE9,OutlineColour=&H000C0D0B,BorderStyle=1,Outline=2,Shadow=0,MarginV=26";
 
 const filter =
   `[0:v]${norm}[v0];[1:v]${norm}[v1];[2:v]${norm}[v2];` +

@@ -65,15 +65,21 @@ async function scrollToSection(selector) {
   }, selector);
 }
 
+// Beat lengths are tuned so each card is on screen while the voiceover is
+// talking about it — see the group timings in make-voiceover.mjs. The
+// calibration card gets the longest hold because its narration line is the
+// longest, and because a subtitle used to sit right over its figures.
 await sleep(2000); // hold: hero + reputation instrument (count-up)
 await scrollToSection(".ticker");
-await sleep(2200); // 5-metric strip
+await sleep(3200); // 5-metric strip
 await scrollToSection(".bento");
-await sleep(2800); // latest signal + bonded collateral cards
+await sleep(4000); // latest signal + bonded collateral
+await scrollToSection(".bento > div:nth-child(3)");
+await sleep(12000); // confidence calibration — claimed vs delivered, Brier, haircut
 await scrollToSection(".section:has(table)");
-await sleep(3000); // signal history (tx links, CSPR + PAXG RWA)
+await sleep(5000); // signal history (tx links, CSPR + PAXG RWA)
 await scrollToSection(".loglist");
-await sleep(3000); // autonomous loop timeline
+await sleep(5000); // autonomous loop timeline
 
 // Finale — live x402 purchase: click the demo-buy button and wait until step
 // [3/3] (settled on-chain) is actually rendered, so the closing frames always
@@ -89,7 +95,7 @@ if (await buyBtn.count()) {
     .waitFor({ timeout: 22_000 })
     .catch(() => console.log("settle step not seen in time — ending anyway"));
 }
-await sleep(3000);
+await sleep(6000);
 
 await context.close(); // flush video
 await browser.close();

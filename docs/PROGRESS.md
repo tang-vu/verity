@@ -2,6 +2,40 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-20 — Demo video re-cut; x402 settlement broken upstream
+
+**Upstream regression (not ours).** Settlement deploys now revert with
+`User error: 64658` (MissingArg). Diffed the args of the failing deploy against
+the last good one on the same token package: facilitator now sends **`value`**
+where it used to send **`amount`**, and the deployed CEP-3009 token declares
+`amount`. Last success 19/7 14:50, first failure 20/7 16:10. Not a version
+mismatch — `/supported` advertises x402Version 2 and we send 2. The deploy is
+built by the facilitator, and `extra.version` is inside the EIP-712 digest so it
+cannot be repurposed as a lever; there is no fix on our side short of redeploying
+the token (which would move the address README cites, and would break again if
+they revert). Payments degrade to verified-deferred: real EIP-712 proof, no
+settlement. 8 on-chain settlements remain verifiable. Noted in README so judges
+clicking "Buy the signal live" are not surprised.
+
+**Video re-cut** (77s → 98s), every figure read off the chain at recording time:
+- Ran `agent:loop` for real. Signal #14 was FLAT → agent declined to trade, and
+  the new calibration line appeared in genuine output. Kept that run rather than
+  re-publishing until a directional signal turned up — re-rolling for prettier
+  footage would be selecting the result.
+- Scenes/narration refreshed off stale numbers (83.3% → 60%, slash 400 → 1296).
+- MiMo TTS reads slower than estimated: first pass overran both scene boundaries
+  (49.1s of narration into a 24s terminal scene). Moved the calibration line to
+  the dashboard group where its card is on screen, retimed scene lengths from the
+  measured segment durations, and stretched the terminal CSS so lines land as
+  spoken instead of finishing early and holding a static frame.
+- Two defects caught by actually looking at extracted frames rather than trusting
+  the build: subtitles at FontSize 20 sat on top of the calibration figures
+  (→ 14, MarginV 26), and the calibration card was on screen 8s before its
+  narration (tour reordered with a dedicated 12s hold on it).
+
+Video is gitignored (`loop-output/`), so the YouTube upload + link swap in README
+is still a manual step.
+
 ## 2026-07-20 — The unattended cycle was blanking the collateral card
 
 Found while checking prod drift. The scheduled cycle commits a snapshot built by
