@@ -5,7 +5,7 @@
  * and live collateral for free, then BUYS the latest signal through the full
  * x402 flow (402 → EIP-712 signature → X-PAYMENT → unlocked data).
  *
- *   verity_get_reputation           free  — accuracy + bonded/slashed collateral
+ *   verity_get_reputation           free  — accuracy + collateral + confidence calibration
  *   verity_get_signal_history       free  — full audit trail (each row = real tx)
  *   verity_get_payment_requirements free  — machine-readable x402 price quote
  *   verity_buy_latest_signal        PAID  — pays x402 and returns the signal
@@ -19,7 +19,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   buildRequirements,
+  calibrationFromSignals,
   computeReputation,
+  describeCalibration,
   directionLabel,
   loadConfig,
   loadPrivateKey,
@@ -53,16 +55,23 @@ server.registerTool(
     title: "Get oracle reputation + collateral",
     description:
       "FREE. The oracle's verifiable on-chain track record: accuracy (basis points, 0-10000), " +
-      "resolved/correct counts, and its bonded x402USD collateral (slashable on wrong calls). " +
-      "Refuse to act on signals unless collateral is bonded above the minimum stake.",
+      "resolved/correct counts, its bonded x402USD collateral (slashable on wrong calls), and " +
+      "its confidence calibration — how well the confidence it stamps on signals has matched " +
+      "reality. Refuse to act unless collateral is bonded above the minimum stake, and discount " +
+      "stated confidence by `calibration.reliabilityFactor` before sizing any position.",
   },
   async () =>
     guarded(() => {
       const signals = loadSignals();
       const pkg = config.signalOraclePackageHash ?? config.signalOracleContractHash ?? null;
+      const calibration = calibrationFromSignals(signals);
       return {
         reputation: computeReputation(signals),
         stake: loadStakeState() ?? null,
+        // Published so a buying agent can price the oracle's *certainty*, not just
+        // its hit rate. Recomputable from `verity_get_signal_history` — every input
+        // is on-chain, so a client never has to take this number on trust.
+        calibration: { ...calibration, summary: describeCalibration(calibration) },
         contract: pkg,
         explorer: pkg ? `${config.explorerBase}/contract-package/${pkg}` : null,
       };

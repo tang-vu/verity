@@ -13,15 +13,20 @@
 import {
   appendLoopLog,
   bpsToPercent,
+  Calibration,
+  calibrationFromSignals,
+  describeCalibration,
   directionLabel,
   loadConfig,
   loadPrivateKey,
   log,
+  readSignalsFromChain,
   Reputation,
   section,
   Signal,
   StakeState,
   stakeToDisplay,
+  VerityConfig,
 } from "@verity/shared";
 import { connectMcp } from "./mcp-client.js";
 import { decideAction } from "./reputation-weighted-action.js";
@@ -42,6 +47,37 @@ async function discoverViaMcp(url: string, token?: string): Promise<void> {
     await session.close();
   } catch (err) {
     log("warn", `Casper MCP discovery skipped (${err instanceof Error ? err.message : err})`);
+  }
+}
+
+/**
+ * Grade the oracle's stated confidence against what it actually delivered.
+ *
+ * Deliberately read from the chain rather than from the paywall payload: the
+ * oracle must not be the one reporting how honest its own confidence has been.
+ * Everything needed is public contract history, so any consumer can do this
+ * independently. If the history is unreachable the consumer falls back to taking
+ * the claim at face value — a degraded read must not silently size positions.
+ */
+async function gradeStatedConfidence(config: VerityConfig): Promise<Calibration | undefined> {
+  const packageHash = config.signalOraclePackageHash;
+  if (!packageHash) return undefined;
+  try {
+    const history = await readSignalsFromChain({
+      packageHash,
+      explorerBase: config.explorerBase,
+    });
+    const calibration = calibrationFromSignals(history);
+    if (calibration.resolved === 0) return undefined;
+    log("info", `Oracle confidence calibration: ${describeCalibration(calibration)}`);
+    return calibration;
+  } catch (err) {
+    log(
+      "warn",
+      `Calibration check skipped (${err instanceof Error ? err.message : err}) — ` +
+        "sizing on stated confidence"
+    );
+    return undefined;
   }
 }
 
@@ -77,6 +113,7 @@ export async function runLoop(): Promise<void> {
 
   // 3. Weight by reputation AND require real collateral behind the word.
   log("bot", "Step 3/4 — weighting action by on-chain reputation + bonded stake...");
+  const calibration = await gradeStatedConfidence(config);
   const decision = decideAction({
     direction: signal.direction,
     confidence: signal.confidence,
@@ -85,6 +122,7 @@ export async function runLoop(): Promise<void> {
     minReputationBps: config.consumerMinReputationBps,
     stakeBaseUnits: stake?.bondedBaseUnits,
     minStakeBaseUnits: stake ? config.consumerMinStakeBaseUnits : undefined,
+    calibration,
   });
   log("info", `Decision: ${decision.side} — ${decision.rationale}`);
 

@@ -32,6 +32,7 @@ Casper's AI toolkit is built so autonomous agents can transact with cryptographi
 | **MCP for agent discovery + action** | Consumer discovers via Casper MCP and *acts* via the CSPR.trade MCP server. verity also **ships its own MCP server**: any MCP-capable agent (Claude, GPT, custom bots) can discover the oracle, audit its reputation for free, and buy the signal through x402. |
 | **Typed-data signing (EIP-712)** | Payments are EIP-712 `transfer_with_authorization` over a CEP-18 token — gasless, verifiable authorization. |
 | **Reputation = slashable on-chain collateral** | The oracle bonds x402USD; wrong calls are slashed to a treasury. The consumer's trust (and capital) is a pure function of the oracle's verifiable history *and* live collateral. |
+| **Calibrated confidence** | The consumer grades the oracle's *stated certainty* against on-chain outcomes and discounts its sizing by that record, so claiming confidence it hasn't earned costs the oracle capital flow. |
 | **RWA feed** | The same rails carry a **PAXG (tokenized gold)** signal — a genuine real-world asset — alongside CSPR/USD. |
 
 ## Buildathon alignment (Casper Agentic Buildathon 2026)
@@ -46,7 +47,7 @@ How it maps to the Final-Round judging criteria:
 
 | Judging criterion | Where verity delivers |
 |---|---|
-| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve/**stake**/**slash**/withdraw). 47 tests (23 contract + 24 TS). |
+| **Working smart contracts** | `SignalOracle` (Odra) deployed on `casper-test`, transaction-producing (publish/resolve/**stake**/**slash**/withdraw). 64 tests (26 contract + 38 TS). |
 | **Use of AI / agentic systems** | Two autonomous agents: an LLM oracle and a DeFi consumer that pays, reasons over reputation + collateral, and trades with no human in the loop. |
 | **Innovation & originality** | Reputation as *slashable collateral*: the oracle bonds capital that a wrong call burns on-chain (to a consumer-protection treasury); the consumer refuses undercollateralized oracles outright. |
 | **Real-world applicability (DeFi/RWA)** | A trust-minimized data-feed market carrying both CSPR/USD and a **PAXG tokenized-gold (RWA)** feed on the same publish→resolve→reputation→x402 rails. |
@@ -103,6 +104,7 @@ Full autonomous loop: **signal → x402 payment → reputation-weighted action**
 | **MCP client** (discovery + CSPR.trade) | `defi-agent/src/mcp-client.ts`, `defi-agent/src/cspr-trade-executor.ts` |
 | **MCP server** (verity as a machine-consumable data product) | `oracle-agent/src/mcp-server.ts`, e2e proof: `scripts/smoke-mcp-buys-signal-via-x402.ts` |
 | **Reputation-weighted decision** (novel mechanic) | `defi-agent/src/reputation-weighted-action.ts` |
+| **Confidence calibration** (grading the oracle's certainty, not just its direction) | `shared/src/calibration.ts`, `web/app/lib/confidence-calibration.ts` |
 | **LLM signal generation** (DeepSeek, OpenAI-compatible) | `oracle-agent/src/llm-signal.ts`, `prompts/signal-generation.md` |
 | **On-chain writes** (casper-js-sdk v5) | `shared/src/casper-client.ts`, `shared/src/oracle-contract-client.ts` |
 
@@ -188,6 +190,37 @@ and never graded the calls it actually made.
 the deployed oracle keeps publishing and grading with no operator and no
 particular machine switched on. It needs the producer key as a repo secret
 (`PRODUCER_SECRET_KEY_PEM`); without it the job skips rather than fails.
+
+## Making confidence cost something
+
+The consumer sizes its position with `accuracy × confidence`. Two of those inputs
+are graded by the chain — accuracy is the contract's own hit rate, and the bond is
+real slashable capital. The third was not: **confidence is a number the oracle
+writes about itself**, and it multiplies the position directly. An oracle that
+stamped 95% on every call would move strictly more of a buyer's money than an
+honest one, at zero cost, with its hit rate none the wiser.
+
+So verity grades the confidence too. Every resolved signal is scored against what
+was claimed on it — a Brier score plus the gap between average claim and realised
+hit rate — and the consumer discounts future stated confidence by that record:
+
+```
+effective confidence = stated confidence × reliabilityFactor
+```
+
+Overstate certainty and you shrink the capital you can move next time. The factor
+is capped at 1.0, so sandbagging earns no bonus either, and it is shrunk toward
+neutral on a thin book so one unlucky miss can't gut a young oracle.
+
+Crucially the **consumer computes this itself from chain history** (`gradeStatedConfidence`
+in `defi-agent/src/run-loop.ts`) rather than asking the oracle how honest it has
+been — confidence and outcome are both stored on-chain per signal, so any agent
+can recheck the number independently. It is also published free over MCP
+(`verity_get_reputation`) and shown on the dashboard.
+
+Where the live oracle currently stands: **claimed 65% on average, delivered 62.5%
+over 8 resolved calls** (Brier 0.216) — verdict `CALIBRATED`, a 2% haircut. The
+rule bites only when an oracle starts talking bigger than it delivers.
 
 ## verity as an MCP server (any agent can consume the oracle)
 

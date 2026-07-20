@@ -2,6 +2,40 @@
 
 Living log. Newest entries on top. Sacrifice grammar for concision.
 
+## 2026-07-20 — Confidence graded, not just direction (closed a free-lever bug)
+
+Found an incentive hole in our own novel mechanic. Consumer sizes with
+`weight = accuracy × confidence`. Accuracy is chain-graded, bond is chain-slashed
+— but **confidence is the oracle's own unaudited claim** and multiplies the
+position 1:1. "Always stamp 95%" = strictly more of the buyer's capital, zero
+cost, hit rate untouched. Nothing anywhere graded it.
+
+Fix (off-chain, no v3 redeploy — confidence + outcome are both already on-chain
+per signal, so it's recomputable by anyone):
+- `shared/src/calibration.ts` — pure: Brier score, overconfidence gap
+  (mean claim − realised hit rate), `reliabilityFactor` = delivered/claimed,
+  shrunk toward 1.0 by 5 pseudo-obs, **capped at 1.0**.
+  Cap is deliberate: sandbagging must not buy extra size either.
+- `decideAction` takes optional `calibration` → sizes on
+  `effectiveConfidence = stated × reliabilityFactor`. Optional ⇒ all 7 prior
+  agent tests unchanged and passing.
+- Consumer computes it **from chain itself** (`gradeStatedConfidence` in
+  run-loop, via `readSignalsFromChain`), NOT from the paywall payload — the
+  oracle must not be the source for how honest its own confidence has been.
+  Unreachable history ⇒ fall back to face value, logged, never silent.
+- Surfaced: MCP `verity_get_reputation.calibration` (free, so a buying agent can
+  price certainty pre-purchase) + dashboard card + web copy of the rule
+  (`web/app/lib/confidence-calibration.ts` — Node-free for Vercel; third copy,
+  same convention as reputation-math).
+
+Live book right now: claimed 65% avg, delivered 62.5% over 8 resolved,
+Brier 0.216, gap +2.1% → verdict CALIBRATED, 2% haircut. Rule is live but barely
+biting because this oracle is in fact honest — which is the point; it only bites
+oracles that talk bigger than they deliver.
+
+Tests: 38 TS (11 agent + 27 shared, incl. 10 new calibration). Property pinned:
+at equal skill, the inflated-confidence oracle never out-earns the honest one.
+
 ## 2026-07-20 — The chain is the oracle's memory; cycle runs off-laptop
 
 README claimed an "unattended cycle", but the cycle could only run on the one

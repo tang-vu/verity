@@ -5,6 +5,7 @@ export * from "./env-config.js";
 export * from "./logging.js";
 export * from "./signal-types.js";
 export * from "./reputation-math.js";
+export * from "./calibration.js";
 export * from "./signal-store.js";
 export * from "./chain-signal-reader.js";
 export * from "./stake-store.js";

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AgentLoopList } from "./components/agent-loop-list";
 import { CollateralCard } from "./components/collateral-card";
+import { ConfidenceCalibrationCard } from "./components/confidence-calibration-card";
 import { JudgeTestingGuide } from "./components/judge-testing-guide";
 import { LatestSignalCard } from "./components/latest-signal-card";
 import { LaunchPlan } from "./components/launch-plan";
@@ -108,6 +109,7 @@ export default function Dashboard() {
       <section className="section bento reveal" style={{ animationDelay: "0.35s" }}>
         <LatestSignalCard latest={latest} loading={!rep} />
         <CollateralCard stake={rep?.stake ?? null} loading={!rep} />
+        <ConfidenceCalibrationCard signals={signals} loading={!rep} />
       </section>
 
       <X402Playground x402={rep?.x402} />
