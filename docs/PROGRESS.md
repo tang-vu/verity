@@ -36,6 +36,30 @@ oracles that talk bigger than they deliver.
 Tests: 38 TS (11 agent + 27 shared, incl. 10 new calibration). Property pinned:
 at equal skill, the inflated-confidence oracle never out-earns the honest one.
 
+Follow-up same day — pitch deck + browser verification:
+- New pitch slide (5/11, between the loop and the proof): "the bug we found in our
+  own mechanic". Live-wired via a second fetch of /api/oracle/signals in
+  pitch-stats (reputation endpoint carries no per-signal rows); degrades to
+  committed figures without costing the deck its other live numbers.
+- `FALLBACK_STATS` was stale — said 83.3% / 11 signals / 6 resolved / 400 slashed.
+  Now matches the committed snapshot: 62.5% / 13 / 8 / 976. Loop slide also had a
+  hardcoded "signal #9 ... 83.3% accuracy" line; now reads live stats.
+- Verified in a real browser (Playwright, dev server): card + slide render with
+  live chain numbers, console clean.
+- Fixed a **pre-existing hydration failure** found while checking: x402-playground
+  branched on `typeof window` during render, so server HTML and first client render
+  disagreed and React repainted the tree. Moved to useEffect.
+- Copy fix: verdict lines now complete the sentence "Over N graded calls this
+  oracle …" (CALIBRATED previously read "…this oracle its confidence means what it
+  says"). nbsp before em dash in the confidence cell, per existing convention.
+
+False alarm worth recording: Grep output rendered the playground's fetch path with
+backslashes (`"\api\x402\demo-buy"`), which would decode to `api@2demo-buy` via the
+`\x40` hex escape. File on disk is fine (`"/api/x402/demo-buy"`) — a tool display
+artifact, caught by clicking the button and watching the request instead of
+trusting the grep. Local 503 on that button is expected: demo buyer key is
+Vercel-only.
+
 ## 2026-07-20 — The chain is the oracle's memory; cycle runs off-laptop
 
 README claimed an "unattended cycle", but the cycle could only run on the one

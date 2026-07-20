@@ -12,22 +12,23 @@
 import { calibrationFromSignals } from "../lib/confidence-calibration";
 import type { Signal } from "../lib/dashboard-data";
 
+/** Each line completes the sentence "Over N graded calls this oracle …". */
 const VERDICT_COPY: Record<string, { badge: string; line: string }> = {
   OVERCONFIDENT: {
     badge: "wrong",
-    line: "claims more certainty than it delivers — the consumer sizes it down.",
+    line: "claimed more certainty than it delivered — so the consumer sizes it down.",
   },
   CALIBRATED: {
     badge: "ok",
-    line: "its confidence means what it says — no haircut applied.",
+    line: "has meant what it said — no haircut applied.",
   },
   UNDERCONFIDENT: {
     badge: "ok",
-    line: "delivers better than it claims. Sizing is never raised above the stated claim.",
+    line: "delivered better than it claimed. Sizing is never raised above the stated claim.",
   },
   UNPROVEN: {
     badge: "",
-    line: "too few resolved calls to grade its confidence yet.",
+    line: "has not resolved enough calls to grade its confidence yet.",
   },
 };
 

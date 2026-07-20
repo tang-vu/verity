@@ -6,7 +6,7 @@
  * own paywall, signs the EIP-712 payment, and the CSPR.cloud facilitator
  * settles it on Casper testnet. Steps render like a console session.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fmtUnits, short, type Signal, type X402Info } from "../lib/dashboard-data";
 
 interface Step { title: string; detail: string; data?: unknown }
@@ -24,7 +24,11 @@ export function X402Playground({ x402 }: { x402?: X402Info | null }) {
   const [busy, setBusy] = useState(false);
   const [res, setRes] = useState<BuyResult | null>(null);
   const price = x402 ? `${fmtUnits(Number(x402.priceBaseUnits), x402.decimals)} ${x402.symbol}USD` : "a micropayment";
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://<this-site>";
+  // Read the origin after mount, not during render: branching on `window` while
+  // rendering makes the server HTML and the first client render disagree, which
+  // React reports as a hydration failure and repaints the whole tree.
+  const [origin, setOrigin] = useState("https://<this-site>");
+  useEffect(() => setOrigin(window.location.origin), []);
 
   async function buy() {
     setBusy(true);

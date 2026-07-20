@@ -3,29 +3,42 @@
  * open (same source as the dashboard); the fallback mirrors the committed
  * snapshot so the deck presents cleanly even fully offline.
  */
+import { calibrationFromSignals } from "../lib/confidence-calibration";
+import type { Signal } from "../lib/dashboard-data";
 
 export interface PitchStats {
-  accuracyPct: string; // "83.3"
+  accuracyPct: string; // "62.5"
   totalSignals: number;
   resolvedSignals: number;
   correctSignals: number;
   bondedDisplay: string; // "1,600"
-  slashedDisplay: string; // "400"
+  slashedDisplay: string; // "976"
   settledCount: number;
   revenueDisplay: string; // "0.80"
   live: boolean;
+  /** How well the oracle's stated confidence has matched reality. */
+  claimedPct: string; // "65"
+  deliveredPct: string; // "63"
+  brier: string; // "0.216"
+  calibrationVerdict: string; // "CALIBRATED"
+  haircutPct: number; // 2
 }
 
 export const FALLBACK_STATS: PitchStats = {
-  accuracyPct: "83.3",
-  totalSignals: 11,
-  resolvedSignals: 6,
+  accuracyPct: "62.5",
+  totalSignals: 13,
+  resolvedSignals: 8,
   correctSignals: 5,
   bondedDisplay: "1,600",
-  slashedDisplay: "400",
+  slashedDisplay: "976",
   settledCount: 8,
   revenueDisplay: "0.80",
   live: false,
+  claimedPct: "65",
+  deliveredPct: "63",
+  brier: "0.216",
+  calibrationVerdict: "CALIBRATED",
+  haircutPct: 2,
 };
 
 interface RepApiResponse {
@@ -48,6 +61,12 @@ export async function fetchPitchStats(): Promise<PitchStats> {
   const res = await fetch("/api/oracle/reputation", { cache: "no-store" });
   if (!res.ok) throw new Error(`reputation API ${res.status}`);
   const j = (await res.json()) as RepApiResponse;
+
+  // Calibration needs the per-signal rows (stated confidence + outcome), which
+  // the reputation endpoint does not carry. A failure here must not cost the
+  // deck its other live numbers, so it degrades to the committed figures.
+  const calibration = await fetchCalibration().catch(() => null);
+
   return {
     accuracyPct: (j.reputation.accuracyBps / 100).toFixed(1),
     totalSignals: j.reputation.totalSignals,
@@ -64,5 +83,28 @@ export async function fetchPitchStats(): Promise<PitchStats> {
       ? (j.revenue.totalBaseUnits / 10 ** j.revenue.decimals).toFixed(2)
       : FALLBACK_STATS.revenueDisplay,
     live: j.source === "live",
+    ...(calibration ?? {
+      claimedPct: FALLBACK_STATS.claimedPct,
+      deliveredPct: FALLBACK_STATS.deliveredPct,
+      brier: FALLBACK_STATS.brier,
+      calibrationVerdict: FALLBACK_STATS.calibrationVerdict,
+      haircutPct: FALLBACK_STATS.haircutPct,
+    }),
+  };
+}
+
+/** Grade the oracle's stated confidence from the same rows the dashboard shows. */
+async function fetchCalibration() {
+  const res = await fetch("/api/oracle/signals", { cache: "no-store" });
+  if (!res.ok) throw new Error(`signals API ${res.status}`);
+  const { signals } = (await res.json()) as { signals: Signal[] };
+  const cal = calibrationFromSignals(signals);
+  if (cal.resolved === 0) throw new Error("nothing resolved yet");
+  return {
+    claimedPct: (cal.meanConfidence * 100).toFixed(0),
+    deliveredPct: (cal.hitRate * 100).toFixed(0),
+    brier: cal.brier.toFixed(3),
+    calibrationVerdict: cal.verdict,
+    haircutPct: Math.round((1 - cal.reliabilityFactor) * 100),
   };
 }

@@ -1,5 +1,6 @@
 /**
- * Pitch slides 1–5: title, problem, solution, the autonomous loop, live proof.
+ * Pitch slides 1–6: title, problem, solution, the autonomous loop, the
+ * confidence-calibration fix, live proof.
  * Each slide is a render function receiving the live PitchStats.
  */
 import type { ReactNode } from "react";
@@ -97,7 +98,7 @@ export const STORY_SLIDES: PitchSlide[] = [
   },
   {
     id: "loop",
-    render: () => (
+    render: (s) => (
       <div>
         <p className="pitch-eyebrow">How it works — no human in the loop</p>
         <h1 className="pitch-h">One autonomous loop, four real transactions.</h1>
@@ -127,8 +128,48 @@ export const STORY_SLIDES: PitchSlide[] = [
           </div>
         </div>
         <p className="pitch-lede" style={{ marginTop: 24 }}>
-          Latest run: signal <strong>#9 DOWN @ 55%</strong> → x402 paid & settled →{" "}
-          <strong>SELL 458 units</strong> (45.8% = 83.3% accuracy × 55% confidence).
+          Position size is a pure function of the chain:{" "}
+          <strong>accuracy × confidence</strong>, gated by live bonded collateral. Today that
+          accuracy is <strong>{s.accuracyPct}%</strong>, graded across {s.resolvedSignals} resolved
+          calls — and the next slide is what we found wrong with the other half of that formula.
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: "calibration",
+    render: (s) => (
+      <div>
+        <p className="pitch-eyebrow">The bug we found in our own mechanic</p>
+        <h1 className="pitch-h">
+          Two of those three inputs were graded. <em>Confidence wasn&apos;t.</em>
+        </h1>
+        <div className="pitch-grid cols-3">
+          <div className="pitch-cell">
+            <h3>Accuracy</h3>
+            <p>Graded by the contract, against reality. Can&apos;t be faked.</p>
+          </div>
+          <div className="pitch-cell gold-cell">
+            <h3>Collateral</h3>
+            <p>Slashed on-chain for wrong calls. Can&apos;t be faked.</p>
+          </div>
+          <div className="pitch-cell hot">
+            <h3>Confidence</h3>
+            <p>
+              A number the oracle writes about <strong>itself</strong>&nbsp;— and it multiplied
+              the position 1:1. Stamp 95% on everything, move more of the buyer&apos;s money, free.
+            </p>
+          </div>
+        </div>
+        <p className="pitch-lede" style={{ marginTop: 24 }}>
+          So we grade it too. Every resolved call is scored against what was claimed on it, and the
+          consumer discounts stated confidence by that record —{" "}
+          <strong>overstating certainty shrinks the capital you can move next time</strong>.
+        </p>
+        <p className="pitch-punch">
+          This oracle: claimed {s.claimedPct}%, delivered {s.deliveredPct}% over {s.resolvedSignals}{" "}
+          graded calls · Brier {s.brier} → {s.calibrationVerdict.toLowerCase()}, {s.haircutPct}%
+          haircut.
         </p>
       </div>
     ),
