@@ -191,6 +191,13 @@ the deployed oracle keeps publishing and grading with no operator and no
 particular machine switched on. It needs the producer key as a repo secret
 (`PRODUCER_SECRET_KEY_PEM`); without it the job skips rather than fails.
 
+`.github/workflows/deploy-web.yml` ships the dashboard the same way: any push
+touching `web/`, and every completed oracle cycle, rebuilds and promotes it to
+production. (It also fires on cycle completion because the cycle commits its
+snapshot with `GITHUB_TOKEN`, and pushes made with that token deliberately do
+not trigger other workflows.) Needs `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and
+`VERCEL_PROJECT_ID`; without them it skips.
+
 ## Making confidence cost something
 
 The consumer sizes its position with `accuracy × confidence`. Two of those inputs
