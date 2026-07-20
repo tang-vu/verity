@@ -36,6 +36,10 @@ jobs:
   deploy:
     name: Build and promote to production
     runs-on: ubuntu-latest
+    # A failed cycle leaves main untouched, so deploying after one only burns a
+    # build. Checking the conclusion alone would also block push and dispatch,
+    # where it is null — hence the event guard in front.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v7
         with:
