@@ -72,7 +72,7 @@ A poor, unproven, or **undercollateralized** oracle literally *cannot move capit
 
 ## Demo video
 
-**▶️ https://youtu.be/wp5KoLqxDU4** — a ~77-second walkthrough: on-chain proof (SignalOracle v2 with staking, the real on-chain slash, the PAXG/RWA signal) → the autonomous `agent:loop` running live (x402 payment + reputation + bonded-collateral gate) → the live dashboard. MiMo TTS voiceover + burned-in captions.
+**▶️ https://youtu.be/h3nx_mftOUE** — a ~98-second walkthrough: on-chain proof (SignalOracle v2 with staking, the real on-chain slash, the PAXG/RWA signal) → the autonomous `agent:loop` running live, reading 60% accuracy over 10 graded calls and declining to trade on a flat call → the live dashboard, including the confidence-calibration grade. MiMo TTS voiceover + burned-in captions. Every figure spoken is read off the chain at recording time.
 
 ## Long-term launch plan
 
@@ -85,7 +85,7 @@ verity is the first member of an **x402 "verifiable data products" family** — 
 ## Links
 
 - **Live dashboard:** https://web-eight-amber-iq6mjhp7bf.vercel.app
-- **Demo video:** https://youtu.be/wp5KoLqxDU4
+- **Demo video:** https://youtu.be/h3nx_mftOUE
 - **GitHub (open-source, MIT):** https://github.com/tang-vu/verity
 - **Full deployment record (all tx hashes):** [`docs/DEPLOYMENT.md`](https://github.com/tang-vu/verity/blob/main/docs/DEPLOYMENT.md)
 

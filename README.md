@@ -4,7 +4,7 @@
 
 > The machine economy needs machine-verifiable trust. verity makes an oracle's word worth *exactly* its on-chain accuracy — and builds a consumer agent that pays for that word over x402 and sizes its trade by that reputation. No human in the loop.
 
-**🔗 Live dashboard:** https://web-eight-amber-iq6mjhp7bf.vercel.app · **Demo video:** https://youtu.be/wp5KoLqxDU4 · **Repo:** https://github.com/tang-vu/verity
+**🔗 Live dashboard:** https://web-eight-amber-iq6mjhp7bf.vercel.app · **Demo video:** https://youtu.be/h3nx_mftOUE · **Repo:** https://github.com/tang-vu/verity
 
 ---
 
@@ -303,7 +303,7 @@ verity is **live on Casper testnet** — the full loop ran end-to-end with real 
 | **On-chain reputation** | 60% — 6/10 resolved correct on v2, and still moving: the oracle publishes and grades on an unattended cycle, so this number is whatever the chain says when you read it |
 | **Live dashboard** | https://web-eight-amber-iq6mjhp7bf.vercel.app |
 
-**Demo video (~98s):** https://youtu.be/wp5KoLqxDU4 — on-chain proof (staking, the on-chain slash, RWA) → a real `agent:loop` terminal run, including the confidence-calibration grade and the agent declining to trade on a flat call → live dashboard. MiMo TTS voiceover + captions. Every figure spoken is read off the chain at recording time.
+**Demo video (~98s):** https://youtu.be/h3nx_mftOUE — on-chain proof (staking, the on-chain slash, RWA) → a real `agent:loop` terminal run, including the confidence-calibration grade and the agent declining to trade on a flat call → live dashboard. MiMo TTS voiceover + captions. Every figure spoken is read off the chain at recording time.
 
 ## Long-term launch plan
 

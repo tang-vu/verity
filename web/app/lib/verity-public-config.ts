@@ -34,7 +34,7 @@ export const FACILITATOR_URL = e.X402_FACILITATOR_URL ?? "https://x402-facilitat
 export const GITHUB_URL = e.NEXT_PUBLIC_GITHUB_URL ?? "https://github.com/tang-vu/verity";
 export const X_URL = e.NEXT_PUBLIC_X_URL ?? "https://x.com/tangvu_dev";
 export const X_HANDLE = e.NEXT_PUBLIC_X_HANDLE ?? "@tangvu_dev";
-export const DEMO_URL = e.NEXT_PUBLIC_DEMO_URL ?? "https://youtu.be/wp5KoLqxDU4";
+export const DEMO_URL = e.NEXT_PUBLIC_DEMO_URL ?? "https://youtu.be/h3nx_mftOUE";
 
 export function txExplorerUrl(hash: string): string {
   return `${EXPLORER_BASE}/transaction/${hash}`;
