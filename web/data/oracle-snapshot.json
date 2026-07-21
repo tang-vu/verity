@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T13:22:54.557Z",
+  "generatedAt": "2026-07-21T19:08:59.843Z",
   "signals": [
     {
       "id": 0,
@@ -323,9 +323,15 @@
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "2fc842a342c56550c9cb58cd6e83d2f94eb845653be5fa5ea6f12dfeb7d5fbca",
       "publishExplorerUrl": "https://testnet.cspr.live/transaction/2fc842a342c56550c9cb58cd6e83d2f94eb845653be5fa5ea6f12dfeb7d5fbca",
-      "status": 0,
+      "status": 2,
+      "resolvedAt": 1784660909412,
+      "priceAtResolve": 1613,
+      "priceUsdAtResolve": 0.00161276,
+      "correct": false,
+      "resolveTxHash": "6c96b478a3046cfe650b8b07881416897d3ccb911532e7ed443f37b612a5676f",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/6c96b478a3046cfe650b8b07881416897d3ccb911532e7ed443f37b612a5676f",
       "directionLabel": "DOWN",
-      "statusLabel": "PENDING"
+      "statusLabel": "WRONG"
     },
     {
       "id": 14,
@@ -342,15 +348,69 @@
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "b987deece5dfa68747c688eaf03382a3667908a85456b7b572252707be45863c",
       "publishExplorerUrl": "https://testnet.cspr.live/transaction/b987deece5dfa68747c688eaf03382a3667908a85456b7b572252707be45863c",
-      "status": 0,
+      "status": 2,
+      "resolvedAt": 1784660915062,
+      "priceAtResolve": 4074990000,
+      "priceUsdAtResolve": 4074.99,
+      "correct": false,
+      "resolveTxHash": "ebeee4aacd5e1bd53c5174dba373fecfcdba3854d0bdcf4fd28ff652ae8c2b65",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/ebeee4aacd5e1bd53c5174dba373fecfcdba3854d0bdcf4fd28ff652ae8c2b65",
       "directionLabel": "FLAT",
+      "statusLabel": "WRONG"
+    },
+    {
+      "id": 15,
+      "asset": "casper-network",
+      "symbol": "CSPR",
+      "direction": 0,
+      "confidence": 65,
+      "horizonHours": 24,
+      "priceAtPublish": 1613,
+      "priceUsdAtPublish": 0.00161276,
+      "reasoning": "Sharp 24h decline of -8.54% and 7d drop of -10.43% with low volume $3.76M suggest ongoing selling pressure. Price near 24h low $0.00146494 and below moving averages, likely to test support.",
+      "keyFactors": [
+        "24h change -8.54%",
+        "7d change -10.43%",
+        "Low volume $3.76M",
+        "Near 24h low $0.00146494"
+      ],
+      "publishedAt": 1784660924024,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "4457fc31aa1b7b3e1c262dbc2864f0f3b6a57b65e2e96f185aa3e546138155f7",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/4457fc31aa1b7b3e1c262dbc2864f0f3b6a57b65e2e96f185aa3e546138155f7",
+      "status": 0,
+      "directionLabel": "DOWN",
+      "statusLabel": "PENDING"
+    },
+    {
+      "id": 16,
+      "asset": "pax-gold",
+      "symbol": "PAXG",
+      "direction": 2,
+      "confidence": 55,
+      "horizonHours": 24,
+      "priceAtPublish": 4074990000,
+      "priceUsdAtPublish": 4074.99,
+      "reasoning": "Spot at 24h high, 1.85% gain with volume support, but 7d trend modest; risk of mean reversion.",
+      "keyFactors": [
+        "24h high near spot",
+        "Positive daily change",
+        "Volume above average",
+        "Limited weekly momentum"
+      ],
+      "publishedAt": 1784660931858,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "f290c433459112771b0f6da205cd50cdefb19792592ffd92b421f706b55ba872",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/f290c433459112771b0f6da205cd50cdefb19792592ffd92b421f706b55ba872",
+      "status": 0,
+      "directionLabel": "UP",
       "statusLabel": "PENDING"
     }
   ],
   "reputation": {
-    "accuracyBps": 6000,
-    "totalSignals": 15,
-    "resolvedSignals": 10,
+    "accuracyBps": 5000,
+    "totalSignals": 17,
+    "resolvedSignals": 12,
     "correctSignals": 6
   },
   "stake": {
@@ -358,9 +418,9 @@
     "stakeTokenPackageHash": "4373bc321abc569b8d336d85bc37e9830a65f86f564cfe97edd32f4125c128cc",
     "stakeSymbol": "x402",
     "decimals": 2,
-    "bondedBaseUnits": 128000,
+    "bondedBaseUnits": 81920,
     "minStakeBaseUnits": 50000,
-    "slashedBaseUnits": 129600,
+    "slashedBaseUnits": 175680,
     "treasury": "account-hash-82ec56fef048bec1bec5811f123c1460615ba1514b6b1b886ce3c5b97a15d780",
     "txs": [
       {
@@ -428,6 +488,20 @@
         "explorerUrl": "https://testnet.cspr.live/transaction/2a7170d19c1d6b9a33b40ab1b8f25110ee4848ee38144fa6e4f780e8d4de681e",
         "at": 1784559555000,
         "amountBaseUnits": 32000
+      },
+      {
+        "label": "slash",
+        "txHash": "6c96b478a3046cfe650b8b07881416897d3ccb911532e7ed443f37b612a5676f",
+        "explorerUrl": "https://testnet.cspr.live/transaction/6c96b478a3046cfe650b8b07881416897d3ccb911532e7ed443f37b612a5676f",
+        "at": 1784660849000,
+        "amountBaseUnits": 25600
+      },
+      {
+        "label": "slash",
+        "txHash": "ebeee4aacd5e1bd53c5174dba373fecfcdba3854d0bdcf4fd28ff652ae8c2b65",
+        "explorerUrl": "https://testnet.cspr.live/transaction/ebeee4aacd5e1bd53c5174dba373fecfcdba3854d0bdcf4fd28ff652ae8c2b65",
+        "at": 1784660855000,
+        "amountBaseUnits": 20480
       }
     ],
     "updatedAt": 1784559619782
