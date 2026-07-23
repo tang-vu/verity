@@ -25,20 +25,20 @@ export interface PitchStats {
 }
 
 export const FALLBACK_STATS: PitchStats = {
-  accuracyPct: "62.5",
-  totalSignals: 13,
-  resolvedSignals: 8,
-  correctSignals: 5,
-  bondedDisplay: "1,600",
-  slashedDisplay: "976",
-  settledCount: 8,
-  revenueDisplay: "0.80",
+  accuracyPct: "57.1",
+  totalSignals: 19,
+  resolvedSignals: 14,
+  correctSignals: 8,
+  bondedDisplay: "819.2",
+  slashedDisplay: "1,756.8",
+  settledCount: 12,
+  revenueDisplay: "1.20",
   live: false,
-  claimedPct: "65",
-  deliveredPct: "63",
-  brier: "0.216",
-  calibrationVerdict: "CALIBRATED",
-  haircutPct: 2,
+  claimedPct: "63",
+  deliveredPct: "57",
+  brier: "0.243",
+  calibrationVerdict: "OVERCONFIDENT",
+  haircutPct: 6,
 };
 
 interface RepApiResponse {

@@ -226,11 +226,14 @@ can recheck the number independently. It is also published free over MCP
 (`verity_get_reputation`) and shown on the dashboard.
 
 Where the live oracle stood at the last reading: **claimed 63% on average,
-delivered 60% over 10 resolved calls** (Brier 0.223) — verdict `CALIBRATED`, a 3%
+delivered 57% over 14 resolved calls** (Brier 0.243) — verdict `OVERCONFIDENT`, a 6%
 haircut. Like the accuracy score, this moves every time the unattended cycle
 grades another call, so the [dashboard](https://web-eight-amber-iq6mjhp7bf.vercel.app)
 is the number that counts. The rule bites only when an oracle starts talking
-bigger than it delivers.
+bigger than it delivers — and right now it is biting us: a rough patch pushed
+delivered accuracy below the confidence we stamped, so every new call is sized
+down 6% until the gap closes. We'd rather show you the mechanism working against
+our own oracle than a cherry-picked green number.
 
 ## verity as an MCP server (any agent can consume the oracle)
 
@@ -271,8 +274,8 @@ The [live dashboard](https://web-eight-amber-iq6mjhp7bf.vercel.app) is fully usa
 > it now sends `value` where the deployed CEP-3009 token expects `amount`, so the
 > deploy reverts with `User error: 64658` (MissingArg). Payments therefore
 > complete in **verified-deferred** mode: the EIP-712 authorization is real and
-> cryptographically checked, but on-chain settlement is skipped. The 8 settlements
-> already on-chain (latest [`339be587…`](https://testnet.cspr.live/deploy/339be587f5)),
+> cryptographically checked, but on-chain settlement is skipped. The 12 settlements
+> already on-chain (latest [`339be587…`](https://testnet.cspr.live/transaction/339be587f52528e823bf3aaa85f7fca1e2fc7ab70989a613b79269d96cb696f4)),
 > and the revenue they fund, remain verifiable. Nothing on our side selects that
 > argument name — the facilitator builds the deploy — so this clears when the
 > hosted service does.
@@ -300,7 +303,7 @@ verity is **live on Casper testnet** — the full loop ran end-to-end with real 
 | **Live LLM signal — CSPR/USD** (CoinGecko → DeepSeek → on-chain) | [`d9fb786f…`](https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f) |
 | **Live LLM signal — PAXG (tokenized gold, RWA)** | [`a11dcebb…`](https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd) |
 | **x402 settled on-chain** (facilitator `transfer_with_authorization`) | [`0ee181dc…`](https://testnet.cspr.live/transaction/0ee181dc4b5356dd5ef0fbcdc15a783023144605e361202b869de5246896f99b) |
-| **On-chain reputation** | 60% — 6/10 resolved correct on v2, and still moving: the oracle publishes and grades on an unattended cycle, so this number is whatever the chain says when you read it |
+| **On-chain reputation** | 57.1% — 8/14 resolved correct on v2, and still moving: the oracle publishes and grades on an unattended cycle, so this number is whatever the chain says when you read it |
 | **Live dashboard** | https://web-eight-amber-iq6mjhp7bf.vercel.app |
 
 **Demo video (~98s):** https://youtu.be/h3nx_mftOUE — on-chain proof (staking, the on-chain slash, RWA) → a real `agent:loop` terminal run, including the confidence-calibration grade and the agent declining to trade on a flat call → live dashboard. MiMo TTS voiceover + captions. Every figure spoken is read off the chain at recording time.
