@@ -50,7 +50,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-          cache: npm
 
       - name: Check the Vercel token is configured
         id: guard
@@ -64,33 +63,17 @@ jobs:
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Install dependencies
-        if: steps.guard.outputs.configured == 'true'
-        run: npm ci
-
-      # The Vercel project's Root Directory is "web", so the CLI must run from
-      # the repo root: build then emits web/.next and the prebuilt preflight
-      # resolves its paths (web/.next/package.json, node_modules/…) against the
-      # checkout root, where the workspace install actually lives.
-      - name: Pull the production environment
-        if: steps.guard.outputs.configured == 'true'
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: npx vercel@latest pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
-
-      - name: Build
-        # Building here rather than on Vercel means a broken build fails this job
-        # and production keeps serving the last good deployment.
-        if: steps.guard.outputs.configured == 'true'
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: npx vercel@latest build --prod --token="${{ secrets.VERCEL_TOKEN }}"
-
+      # The Vercel project has no Root Directory setting — the uploaded
+      # directory IS the app — so this deploys web/ exactly the way a manual
+      # `vercel --prod` from web/ does, and lets Vercel run the build. A broken
+      # build still fails this job (the CLI exits non-zero) and production
+      # keeps serving the last good deployment: aliases only move on Ready.
+      # A prebuilt flow was tried and reverted: its preflight resolves paths
+      # against the workspace root, which never matches this layout.
       - name: Deploy
         if: steps.guard.outputs.configured == 'true'
+        working-directory: web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: npx vercel@latest deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}"
+        run: npx vercel@latest deploy --prod --token="${{ secrets.VERCEL_TOKEN }}"
