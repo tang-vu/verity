@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T13:40:18.370Z",
+  "generatedAt": "2026-07-23T14:44:07.656Z",
   "signals": [
     {
       "id": 0,
@@ -11,7 +11,9 @@
       "priceAtPublish": 14200,
       "priceUsdAtPublish": 0.0142,
       "reasoning": "Seed: accumulation + funding flip; called UP, price rose.",
-      "keyFactors": [],
+      "keyFactors": [
+        "seed"
+      ],
       "publishedAt": 1783220545000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "1508bba4220465de260fc198d7f1707b2423c3cdc100169f30fba91e15f074d5",
@@ -30,7 +32,9 @@
       "priceAtPublish": 14200,
       "priceUsdAtPublish": 0.0142,
       "reasoning": "Seed: accumulation + funding flip; called UP, price rose.",
-      "keyFactors": [],
+      "keyFactors": [
+        "seed"
+      ],
       "publishedAt": 1783220743000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "9ded64d76af3e59df4d85392098eae68b17a1ec9ccd3178975620dfd79908592",
@@ -55,7 +59,9 @@
       "priceAtPublish": 16800,
       "priceUsdAtPublish": 0.0168,
       "reasoning": "Seed: rejected resistance; called DOWN, price fell.",
-      "keyFactors": [],
+      "keyFactors": [
+        "seed"
+      ],
       "publishedAt": 1783220761000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "f712b53dba092188f66e420365bbfacea0f454dc1cfe5ed39c3f19247e43b4c5",
@@ -80,7 +86,9 @@
       "priceAtPublish": 14900,
       "priceUsdAtPublish": 0.0149,
       "reasoning": "Seed: volume breakout; called UP, price rose.",
-      "keyFactors": [],
+      "keyFactors": [
+        "seed"
+      ],
       "publishedAt": 1783220777000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "773547f22e146f90215b47e612aacb223a2bd5becf108a649a7ee2ce98457f85",
@@ -105,7 +113,9 @@
       "priceAtPublish": 15800,
       "priceUsdAtPublish": 0.0158,
       "reasoning": "Seed: continuation expected; called UP, price fell (miss).",
-      "keyFactors": [],
+      "keyFactors": [
+        "seed"
+      ],
       "publishedAt": 1783220793000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "3929aac6add28523f87b4ac9e02c9e2f59c6e940937e2256fdf9cc9e6c11aa98",
@@ -130,7 +140,11 @@
       "priceAtPublish": 1988,
       "priceUsdAtPublish": 0.001988,
       "reasoning": "Price near 24h low (0.001979) with low volume (741k) and slight negative momentum (-1.19%). 7d gain (12.9%) suggests possible consolidation. Low liquidity and conflicting signals yield neutral outlook.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Near 24h low",
+        "Low volume",
+        "Mixed short/medium term trends"
+      ],
       "publishedAt": 1783220842000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f",
@@ -149,7 +163,12 @@
       "priceAtPublish": 4160790000,
       "priceUsdAtPublish": 4160.79,
       "reasoning": "Spot at 4160.79, 24h range tight (4159.16-4167.48), 24h change negligible (+0.02%). Low volatility suggests consolidation. PAXG tracks gold, which is stable short-term. Volume moderate but not indicating breakout.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Tight 24h range",
+        "Negligible 24h change",
+        "Low volatility typical for PAXG",
+        "Moderate volume without breakout"
+      ],
       "publishedAt": 1783220904000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd",
@@ -168,7 +187,11 @@
       "priceAtPublish": 1901,
       "priceUsdAtPublish": 0.001901,
       "reasoning": "Price near 24h low with high volume suggests selling pressure; 4.22% gain may be short-lived. Low market cap and thin liquidity increase downside risk.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Near 24h low",
+        "High volume",
+        "Thin liquidity"
+      ],
       "publishedAt": 1784172557000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "f9efb759a436b6295ab3ff581c4a44315fcf3c4788c2a478be2de55488ed9a1c",
@@ -193,7 +216,11 @@
       "priceAtPublish": 4022710000,
       "priceUsdAtPublish": 4022.71,
       "reasoning": "PAXG spot at 4022.71, near 24h low 4014.56, slight 24h decline -0.06%, low volume 90M, gold stable; likely range-bound.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Price near 24h low",
+        "Low volume",
+        "Gold stable"
+      ],
       "publishedAt": 1784172614000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "d42d24489c9a3222b0c0a55059f42326ca6a86d8e0d15f4df799850d9626e59f",
@@ -218,7 +245,11 @@
       "priceAtPublish": 1822,
       "priceUsdAtPublish": 0.001822,
       "reasoning": "Price near 24h low with declining volume and negative short-term momentum; low liquidity increases downside risk.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Price near 24h low",
+        "Declining 24h volume",
+        "Negative 7d trend"
+      ],
       "publishedAt": 1784361024000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "0b108c97e609047fb4c1cff5a24eac12b71add06df247cf69580e2b0354a5392",
@@ -243,7 +274,11 @@
       "priceAtPublish": 4009830000,
       "priceUsdAtPublish": 4009.83,
       "reasoning": "Spot at 4009.83 near 24h high of 4011.78 with +0.48% daily gain. Volume strong at 77.6M. 7d trend -2.44% but short-term bullish momentum suggests retest of high.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Near 24h high",
+        "Positive daily change",
+        "High volume"
+      ],
       "publishedAt": 1784361363000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "c74af113c355193594613cd19344338cc115f1f855f19b5b75415c4686bd950b",
@@ -268,7 +303,12 @@
       "priceAtPublish": 1861,
       "priceUsdAtPublish": 0.001861,
       "reasoning": "Price near 24h low with low volume, 7d slight uptrend but 24h negative. Mixed signals, expect consolidation.",
-      "keyFactors": [],
+      "keyFactors": [
+        "24h change -0.13%",
+        "7d change +0.26%",
+        "Low volume 1.16M",
+        "Near 24h low"
+      ],
       "publishedAt": 1784470111000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "fa25e2eb181b37dbbf4fb85882116cf7eb5997770d7d03147d48057e2945c5ea",
@@ -293,7 +333,11 @@
       "priceAtPublish": 4004000000,
       "priceUsdAtPublish": 4004,
       "reasoning": "Tight range (4001-4012), low volatility, slight negative bias but volume moderate; no strong catalyst.",
-      "keyFactors": [],
+      "keyFactors": [
+        "24h change -0.11%",
+        "Narrow high-low spread",
+        "Volume moderate at 35.9M"
+      ],
       "publishedAt": 1784470210000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "70aea308591c9068c9693e5a6e9f24fff4471c83bcfa6fb6021a9341681b4d8f",
@@ -318,7 +362,11 @@
       "priceAtPublish": 1595,
       "priceUsdAtPublish": 0.001595,
       "reasoning": "Strong downward momentum with -13.93% in 24h and low at 0.00157152 near current price. Volume moderate. No reversal signals.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Large 24h drop",
+        "Price near 24h low",
+        "Negative 7d trend"
+      ],
       "publishedAt": 1784560126000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "2fc842a342c56550c9cb58cd6e83d2f94eb845653be5fa5ea6f12dfeb7d5fbca",
@@ -343,7 +391,11 @@
       "priceAtPublish": 4002680000,
       "priceUsdAtPublish": 4002.68,
       "reasoning": "PAXG stable near $4002, tight 24h range (3984-4025) with minimal change (-0.07%). Low volatility and gold-pegged nature suggest sideways movement.",
-      "keyFactors": [],
+      "keyFactors": [
+        "Gold-pegged stablecoin",
+        "Tight 24h range",
+        "Minimal 24h change"
+      ],
       "publishedAt": 1784560141000,
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "b987deece5dfa68747c688eaf03382a3667908a85456b7b572252707be45863c",
@@ -554,6 +606,19 @@
   "contract": "13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "explorer": "https://testnet.cspr.live/contract-package/13b217e5d7dd2a24834454289798475f88aae269fcce68f52f52d7747214ffd0",
   "loopLog": [
+    {
+      "at": 1784563849893,
+      "signalId": 14,
+      "directionLabel": "FLAT",
+      "confidence": 65,
+      "reputationBps": 6000,
+      "decisionSide": "HOLD",
+      "decisionNotional": 0,
+      "decisionRationale": "signal is FLAT — no directional trade",
+      "paid": true,
+      "swapVia": "skipped",
+      "swapDetail": "HOLD — signal is FLAT — no directional trade"
+    },
     {
       "at": 1784472642708,
       "signalId": 12,
