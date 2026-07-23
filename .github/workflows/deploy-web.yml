@@ -47,7 +47,7 @@ jobs:
           # we want here — deploy whatever main currently holds, snapshot included.
           ref: main
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
