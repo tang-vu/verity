@@ -68,9 +68,12 @@ jobs:
         if: steps.guard.outputs.configured == 'true'
         run: npm ci
 
+      # The Vercel project's Root Directory is "web", so the CLI must run from
+      # the repo root: build then emits web/.next and the prebuilt preflight
+      # resolves its paths (web/.next/package.json, node_modules/…) against the
+      # checkout root, where the workspace install actually lives.
       - name: Pull the production environment
         if: steps.guard.outputs.configured == 'true'
-        working-directory: web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -80,25 +83,13 @@ jobs:
         # Building here rather than on Vercel means a broken build fails this job
         # and production keeps serving the last good deployment.
         if: steps.guard.outputs.configured == 'true'
-        working-directory: web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: npx vercel@latest build --prod --token="${{ secrets.VERCEL_TOKEN }}"
 
-      # `deploy --prebuilt` preflights that the project's dependencies are
-      # installed by looking for web/node_modules, but npm workspaces hoist
-      # everything to the repo root. The upload itself is .vercel/output only,
-      # so a link to the hoisted tree satisfies the check without a second
-      # install.
-      - name: Expose hoisted workspace dependencies to the CLI check
-        if: steps.guard.outputs.configured == 'true'
-        working-directory: web
-        run: ln -sfn ../node_modules node_modules
-
       - name: Deploy
         if: steps.guard.outputs.configured == 'true'
-        working-directory: web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
