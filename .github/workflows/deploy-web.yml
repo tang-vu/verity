@@ -86,6 +86,16 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: npx vercel@latest build --prod --token="${{ secrets.VERCEL_TOKEN }}"
 
+      # `deploy --prebuilt` preflights that the project's dependencies are
+      # installed by looking for web/node_modules, but npm workspaces hoist
+      # everything to the repo root. The upload itself is .vercel/output only,
+      # so a link to the hoisted tree satisfies the check without a second
+      # install.
+      - name: Expose hoisted workspace dependencies to the CLI check
+        if: steps.guard.outputs.configured == 'true'
+        working-directory: web
+        run: ln -sfn ../node_modules node_modules
+
       - name: Deploy
         if: steps.guard.outputs.configured == 'true'
         working-directory: web
