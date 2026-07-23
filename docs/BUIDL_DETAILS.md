@@ -39,11 +39,11 @@ A poor, unproven, or **undercollateralized** oracle literally *cannot move capit
 | Live LLM signal — CSPR/USD | [`d9fb786f…`](https://testnet.cspr.live/transaction/d9fb786f3f5b35649d7f4a12054e14df83702f20a15de322560dff64d298071f) |
 | Live LLM signal — **PAXG tokenized gold (RWA)** | [`a11dcebb…`](https://testnet.cspr.live/transaction/a11dcebba120bb2f20bad80fb1b2ce26bfc715afadb532fdf6d0b3d352219dcd) |
 | x402 settled on-chain (facilitator `transfer_with_authorization`) | [`296f5f66…`](https://testnet.cspr.live/transaction/296f5f667c05364883b24ed680bcb47df68faa6fc85dead2d45e7742cfb110f8) |
-| **On-chain reputation** | **60%** — 6/10 resolved correct, and still moving: the oracle publishes and grades unattended, so this is whatever the chain says when you read it |
-| **Collateral destroyed to date** | **1296 x402USD** burned by its own wrong calls · **1280** still at risk right now |
-| **Confidence calibration** | `CALIBRATED` — claimed 63% on average, delivered 60% (Brier 0.223) → a 3% haircut on its stated confidence |
+| **On-chain reputation** | **57.1%** — 8/14 resolved correct, and still moving: the oracle publishes and grades unattended, so this is whatever the chain says when you read it |
+| **Collateral destroyed to date** | **1756.8 x402USD** burned by its own wrong calls · **819.2** still at risk right now |
+| **Confidence calibration** | `OVERCONFIDENT` — claimed 63% on average, delivered 57% (Brier 0.243) → a 6% haircut on its stated confidence. The mechanism is live and currently biting our own oracle |
 
-*Live-status note (2026-07-20): the hosted facilitator changed the argument name it uses when building the settlement transaction — it now sends `value` where the deployed CEP-3009 token declares `amount`, so new settlements revert with `MissingArg` and payments complete in verified-deferred mode (the EIP-712 authorization is still real and cryptographically verified). The 8 settlements already on-chain remain verifiable. Nothing on our side selects that argument name — the facilitator builds the deploy — so this clears when the hosted service does.*
+*Live-status note (2026-07-20): the hosted facilitator changed the argument name it uses when building the settlement transaction — it now sends `value` where the deployed CEP-3009 token declares `amount`, so new settlements revert with `MissingArg` and payments complete in verified-deferred mode (the EIP-712 authorization is still real and cryptographically verified). The 12 settlements already on-chain remain verifiable. Nothing on our side selects that argument name — the facilitator builds the deploy — so this clears when the hosted service does.*
 
 ## Casper AI toolkit — every piece used, all real (not mocked)
 
