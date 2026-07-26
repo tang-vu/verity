@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T07:55:13.801Z",
+  "generatedAt": "2026-07-26T13:05:27.966Z",
   "signals": [
     {
       "id": 0,
@@ -473,9 +473,15 @@
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "77f82059c608a8ff9762aa1a2e063d4dc5fb562800efcc2790013246daded6a0",
       "publishExplorerUrl": "https://testnet.cspr.live/transaction/77f82059c608a8ff9762aa1a2e063d4dc5fb562800efcc2790013246daded6a0",
-      "status": 0,
+      "status": 1,
+      "correct": true,
+      "resolvedAt": 1784984852000,
+      "priceAtResolve": 1538,
+      "priceUsdAtResolve": 0.001538,
+      "resolveTxHash": "143a4d5585fc85aeff1500363c6eed942a45e71d39a718ea66151a7bb9388e25",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/143a4d5585fc85aeff1500363c6eed942a45e71d39a718ea66151a7bb9388e25",
       "directionLabel": "DOWN",
-      "statusLabel": "PENDING"
+      "statusLabel": "CORRECT"
     },
     {
       "id": 20,
@@ -492,16 +498,68 @@
       "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
       "publishTxHash": "33e25e233df376c50399e04296ce655cccafacf9eb78a8a5f9805b3344ec9cb7",
       "publishExplorerUrl": "https://testnet.cspr.live/transaction/33e25e233df376c50399e04296ce655cccafacf9eb78a8a5f9805b3344ec9cb7",
-      "status": 0,
+      "status": 1,
+      "correct": true,
+      "resolvedAt": 1784984857000,
+      "priceAtResolve": 4047910000,
+      "priceUsdAtResolve": 4047.91,
+      "resolveTxHash": "933e6366f9f566d7482a58652a07418fa9a2cf226ed1fda01ab2d662ceb5bc23",
+      "resolveExplorerUrl": "https://testnet.cspr.live/transaction/933e6366f9f566d7482a58652a07418fa9a2cf226ed1fda01ab2d662ceb5bc23",
       "directionLabel": "FLAT",
+      "statusLabel": "CORRECT"
+    },
+    {
+      "id": 21,
+      "asset": "casper-network",
+      "symbol": "CSPR",
+      "direction": 0,
+      "confidence": 58,
+      "horizonHours": 24,
+      "priceAtPublish": 1545,
+      "priceUsdAtPublish": 0.00154464,
+      "reasoning": "Price at 0.00154464, 24h change +0.97% but 7d change -16.45%. Volume $1.15M low relative to market cap $25.67M, suggesting weak buying interest. Price near 24h low 0.00152408, indicating potential further decline.",
+      "keyFactors": [
+        "Weak 7d performance",
+        "Low volume relative to market cap",
+        "Price near 24h low"
+      ],
+      "publishedAt": 1785071114203,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "51389b384924fa1f0608856b73235a4b876eae1abb50d77dc059efbc16666904",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/51389b384924fa1f0608856b73235a4b876eae1abb50d77dc059efbc16666904",
+      "status": 0,
+      "directionLabel": "DOWN",
+      "statusLabel": "PENDING"
+    },
+    {
+      "id": 22,
+      "asset": "pax-gold",
+      "symbol": "PAXG",
+      "direction": 2,
+      "confidence": 55,
+      "horizonHours": 24,
+      "priceAtPublish": 4055060000,
+      "priceUsdAtPublish": 4055.06,
+      "reasoning": "Gold stable near highs with low volatility and positive 7d trend; volume moderate, no catalysts. Slight upward bias.",
+      "keyFactors": [
+        "Positive 7d trend (+1.34%)",
+        "Narrow 24h range (0.2%)",
+        "Moderate volume"
+      ],
+      "publishedAt": 1785071120603,
+      "publisher": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
+      "publishTxHash": "17d151b54b6dd23f891c78df5ae03f62b304a6fde44200944b007ea0ed4edf7d",
+      "publishExplorerUrl": "https://testnet.cspr.live/transaction/17d151b54b6dd23f891c78df5ae03f62b304a6fde44200944b007ea0ed4edf7d",
+      "status": 0,
+      "directionLabel": "UP",
       "statusLabel": "PENDING"
     }
   ],
   "reputation": {
-    "accuracyBps": 5000,
-    "totalSignals": 21,
-    "resolvedSignals": 16,
-    "correctSignals": 8
+    "accuracyBps": 5555,
+    "totalSignals": 23,
+    "resolvedSignals": 18,
+    "correctSignals": 10
   },
   "stake": {
     "oracle": "971c1bd6ad47eff8cd815d53082a66e1246bf0ce09969c3dfca771c6a71d247d",
