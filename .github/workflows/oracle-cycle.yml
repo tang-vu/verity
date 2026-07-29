@@ -27,9 +27,9 @@ on:
         type: boolean
         default: false
 
-# Only the snapshot commit needs write; nothing else here does.
+# The cycle reads repository contents but does not write back to the branch.
 permissions:
-  contents: write
+  contents: read
 
 # A turn sends real transactions — never let two overlap and double-publish.
 concurrency:
@@ -99,21 +99,6 @@ jobs:
       - name: Run the cycle
         if: steps.guard.outputs.configured == 'true'
         run: npm run cycle ${{ inputs.dry_run && '-- --dry-run' || '' }}
-
-      - name: Commit the refreshed dashboard snapshot
-        # The dashboard reads the chain directly; this snapshot is only its
-        # offline fallback, so it is worth keeping current but never urgent.
-        if: steps.guard.outputs.configured == 'true' && !inputs.dry_run
-        run: |
-          if git diff --quiet -- web/data/oracle-snapshot.json; then
-            echo "Snapshot unchanged."
-            exit 0
-          fi
-          git config user.name "verity-oracle"
-          git config user.email "oracle@verity.invalid"
-          git add web/data/oracle-snapshot.json
-          git commit -m "chore(oracle): refresh dashboard snapshot after cycle"
-          git push
 
       - name: Remove the key from the runner
         if: always()
