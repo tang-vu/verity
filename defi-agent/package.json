@@ -8,15 +8,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.13.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@verity/shared": "*",
-    "casper-js-sdk": "^5.0.7",
+    "casper-js-sdk": "^5.1.0",
     "dotenv": "^17.4.2",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3"
   }
 }
