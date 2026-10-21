@@ -18,8 +18,8 @@ name: Oracle cycle
 # or a clone with no secrets stays green.
 
 on:
-  schedule:
-    - cron: "0 */6 * * *" # four turns a day
+  # Scheduled runs stopped at the repository owner's request.
+  # Run manually only when explicitly needed.
   workflow_dispatch:
     inputs:
       dry_run:
